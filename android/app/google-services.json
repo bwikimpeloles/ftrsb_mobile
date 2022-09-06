@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "734003829624",
+    "project_id": "ftrsb-mobile",
+    "storage_bucket": "ftrsb-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734003829624:android:4bfc81cca1981e0f32068d",
+        "android_client_info": {
+          "package_name": "com.example.ftrsb_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "734003829624-va0gobu4b20j6a0esndohdslh81hb8nt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAekibiZu0jI6w-rMvx4BHDODMCa8CE2lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "734003829624-va0gobu4b20j6a0esndohdslh81hb8nt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
