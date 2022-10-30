@@ -38,6 +38,8 @@ dependencies:
   firebase_core:
   firebase_auth:
   fluttertoast: ^8.0.9
+  shared_preferences: ^2.0.15
+  firebase_database:
 
 dev_dependencies:
   flutter_test:

@@ -13,6 +13,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   late User user;
   late Timer timer;
 
+  //send email forgot password
   @override
   void initState() {
     user = auth.currentUser!;

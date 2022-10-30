@@ -150,10 +150,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     //role dropdown
     final roleDropdown = DropdownButton<String>(
-      dropdownColor: Colors.green,
+      dropdownColor: Colors.grey,
       isDense: true,
       isExpanded: false,
-      iconEnabledColor: Colors.green,
+      iconEnabledColor: Colors.white,
       focusColor: Colors.lightGreen,
       items: roleList.map((String dropDownStringItem) {
         return DropdownMenuItem<String>(
@@ -161,9 +161,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           child: Text(
             dropDownStringItem,
             style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+              color: Colors.black54,
+              fontSize: 16,
             ),
           ),
         );
@@ -231,13 +230,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     nameField,
                     SizedBox(height: 20),
                     emailField,
-                    SizedBox(height: 20),
-                    Row(children: [SizedBox(width: 15), Text('Role: ', style: TextStyle(color: Colors.black, fontSize: 20,),),SizedBox(width: 15),
-                      roleDropdown,],),
+
                     SizedBox(height: 20),
                     passwordField,
                     SizedBox(height: 20),
                     confirmPasswordField,
+                    SizedBox(height: 20),
+                    Row( mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [Text('Role: ', style: TextStyle(color: Colors.black54, fontSize: 16,),),SizedBox(width: 15),
+                      roleDropdown,],),
                     SizedBox(height: 20),
                     signUpButton,
                     SizedBox(height: 15),
@@ -250,7 +252,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
-  void signUp(String email, String password) async {
+  Future<void> signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       try {
         await _auth
@@ -260,21 +262,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           Fluttertoast.showToast(msg: e!.message);
         });
       } on FirebaseAuthException catch (error) {
+        //messages if invalid registration
         switch (error.code) {
           case "invalid-email":
             errorMessage = "Your email address appears to be malformed.";
             break;
-          case "wrong-password":
-            errorMessage = "Your password is wrong.";
-            break;
-          case "user-not-found":
-            errorMessage = "User with this email doesn't exist.";
-            break;
-          case "user-disabled":
-            errorMessage = "User with this email has been disabled.";
-            break;
-          case "too-many-requests":
-            errorMessage = "Too many requests";
+          case "email-already-in-use":
+            errorMessage = "This email already been used.";
             break;
           case "operation-not-allowed":
             errorMessage = "Signing in with Email and Password is not enabled.";

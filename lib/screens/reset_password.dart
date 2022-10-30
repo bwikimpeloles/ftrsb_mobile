@@ -12,6 +12,7 @@ class _ResetScreenState extends State<ResetScreen> {
   late String _email;
   final auth = FirebaseAuth.instance;
 
+  //forgot password, to reset
   @override
   Widget build(BuildContext context) {
     return Scaffold(
