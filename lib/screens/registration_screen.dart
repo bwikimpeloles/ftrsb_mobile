@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ftrsb_mobile/AdminScreen/home_admin.dart';
+import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import '../model/user_model.dart';
 import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +19,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   // string for displaying the error Message
   String? errorMessage;
-
 
   // our form key
   final _formKey = GlobalKey<FormState>();
@@ -305,7 +306,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => (role=="Finance")? HomeScreenFinance():(role=="Admin")? HomeScreenAdmin():HomeScreen()),
             (route) => false);
   }
 }

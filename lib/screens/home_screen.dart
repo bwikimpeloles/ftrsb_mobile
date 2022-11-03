@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
         .get()
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
     });
   }
 
