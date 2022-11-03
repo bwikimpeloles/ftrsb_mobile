@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import '../model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: 150,
+                height: 90,
                 child: Image.asset("assets/logo.png", fit: BoxFit.contain),
               ),
               Text(
@@ -66,6 +67,101 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
               SizedBox(
                 height: 15,
               ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      //warehouse button
+                      SizedBox(
+                        height: 100,
+                        width: 150,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {},
+                          child: const Text('WAREHOUSE', style: TextStyle(color: Colors.white),),
+                        ),
+                      ),
+                      SizedBox(width: 20,),
+
+                      //sales & marketing button button
+                      SizedBox(
+                        height: 100,
+                        width: 150,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {},
+                          child: const Text('SALES \n&\nMARKETING', style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,),
+                        ),
+                      ),
+
+                    ],),
+
+                  SizedBox(height: 20,),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      //finance button
+                    SizedBox(
+                      height: 100,
+                      width: 150,
+                      child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.amber[700],
+                        textStyle: const TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context, MaterialPageRoute(builder: (context) => const HomeScreenFinance(),));
+                      },
+                      child: const Text('FINANCE', style: TextStyle(color: Colors.white),),
+                  ),
+                    ),
+                      SizedBox(width: 20,),
+
+                      //employee accounts button
+                      SizedBox(
+                        height: 100,
+                        width: 150,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {},
+                          child: const Text('EMPLOYEE \nACCOUNTS', style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,),
+                        ),
+                      ),
+
+                  ],),
+                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 100,
+                    width: 150,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.brown,
+                        textStyle: const TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {},
+                      child: const Text('TRANSACTION \n APPROVAL', style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20,),
               ActionChip(
                   label: Text("Logout"),
                   onPressed: () {
