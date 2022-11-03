@@ -33,8 +33,10 @@ class _MyAppState extends State<MyApp> {
         .get()
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
     });}
 
+    setState(() {});
   }
 
   // This widget is the root of your application.
