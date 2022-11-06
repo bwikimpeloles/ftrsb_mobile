@@ -112,7 +112,8 @@ class _EditSupplierState extends State<EditSupplier> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: RaisedButton(child: Text('Update Supplier',style: TextStyle(
+              child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
+                child: Text('Update Supplier',style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -122,7 +123,6 @@ class _EditSupplierState extends State<EditSupplier> {
                   saveSupplier();
                 },
 
-                color: Theme.of(context).primaryColor,
               ),
             )
 

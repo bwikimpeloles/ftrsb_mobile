@@ -108,7 +108,8 @@ class _AddSupplierState extends State<AddSupplier> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: RaisedButton(child: Text('Save',style: TextStyle(
+              child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
+                child: Text('Save',style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -117,8 +118,6 @@ class _AddSupplierState extends State<AddSupplier> {
                 onPressed: (){
                   saveSupplier();
                 },
-
-                color: Theme.of(context).primaryColor,
               ),
             )
 

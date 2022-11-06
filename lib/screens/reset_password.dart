@@ -44,14 +44,15 @@ class _ResetScreenState extends State<ResetScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              RaisedButton(
-                child: Text('Send Request'),
+              TextButton(
+                style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
+                child: Text('Send Request', style: TextStyle(color: Colors.white),),
                 onPressed: () {
                   auth.sendPasswordResetEmail(email: _email);
                   Fluttertoast.showToast(msg: "Email have been sent.");
                   Navigator.of(context).pop();
                 },
-                color: Theme.of(context).accentColor,
+
               ),
 
             ],

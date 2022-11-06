@@ -234,12 +234,12 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
             title: Text('Delete ${supplier['companyname']}'),
             content: Text('Are you sure you want to delete?'),
             actions: [
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   child: Text('Cancel')),
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     reference
                         .child(supplier['key'])
