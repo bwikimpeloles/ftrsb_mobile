@@ -21,10 +21,8 @@ enum DistrChannel {
  DistrChannel? _channel;
 
 class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
-// string for displaying the error Message
-  String? errorMessage;
 
-// our form key
+// form key
   final _formKey = GlobalKey<FormState>();
 // editing Controller
   final nameEditingController = TextEditingController();
@@ -102,7 +100,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         controller: addressEditingController,
         keyboardType: TextInputType.streetAddress,
         validator: (value) {
-          RegExp regex = RegExp(r'(\d+)');
+          RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
             return ("Shipping address cannot be empty!");
           }
@@ -260,6 +258,10 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
               });
             }
+            nameEditingController.clear();
+            phoneEditingController.clear();
+            addressEditingController.clear();
+            emailEditingController.clear();
           },
           child: const Text(
             "Next",

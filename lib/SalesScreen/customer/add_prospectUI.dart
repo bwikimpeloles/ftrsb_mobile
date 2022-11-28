@@ -224,6 +224,9 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
                 'email': emailEditingController.text,
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
               });
+              nameEditingController.clear();
+              phoneEditingController.clear();
+              emailEditingController.clear();
             }
           },
           child: const Text(

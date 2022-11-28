@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
+import 'package:ftrsb_mobile/SalesScreen/customer/customerList.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
 class DistrChannelList extends StatefulWidget {
@@ -40,8 +40,12 @@ class _DistrChannelListState extends State<DistrChannelList> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreenSales()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CustomerList(channel: channel[index]),
+                      ),
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -53,7 +57,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
                     child: Center(
                         child: Text(
                       '${channel[index]}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
