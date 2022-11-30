@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'sidebar_navigation.dart';
 import '../model/user_model.dart';
@@ -16,6 +17,9 @@ class HomeScreenFinance extends StatefulWidget {
 class _HomeScreenFinanceState extends State<HomeScreenFinance> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+  String? mtoken = "";
+
+
 
   @override
   void initState() {
@@ -27,6 +31,22 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
+    });
+    getToken();
+  }
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      saveToken(token!);
+    });
+  }
+
+  void saveToken(String token) async {
+    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
+      'token' : token,
     });
   }
 

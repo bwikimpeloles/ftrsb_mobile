@@ -40,6 +40,9 @@ dependencies:
   fluttertoast: ^8.0.9
   shared_preferences: ^2.0.15
   firebase_database:
+  firebase_messaging:
+  flutter_local_notifications: ^9.9.1
+  http:
 
 dev_dependencies:
   flutter_test:

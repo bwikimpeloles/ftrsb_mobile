@@ -297,6 +297,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.uid = user.uid;
     userModel.name = nameEditingController.text;
     userModel.role = role;
+    userModel.paymentnotification = false;
 
     await firebaseFirestore
         .collection("users")

@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:ftrsb_mobile/AdminScreen/paymentapproval.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
+import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,7 @@ class HomeScreenAdmin extends StatefulWidget {
 class _HomeScreenAdminState extends State<HomeScreenAdmin> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+  String? mtoken = "";
 
   @override
   void initState() {
@@ -28,6 +32,23 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
       setState(() {});
     });
   }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      saveToken(token!);
+    });
+  }
+
+  void saveToken(String token) async {
+    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
+      'token' : token,
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +118,10 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                             backgroundColor: Colors.blue,
                             textStyle: const TextStyle(fontSize: 16),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context, MaterialPageRoute(builder: (context) => const HomeScreenSales(),));
+                          },
                           child: const Text('SALES \n&\nMARKETING', style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,),
                         ),
@@ -154,7 +178,10 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                         backgroundColor: Colors.brown,
                         textStyle: const TextStyle(fontSize: 16),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context, MaterialPageRoute(builder: (context) => const PaymentApprovalAdmin(),));
+                      },
                       child: const Text('TRANSACTION \n APPROVAL', style: TextStyle(color: Colors.white),
                         textAlign: TextAlign.center,),
                     ),

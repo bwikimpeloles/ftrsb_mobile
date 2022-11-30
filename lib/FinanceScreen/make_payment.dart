@@ -1,37 +1,80 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart' as Database;
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'makepayment/view_payment.dart';
 import 'sidebar_navigation.dart';
-import 'supplier/add_supplier.dart';
-import 'supplier/edit_supplier.dart';
+import 'makepayment/add_payment.dart';
+import 'makepayment/edit_payment.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SupplierInformationFinance extends StatefulWidget {
+class MakePaymentFinance extends StatefulWidget {
   @override
-  _SupplierInformationFinanceState createState() => _SupplierInformationFinanceState();
+  _MakePaymentFinanceState createState() => _MakePaymentFinanceState();
 }
 
-class _SupplierInformationFinanceState extends State<SupplierInformationFinance> {
-  late Query _ref;
-  DatabaseReference reference =
-  FirebaseDatabase.instance.reference().child('Suppliers');
+class _MakePaymentFinanceState extends State<MakePaymentFinance> {
+  late Database.Query _ref;
+  String? mtoken = "";
+  Database.DatabaseReference reference =
+  Database.FirebaseDatabase.instance.reference().child('MakePayments');
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  User? user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _ref = FirebaseDatabase.instance
+    requestPermission();
+
+    _ref = Database.FirebaseDatabase.instance
         .reference()
-        .child('Suppliers')
-        .orderByChild('companyname');
+        .child('MakePayments')
+        .orderByChild('time');
   }
 
-  Widget _buildSupplierItem({required Map supplier}) {
-    return GestureDetector(
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    }
+    else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+
+    Widget _buildPaymentItem({required Map payment}) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (_) => ViewPayment(
+                  paymentKey: payment['key'],
+                )));
+      },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
         padding: EdgeInsets.all(10),
-        height: 250,
+        height: 160,
         decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
@@ -45,7 +88,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
           children: [
             Row(
               children: [
-                Text('Company Name: ',
+                Text('Title: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -54,11 +97,11 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                   width: 6,
                 ),
                 Text(
-                  supplier['companyname'],
+                  payment['title'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -67,7 +110,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
             ),
             Row(
               children: [
-                Text('Phone No: ',
+                Text('To: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -76,11 +119,11 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                   width: 6,
                 ),
                 Text(
-                  supplier['phonenumber'],
+                  payment['accountholder'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.w500),
                 ),
                 SizedBox(width: 15),
 
@@ -91,33 +134,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
             ),
             Row(
               children: [
-                Text('Address: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Flexible(
-                  child: Text(
-                    supplier['shippingaddress'],
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Email: ',
+                Text('Amount (RM): ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -126,11 +143,11 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                   width: 6,
                 ),
                 Text(
-                  supplier['email'],
+                  payment['amount'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.w500),
                 ),
                 SizedBox(width: 15),
 
@@ -139,9 +156,10 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
             SizedBox(
               height: 10,
             ),
+
             Row(
               children: [
-                Text('PIC: ',
+                Text('Status: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -150,55 +168,29 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                   width: 6,
                 ),
                 Text(
-                  supplier['pic'],
+                  payment['status'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.w500),
                 ),
                 SizedBox(width: 15),
 
               ],
             ),
             SizedBox(
-              height: 15,
+              height: 8,
             ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => EditSupplier(
-                              supplierKey: supplier['key'],
-                            )));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.edit,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('Edit',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
                 SizedBox(
                   width: 20,
                 ),
                 GestureDetector(
                   onTap: () {
-                    _showDeleteDialog(supplier: supplier);
+                    _showDeleteDialog(payment: payment);
                   },
                   child: Row(
                     children: [
@@ -228,12 +220,12 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
     );
   }
 
-  _showDeleteDialog({required Map supplier}) {
+  _showDeleteDialog({required Map payment}) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete ${supplier['companyname']}'),
+            title: Text('Delete ${payment['title']}'),
             content: Text('Are you sure you want to delete?'),
             actions: [
               TextButton(
@@ -244,7 +236,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
               TextButton(
                   onPressed: () {
                     reference
-                        .child(supplier['key'])
+                        .child(payment['key'])
                         .remove()
                         .whenComplete(() => Navigator.pop(context));
                   },
@@ -259,17 +251,17 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
     return Scaffold(
       drawer: NavigationDrawer(),
       appBar: AppBar(
-        title: Text('Supplier Information'),
+        title: Text('Make Payment'),
       ),
       body: Container(
         height: double.infinity,
         child: FirebaseAnimatedList(
           query: _ref,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+          itemBuilder: (BuildContext context, Database.DataSnapshot snapshot,
               Animation<double> animation, int index) {
-            Map supplier = snapshot.value as Map;
-            supplier['key'] = snapshot.key;
-            return _buildSupplierItem(supplier: supplier);
+            Map payment = snapshot.value as Map;
+            payment['key'] = snapshot.key;
+            return _buildPaymentItem(payment: payment);
           },
         ),
       ),
@@ -278,7 +270,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) {
-              return AddSupplier();
+              return AddPayment();
             }),
           );
         },

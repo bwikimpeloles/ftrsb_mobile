@@ -31,97 +31,104 @@ class _AddSupplierState extends State<AddSupplier> {
       ),
       body: Container(
         margin: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _companynameController,
-              decoration: InputDecoration(
-                hintText: 'Enter Company Name',
-                prefixIcon: Icon(
-                  Icons.maps_home_work,
-                  size: 30,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _companynameController,
+                decoration: InputDecoration(
+                  label: Text('Company Name'),
+                  hintText: 'Enter Company Name',
+                  prefixIcon: Icon(
+                    Icons.maps_home_work,
+                    size: 30,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.all(15),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                contentPadding: EdgeInsets.all(15),
               ),
-            ),
-            SizedBox(height: 15),
-            TextFormField(
-              controller: _phonenumberController,
-              decoration: InputDecoration(
-                hintText: 'Enter Phone Number',
-                prefixIcon: Icon(
-                  Icons.phone_iphone,
-                  size: 30,
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _phonenumberController,
+                decoration: InputDecoration(
+                  label: Text('Phone Number'),
+                  hintText: 'Enter Phone Number',
+                  prefixIcon: Icon(
+                    Icons.phone_iphone,
+                    size: 30,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.all(15),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                contentPadding: EdgeInsets.all(15),
               ),
-            ),
-            SizedBox(height: 15),
-            TextFormField(
-              controller: _shippingaddressController,
-              decoration: InputDecoration(
-                hintText: 'Enter Shipping Address',
-                prefixIcon: Icon(
-                  Icons.map,
-                  size: 30,
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _shippingaddressController,
+                decoration: InputDecoration(
+                  label: Text('Shipping Address'),
+                  hintText: 'Enter Shipping Address',
+                  prefixIcon: Icon(
+                    Icons.map,
+                    size: 30,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.all(15),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                contentPadding: EdgeInsets.all(15),
               ),
-            ),
-            SizedBox(height: 15),
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                hintText: 'Enter Email',
-                prefixIcon: Icon(
-                  Icons.mail,
-                  size: 30,
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  label: Text('Email'),
+                  hintText: 'Enter Email',
+                  prefixIcon: Icon(
+                    Icons.mail,
+                    size: 30,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.all(15),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                contentPadding: EdgeInsets.all(15),
               ),
-            ),
-            SizedBox(height: 15),
-            TextFormField(
-              controller: _picController,
-              decoration: InputDecoration(
-                hintText: 'Enter PIC',
-                prefixIcon: Icon(
-                  Icons.account_box,
-                  size: 30,
+              SizedBox(height: 15),
+              TextFormField(
+                controller: _picController,
+                decoration: InputDecoration(
+                  label: Text('PIC'),
+                  hintText: 'Enter PIC',
+                  prefixIcon: Icon(
+                    Icons.account_box,
+                    size: 30,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.all(15),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                contentPadding: EdgeInsets.all(15),
               ),
-            ),
 
-            SizedBox(height: 25,),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
-                child: Text('Save',style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+              SizedBox(height: 25,),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
+                  child: Text('Save',style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
 
-              ),),
-                onPressed: (){
-                  saveSupplier();
-                },
-              ),
-            )
+                ),),
+                  onPressed: (){
+                    saveSupplier();
+                  },
+                ),
+              )
 
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
+import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
 import '../screens/login_screen.dart';
 
@@ -69,6 +70,8 @@ Widget buildMenuItems(BuildContext context) => Container(
       ListTile(leading: const Icon(Icons.monetization_on),
         title: const Text('Make Payment'),
         onTap: (){
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => MakePaymentFinance(),));
 
         },),
       ListTile(leading: const Icon(Icons.add_alert),

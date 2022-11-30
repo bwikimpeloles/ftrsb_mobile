@@ -3,8 +3,9 @@ class UserModel {
   String? email;
   String? name;
   String? role;
+  bool? paymentnotification;
 
-  UserModel({this.uid, this.email, this.name, this.role});
+  UserModel({this.uid, this.email, this.name, this.role, this.paymentnotification});
 
   // receiving data from server
   factory UserModel.fromMap(map) {
@@ -13,6 +14,7 @@ class UserModel {
       email: map['email'],
       name: map['name'],
       role: map['role'],
+      paymentnotification: map['paymentnotification'],
     );
   }
 
@@ -23,6 +25,7 @@ class UserModel {
       'email': email,
       'name': name,
       'role': role,
+      'paymentnotification': paymentnotification,
     };
   }
 }
