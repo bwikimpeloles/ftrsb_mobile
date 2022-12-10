@@ -101,7 +101,7 @@ class _CustomerListState extends State<CustomerList> {
               );
             }
             return Center(
-              child: Text('No customer records'),
+              child: CircularProgressIndicator(),
             );
           },
         ));

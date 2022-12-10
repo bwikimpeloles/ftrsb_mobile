@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
+import 'package:ftrsb_mobile/model/customer_model.dart';
 
 class CustomerDetailsForm extends StatefulWidget {
   const CustomerDetailsForm({Key? key}) : super(key: key);
@@ -18,10 +21,12 @@ enum DistrChannel {
   grabmart,
   other
 }
- DistrChannel? _channel;
+
+DistrChannel? _channel;
+
+late CustomerDetails cust = CustomerDetails();
 
 class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
-
 // form key
   final _formKey = GlobalKey<FormState>();
 // editing Controller
@@ -157,7 +162,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           ),
         ));
 
-   ///radio button
+    ///radio button
     //String? distrChannel;
     final channel = Column(
       children: <Widget>[
@@ -249,19 +254,37 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              FirebaseFirestore.instance.collection('customer').add({
+            if (_channel == null){
+              Fluttertoast.showToast(msg: 'Choose a distribution channel!');
+            }
+
+            else if (_formKey.currentState!.validate() && _channel != null) {
+              setState(() {
+                cust.name = nameEditingController.text;
+                cust.phone = phoneEditingController.text;
+                cust.address = addressEditingController.text;
+                cust.email = emailEditingController.text;
+                cust.channel = _channel
+                    .toString()
+                    .substring(_channel.toString().indexOf('.') + 1);
+              });
+
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const PaymentDetails(),
+              ));
+
+              /*FirebaseFirestore.instance.collection('customer').add({
                 'name': nameEditingController.text,
                 'phone': phoneEditingController.text,
                 'address': addressEditingController.text,
                 'email': emailEditingController.text,
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
-              });
+              });*/
             }
-            nameEditingController.clear();
-            phoneEditingController.clear();
-            addressEditingController.clear();
-            emailEditingController.clear();
+            //nameEditingController.clear();
+            //phoneEditingController.clear();
+            //addressEditingController.clear();
+            //emailEditingController.clear();
           },
           child: const Text(
             "Next",

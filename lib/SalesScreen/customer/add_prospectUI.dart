@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
 class ProspectDetailsForm extends StatefulWidget {
@@ -217,7 +218,11 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
+            if (_channel == null){
+              Fluttertoast.showToast(msg: 'Choose a distribution channel!');
+            }
+
+            else if (_formKey.currentState!.validate()) {
               FirebaseFirestore.instance.collection('prospect').add({
                 'name': nameEditingController.text,
                 'phone': phoneEditingController.text,
