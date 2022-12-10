@@ -193,7 +193,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
         ));
 
     //radio button
-    final paymethod = Column(
+    final paystatus = Column(
       children: [
         SizedBox(height: 15),
         const SizedBox(
@@ -257,6 +257,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
               key: _formKey,
               child: Column(
                 children: [
+                  SizedBox(height: 20),
                   amountField,
                   SizedBox(height: 20),
                   orderdate,
@@ -271,7 +272,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                           border: Border.all(
                             color: Colors.grey,
                           )),
-                      child: paymethod),
+                      child: paystatus),
                   SizedBox(height: 20),
                   Container(
                     child: SizedBox(
@@ -285,7 +286,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                           onPressed: () {
                             if (_paymentStatus == null) {
                               Fluttertoast.showToast(
-                                  msg: "Please select a payment method");
+                                  msg: "Please select a payment status");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentStatus != null) {
                               Map<String?, String?> customer = {
