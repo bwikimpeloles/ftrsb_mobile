@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/model/paymentB2C_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentDetails extends StatefulWidget {
@@ -24,6 +25,8 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   final amountTextCtrl = TextEditingController();
   final banknameCtrl = TextEditingController();
   final dateInput = TextEditingController();
+
+  late PaymentB2C paymentModel = PaymentB2C();
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +247,22 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                   msg: "Please select a payment method");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentMethod != null) {
-                              Map<String?, String?> customer = {
+
+                                  setState(() {
+                                    paymentModel.amount = amountTextCtrl.text;
+                                    paymentModel.paymentMethod = _paymentMethod.toString();
+                                    paymentModel.paymentDate = dateInput.text;
+                                    paymentModel.bankName = banknameCtrl.text;
+                                    
+                                  });
+
+                              /*
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const PaymentDetails(),
+              ));
+              */
+
+                              /* Map<String?, String?> customer = {
                                 'name': cust.name,
                                 'phone': cust.phone,
                                 'address': cust.address,
@@ -252,7 +270,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                 'channel': cust.channel
                               };
 
-                              dbRef.push().set(customer);
+                              dbRef.push().set(customer);*/
                             }
                           },
                           child: const Text(

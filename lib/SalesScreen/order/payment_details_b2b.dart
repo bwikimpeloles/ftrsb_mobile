@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/model/paymentB2B_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentDetailsB2B extends StatefulWidget {
@@ -19,10 +20,12 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
   late DatabaseReference dbRef =
       FirebaseDatabase.instance.ref().child('Customer');
 
+  late PaymentB2B paymentModel = PaymentB2B();    
+
   final _formKey = GlobalKey<FormState>();
   //text field controller
   final amountTextCtrl = TextEditingController();
-  final banknameCtrl = TextEditingController();
+  final picCtrl = TextEditingController();
   final orderdateInput = TextEditingController();
   final collectdateInput = TextEditingController();
 
@@ -161,10 +164,10 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
       },
     );
 
-    ///bank name field
-    final banknameField = TextFormField(
+    ///pic field
+    final picField = TextFormField(
         autofocus: false,
-        controller: banknameCtrl,
+        controller: picCtrl,
         keyboardType: TextInputType.name,
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
@@ -177,7 +180,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
           return null;
         },
         onSaved: (value) {
-          banknameCtrl.text = value!;
+          picCtrl.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -264,7 +267,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                   SizedBox(height: 20),
                   collectdate,
                   SizedBox(height: 20),
-                  banknameField,
+                  picField,
                   SizedBox(height: 20),
                   Container(
                       decoration: BoxDecoration(
@@ -289,7 +292,22 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                   msg: "Please select a payment status");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentStatus != null) {
-                              Map<String?, String?> customer = {
+                                  setState(() {
+                                    paymentModel.amount = amountTextCtrl.text;
+                                    paymentModel.orderDate = orderdateInput.toString();
+                                    paymentModel.collectionDate = collectdateInput.text;
+                                    paymentModel.pic = picCtrl.text;
+                                    paymentModel.status = _paymentStatus.toString();
+                                    
+                                  });
+
+                              /*
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const PaymentDetails(),
+              ));
+              */
+
+                              /* Map<String?, String?> customer = {
                                 'name': cust.name,
                                 'phone': cust.phone,
                                 'address': cust.address,
@@ -297,7 +315,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                 'channel': cust.channel
                               };
 
-                              dbRef.push().set(customer);
+                              dbRef.push().set(customer);*/
                             }
                           },
                           child: const Text(
