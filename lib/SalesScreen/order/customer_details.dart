@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 import 'package:ftrsb_mobile/model/customer_model.dart';
@@ -173,7 +174,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           groupValue: _channel,
           onChanged: (DistrChannel? value) {
             setState(() {
-              _channel = DistrChannel.shopee;
+              _channel = value;
             });
           },
         ),
@@ -184,7 +185,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           groupValue: _channel,
           onChanged: (DistrChannel? value) {
             setState(() {
-              _channel = DistrChannel.whatsapp;
+              _channel = value;
             });
           },
         ),
@@ -258,7 +259,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
               Fluttertoast.showToast(msg: 'Choose a distribution channel!');
             }
 
-            else if (_formKey.currentState!.validate() && _channel != null) {
+            else if (_formKey.currentState!.validate() && _channel != null ) {
               setState(() {
                 cust.name = nameEditingController.text;
                 cust.phone = phoneEditingController.text;
@@ -269,10 +270,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                     .substring(_channel.toString().indexOf('.') + 1);
               });
 
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const PaymentDetails(),
-              ));
-
+            
               /*FirebaseFirestore.instance.collection('customer').add({
                 'name': nameEditingController.text,
                 'phone': phoneEditingController.text,
@@ -281,6 +279,22 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
               });*/
             }
+
+              if (_channel
+                    .toString()
+                    .substring(_channel.toString().indexOf('.') + 1) == 'b2b_retail' || _channel
+                    .toString()
+                    .substring(_channel.toString().indexOf('.') + 1) == 'b2b_hypermarket'){
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => PaymentDetailsB2B(),
+              ));
+              }
+              else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => PaymentDetails(),
+              ));
+              }
+
             //nameEditingController.clear();
             //phoneEditingController.clear();
             //addressEditingController.clear();
