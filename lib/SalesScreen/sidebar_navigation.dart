@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/add_prospectUI.dart';
@@ -75,7 +74,7 @@ Widget buildMenuItems(BuildContext context) => Container(
             },
           ),
           ListTile(
-            leading: const Icon(Icons.account_box_outlined),
+            leading: const Icon(Icons.person_add_rounded),
             title: const Text('Add Prospect'),
             onTap: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(

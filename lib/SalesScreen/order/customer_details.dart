@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
@@ -278,22 +279,25 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                 'email': emailEditingController.text,
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
               });*/
-            }
 
               if (_channel
-                    .toString()
-                    .substring(_channel.toString().indexOf('.') + 1) == 'b2b_retail' || _channel
-                    .toString()
-                    .substring(_channel.toString().indexOf('.') + 1) == 'b2b_hypermarket'){
+                          .toString()
+                          .substring(_channel.toString().indexOf('.') + 1) ==
+                      'b2b_retail' ||
+                  _channel
+                          .toString()
+                          .substring(_channel.toString().indexOf('.') + 1) ==
+                      'b2b_hypermarket') {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => PaymentDetailsB2B(),
-              ));
+                  builder: (context) => PaymentDetailsB2B(),
+                ));
+              } else {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => PaymentDetails(),
+                ));
               }
-              else {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => PaymentDetails(),
-              ));
-              }
+            }
+
 
             //nameEditingController.clear();
             //phoneEditingController.clear();
@@ -309,13 +313,34 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
     );
 
     return Scaffold(
+      bottomNavigationBar: CurvedNavBar(indexnum: 1),
       drawer: NavigationDrawer(),
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text("Customer Information"),
-        centerTitle: true,
-      ),
+      appBar: PreferredSize(
+          child: AppBar(
+            //actions: [
+            //  IconButton(
+             //     onPressed: () {
+             //       logout(context);
+             //     },
+             //     icon: Icon(Icons.logout_outlined, size: 25))
+            //],
+            //toolbarHeight: 70,
+            //title: const Text("Welcome - Sales & Marketing"),
+            title: Text('Customer Details'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 103, 206, 113),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+              ),
+            ),
+          ),
+          preferredSize: Size.fromHeight(65)),
       body: Center(
         child: SingleChildScrollView(
           child: Container(

@@ -43,6 +43,7 @@ dependencies:
   firebase_messaging:
   flutter_local_notifications: ^9.9.1
   http:
+  curved_navigation_bar: ^1.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/customerList.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
@@ -24,13 +25,25 @@ class _DistrChannelListState extends State<DistrChannelList> {
     final List<Color> color = [Color.fromARGB(255, 204, 125, 7), Colors.green, Colors.lightGreen, Color.fromARGB(255, 59, 138, 177), Color.fromARGB(255, 182, 201, 12), Color.fromARGB(255, 74, 177, 127), Color.fromARGB(255, 161, 92, 173)];
 
     return Scaffold(
+      bottomNavigationBar: CurvedNavBar(indexnum: 3,),
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text("Manage Customer Details"),
-        centerTitle: true,
-      ),
+      appBar: PreferredSize(
+          child: AppBar( 
+            title: Text('Manage Customer Details'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 103, 206, 113),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+              ),
+            ),
+          ),
+          preferredSize: Size.fromHeight(65)),
       body: Column(
         children: [
           Expanded(

@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/model/paymentB2B_model.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +21,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
   late DatabaseReference dbRef =
       FirebaseDatabase.instance.ref().child('Customer');
 
-  late PaymentB2B paymentModel = PaymentB2B();    
+  late PaymentB2B paymentModel = PaymentB2B();
 
   final _formKey = GlobalKey<FormState>();
   //text field controller
@@ -28,7 +29,6 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
   final picCtrl = TextEditingController();
   final orderdateInput = TextEditingController();
   final collectdateInput = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,6 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
         }
       },
     );
-
 
     ///order collection date field
     DateTime? collectDate;
@@ -243,16 +242,32 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
     return Scaffold(
       backgroundColor: Colors.white,
       //drawer: NavigationDrawer(),
-      appBar: AppBar(
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () =>
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const CustomerDetailsForm(),
-                ))),
-        title: const Text("Payment Details"),
-        centerTitle: true,
+      bottomNavigationBar: CurvedNavBar(
+        indexnum: 1,
       ),
+      appBar: PreferredSize(
+          child: AppBar(
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () =>
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const CustomerDetailsForm(),
+                    ))),
+            title: Text('Payment Details'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 103, 206, 113),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+              ),
+            ),
+          ),
+          preferredSize: Size.fromHeight(65)),
+
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(10),
@@ -292,14 +307,15 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                   msg: "Please select a payment status");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentStatus != null) {
-                                  setState(() {
-                                    paymentModel.amount = amountTextCtrl.text;
-                                    paymentModel.orderDate = orderdateInput.toString();
-                                    paymentModel.collectionDate = collectdateInput.text;
-                                    paymentModel.pic = picCtrl.text;
-                                    paymentModel.status = _paymentStatus.toString();
-                                    
-                                  });
+                              setState(() {
+                                paymentModel.amount = amountTextCtrl.text;
+                                paymentModel.orderDate =
+                                    orderdateInput.toString();
+                                paymentModel.collectionDate =
+                                    collectdateInput.text;
+                                paymentModel.pic = picCtrl.text;
+                                paymentModel.status = _paymentStatus.toString();
+                              });
 
                               /*
                 Navigator.of(context).pushReplacement(MaterialPageRoute(

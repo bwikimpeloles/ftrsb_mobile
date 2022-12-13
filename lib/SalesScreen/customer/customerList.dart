@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
+import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 
 class CustomerList extends StatefulWidget {
   String channel;
@@ -54,15 +56,30 @@ class _CustomerListState extends State<CustomerList> {
     }
 
     return Scaffold(
+      bottomNavigationBar: CurvedNavBar(indexnum: 3,),
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
+        appBar: PreferredSize(
+          child: AppBar(
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () =>
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const DistrChannelList(),
+                    ))),
+            title: Text('Customer List'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 103, 206, 113),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+              ),
+            ),
           ),
-          title: const Text("Customer List"),
-          centerTitle: true,
-        ),
+          preferredSize: Size.fromHeight(65)),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('customer')

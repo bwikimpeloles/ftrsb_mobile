@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'sidebar_navigation.dart';
 import '../model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,47 +34,61 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: Colors.transparent,
       drawer: NavigationDrawer(),
-      appBar: AppBar(
-        title: const Text("Welcome - Sales & Marketing"),
-        centerTitle: true,
+      appBar: PreferredSize(
+          child: AppBar(
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    logout(context);
+                  },
+                  icon: Icon(Icons.logout_outlined, size: 25))
+            ],
+            title: Image.asset(
+              "assets/logo.png",
+              fit: BoxFit.contain,
+              height: 45,
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 103, 206, 113),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+              ),
+            ),
+          ),
+          preferredSize: Size.fromHeight(65)),
+
+      bottomNavigationBar: CurvedNavBar(
+        indexnum: 0,
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(
-                height: 150,
-                child: Image.asset("assets/logo.png", fit: BoxFit.contain),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Welcome Back, " + "${loggedInUser.name} !",
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green),
+                  ),
+                ],
               ),
+              SizedBox(height: 30,),
               Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text("${loggedInUser.name}",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  )),
-              Text("${loggedInUser.email}",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  )),
-              SizedBox(
-                height: 15,
-              ),
-              ActionChip(
-                  label: Text("Logout"),
-                  onPressed: () {
-                    logout(context);
-                  }),
+                  'Sales Dashboard with the sales analysis will be displayed here'),
             ],
           ),
         ),
@@ -88,4 +103,3 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
         MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 }
-
