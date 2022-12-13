@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
+import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
@@ -317,30 +318,9 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
       drawer: NavigationDrawer(),
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          child: AppBar(
-            //actions: [
-            //  IconButton(
-             //     onPressed: () {
-             //       logout(context);
-             //     },
-             //     icon: Icon(Icons.logout_outlined, size: 25))
-            //],
-            //toolbarHeight: 70,
-            //title: const Text("Welcome - Sales & Marketing"),
-            title: Text('Customer Details'),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 103, 206, 113),
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
-              ),
-            ),
-          ),
-          preferredSize: Size.fromHeight(65)),
+        child: CustomAppBar(bartitle: 'Add Customer Information'),
+        preferredSize: Size.fromHeight(65),
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(

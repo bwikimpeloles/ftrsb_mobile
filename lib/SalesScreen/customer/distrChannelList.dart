@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
+import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/customerList.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
@@ -29,21 +30,9 @@ class _DistrChannelListState extends State<DistrChannelList> {
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
       appBar: PreferredSize(
-          child: AppBar( 
-            title: Text('Manage Customer Details'),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 103, 206, 113),
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
-              ),
-            ),
-          ),
-          preferredSize: Size.fromHeight(65)),
+        child: CustomAppBar(bartitle: 'Manage Customer Information'),
+        preferredSize: Size.fromHeight(65),
+      ),
       body: Column(
         children: [
           Expanded(

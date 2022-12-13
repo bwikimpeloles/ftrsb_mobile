@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
-import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
+import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 
 class CustomerList extends StatefulWidget {
   String channel;
@@ -59,68 +59,51 @@ class _CustomerListState extends State<CustomerList> {
       bottomNavigationBar: CurvedNavBar(indexnum: 3,),
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          child: AppBar(
-            leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () =>
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const DistrChannelList(),
-                    ))),
-            title: Text('Customer List'),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 103, 206, 113),
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
-              ),
-            ),
-          ),
-          preferredSize: Size.fromHeight(65)),
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('customer')
-              .where("channel",
-                  isEqualTo: widget.channel)
-              .snapshots(),
-              
-          builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-            if (streamSnapshot.hasData) {
-              return ListView.builder(
-                itemCount: streamSnapshot.data?.docs.length,
-                itemBuilder: (context, index) {
-                  final data = streamSnapshot.data?.docs[index];
+        child: CustomAppBar(bartitle: 'Customer List'),
+        preferredSize: Size.fromHeight(65),
+      ),
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('customer')
+                .where("channel",
+                    isEqualTo: widget.channel)
+                .snapshots(),
+                
+            builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+              if (streamSnapshot.hasData) {
+                return ListView.builder(
+                  itemCount: streamSnapshot.data?.docs.length,
+                  itemBuilder: (context, index) {
+                    final data = streamSnapshot.data?.docs[index];
 
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: ListTile(
-                      dense: false,
-                      leading: const Icon(
-                        Icons.account_circle,
-                        color: Colors.green,
-                        size: 40,
-                      ),
-                      title: Text(data!['name']),
-                      subtitle: Text(data['phone']),
-                      trailing: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.edit,
-                          color: Colors.black,
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      elevation: 3,
+                      child: ListTile(
+                        dense: false,
+                        leading: const Icon(
+                          Icons.account_circle,
+                          color: Colors.green,
+                          size: 40,
                         ),
+                        title: Text(data!['name']),
+                        subtitle: Text(data['phone']),
+                        trailing: Text('5', style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
               );
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+            },
+          ),
         ));
   }
 }

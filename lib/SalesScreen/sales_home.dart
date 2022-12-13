@@ -38,13 +38,6 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
       drawer: NavigationDrawer(),
       appBar: PreferredSize(
           child: AppBar(
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    logout(context);
-                  },
-                  icon: Icon(Icons.logout_outlined, size: 25))
-            ],
             title: Image.asset(
               "assets/logo.png",
               fit: BoxFit.contain,
@@ -96,10 +89,4 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
     );
   }
 
-  // the logout function
-  Future<void> logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
 }

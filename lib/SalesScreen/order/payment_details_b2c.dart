@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
+import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/model/paymentB2C_model.dart';
 import 'package:intl/intl.dart';
@@ -204,36 +205,17 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       backgroundColor: Colors.white,
       //drawer: NavigationDrawer(),
       appBar: PreferredSize(
-          child: AppBar(
-            //actions: [
-            //  IconButton(
-            //     onPressed: () {
-            //       logout(context);
-            //     },
-            //     icon: Icon(Icons.logout_outlined, size: 25))
-            //],
-            //toolbarHeight: 70,
-            //title: const Text("Welcome - Sales & Marketing"),
-            leading: IconButton(
+        child: CustomAppBar(bartitle: 'Add Payment Information'),
+        preferredSize: Size.fromHeight(65),
+      ),
+          /*
+          leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () =>
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const CustomerDetailsForm(),
                     ))),
-            title: Text('Payment Details'),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 103, 206, 113),
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
-              ),
-            ),
-          ),
-          preferredSize: Size.fromHeight(65)),
+          */
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(10),
