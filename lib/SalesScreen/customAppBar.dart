@@ -3,37 +3,42 @@ import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/screens/login_screen.dart';
 
 class CustomAppBar extends StatelessWidget {
-    
-    String bartitle = '';
+  String bartitle = '';
+  //String backpath = '';
 
-    CustomAppBar({required this.bartitle});
+  CustomAppBar({required this.bartitle,});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    logout(context);
-                  },
-                  icon: Icon(Icons.logout_outlined, size: 25))
-            ],
-            title: Text(bartitle),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 103, 206, 113),
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
-              ),
-            ),
-          );
+      leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () =>
+                    Navigator.pop(context),
+                    ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              logout(context);
+            },
+            icon: Icon(Icons.logout_outlined, size: 25))
+      ],
+      title: Text(bartitle),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 103, 206, 113),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20)),
+        ),
+      ),
+    );
   }
 
-    // the logout function
+  // the logout function
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(

@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/SalesScreen/customer/add_prospectUI.dart';
+import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
@@ -30,19 +30,19 @@ class CurvedNavBar extends StatelessWidget {
       ],
       onTap: (index) {
         if (index == 0) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const HomeScreenSales()));
         }
         else if (index == 1) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const CustomerDetailsForm()));
         }
         else if (index == 2) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const ProspectDetailsForm()));
         }
         else {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const DistrChannelList()));
         }
       },
