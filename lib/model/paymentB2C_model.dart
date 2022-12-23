@@ -3,27 +3,35 @@ class PaymentB2C {
   String? amount;
   String? paymentDate;
   String? bankName;
+  String? paymentVerify;
 
   //constructor
-  PaymentB2C({this.paymentMethod, this.amount, this.paymentDate, this.bankName, });
+  PaymentB2C(
+      {this.paymentMethod,
+      this.amount,
+      this.paymentDate,
+      this.bankName,
+      this.paymentVerify});
 
-  // we need to create map
-  PaymentB2C.fromJson(Map<String, dynamic> json) {
-    paymentMethod = json["paymentMethod"];
-    amount = json["amount"];
-    paymentDate = json["paymentDate"];
-    bankName = json["bankName"];
-    }
+  // receive data from server
+  factory PaymentB2C.fromMap(map) {
+    return PaymentB2C(
+      paymentMethod: map["paymentMethod"],
+      amount: map["amount"],
+      paymentDate: map["paymentDate"],
+      bankName: map["bankName"],
+      paymentVerify: map["paymentVerify"],
+    );
+  }
 
-  Map<String, dynamic> toJson() {
-    // object - data
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['paymentMethod'] = this.paymentMethod;
-    data['amount'] = this.amount;
-    data['paymentDate'] = this.paymentDate;
-    data['bankName'] = this.bankName;
-    
-    return data;
-
+  //send data to server
+  Map<String, dynamic> toMap() {
+    return {
+      'paymentMethod': paymentMethod,
+      'amount': amount,
+      'paymentDate': paymentDate,
+      'bankName': bankName,
+      'paymentVerify': paymentVerify,
+    };
   }
 }

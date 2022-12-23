@@ -6,27 +6,32 @@ class PaymentB2B {
   String? status;
 
   //constructor
-  PaymentB2B({this.orderDate, this.amount, this.collectionDate, this.pic, this.status});
+  PaymentB2B(
+      {this.orderDate,
+      this.amount,
+      this.collectionDate,
+      this.pic,
+      this.status});
 
-  // we need to create map
-  PaymentB2B.fromJson(Map<String, dynamic> json) {
-    orderDate = json["orderDate"];
-    amount = json["amount"];
-    collectionDate = json["collectionDate"];
-    pic = json["pic"];
-    status = json["status"];
-    }
+  // receive data from server
+  factory PaymentB2B.fromMap(map) {
+    return PaymentB2B(
+      orderDate: map["orderDate"],
+      amount: map["amount"],
+      collectionDate: map["collectionDate"],
+      pic: map["pic"],
+      status: map["status"],
+    );
+  }
 
-  Map<String, dynamic> toJson() {
-    // object - data
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['orderDate'] = this.orderDate;
-    data['amount'] = this.amount;
-    data['collectionDate'] = this.collectionDate;
-    data['pic'] = this.pic;
-    data['status'] = this.status;
-    
-    return data;
-
+  // send data to server
+  Map<String, dynamic> toMap() {
+    return {
+      'orderDate': orderDate,
+      'amount': amount,
+      'collectionDate': collectionDate,
+      'pic': pic,
+      'status': status,
+    };
   }
 }

@@ -1,4 +1,4 @@
-class CustomerDetails {
+class CustomerModel {
   String? name;
   String? phone;
   String? address;
@@ -6,26 +6,26 @@ class CustomerDetails {
   String? channel;
 
   //constructor
-  CustomerDetails({this.name, this.phone, this.address, this.email, this.channel});
+  CustomerModel({this.name, this.phone, this.address, this.email, this.channel});
 
-  // we need to create map
-  CustomerDetails.fromJson(Map<String, dynamic> json) {
-    name = json["name"];
-    phone = json["phone"];
-    address = json["address"];
-    email = json["email"];
-    channel = json["channel"];
+  //receive data from server
+  factory CustomerModel.from(map) {
+    return CustomerModel(    
+    name: map["name"],
+    phone: map["phone"],
+    address: map["address"],
+    email: map["email"],
+    channel: map["channel"],);
   }
-  Map<String, dynamic> toJson() {
-    // object - data
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['phone'] = this.phone;
-    data['address'] = this.address;
-    data['email'] = this.email;
-    data['channel]'] = this.channel;
 
-    return data;
-
+  //send data to server
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'phone': phone,
+      'address': address,
+      'email': email,
+      'channel': channel,
+    };
   }
 }

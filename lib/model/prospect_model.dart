@@ -1,28 +1,26 @@
-class ProspectDetails {
+class ProspectModel {
   String? name;
   String? phone;
   String? email;
   String? channel;
 
-  //constructor
-  ProspectDetails({this.name, this.phone,  this.email, this.channel});
+  ProspectModel({this.name, this.phone, this.email, this.channel});
 
-  // we need to create map
- ProspectDetails.fromJson(Map<String, dynamic> json) {
-    name = json["name"];
-    phone = json["phone"];
-    email = json["email"];
-    channel = json["channel"];
+  factory ProspectModel.fromMap(map) {
+    return ProspectModel(
+      name: map["name"],
+      phone: map["phone"],
+      email: map["email"],
+      channel: map["channel"],
+    );
   }
-  Map<String, dynamic> toJson() {
-    // object - data
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['phone'] = this.phone;
-    data['email'] = this.email;
-    data['channel]'] = this.channel;
 
-    return data;
-
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'channel': channel,
+    };
   }
 }
