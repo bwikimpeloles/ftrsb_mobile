@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/model/paymentB2C_model.dart';
 import 'package:intl/intl.dart';
 
@@ -17,18 +18,17 @@ class PaymentDetails extends StatefulWidget {
 enum PaymentMethod { banktransfer, creditDebit, cash }
 
 PaymentMethod? _paymentMethod;
+  late PaymentB2C payc = PaymentB2C();
 
 class _PaymentDetailsState extends State<PaymentDetails> {
-  late DatabaseReference dbRef =
-      FirebaseDatabase.instance.ref().child('Customer');
+  //late DatabaseReference dbRef =
+  //    FirebaseDatabase.instance.ref().child('PaymentB2C');
 
   final _formKey = GlobalKey<FormState>();
   //text field controller
   final amountTextCtrl = TextEditingController();
   final banknameCtrl = TextEditingController();
   final dateInput = TextEditingController();
-
-  late PaymentB2C paymentModel = PaymentB2C();
 
   @override
   Widget build(BuildContext context) {
@@ -192,6 +192,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
               onChanged: (PaymentMethod? value) {
                 setState(() {
                   _paymentMethod = PaymentMethod.cash;
+                  banknameCtrl.text = 'N/A';
                 });
               },
             ),
@@ -208,14 +209,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
         child: CustomAppBar(bartitle: 'Add Payment Information'),
         preferredSize: Size.fromHeight(65),
       ),
-          /*
-          leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () =>
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const CustomerDetailsForm(),
-                    ))),
-          */
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(10),
@@ -241,7 +234,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                     child: SizedBox(
                       child: Material(
                         elevation: 5,
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(15),
                         color: Colors.green,
                         child: MaterialButton(
                           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -252,30 +245,35 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                   msg: "Please select a payment method");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentMethod != null) {
+                              setState(() {
+                                payc.amount = amountTextCtrl.text;
+                                payc.paymentMethod = _paymentMethod.toString().substring(payc.paymentMethod.toString().indexOf('.') + 1);
+                                payc.paymentDate = dateInput.text;
+                                payc.bankName = banknameCtrl.text;
 
-                                  setState(() {
-                                    paymentModel.amount = amountTextCtrl.text;
-                                    paymentModel.paymentMethod = _paymentMethod.toString();
-                                    paymentModel.paymentDate = dateInput.text;
-                                    paymentModel.bankName = banknameCtrl.text;
-                                    
-                                  });
+                                if (cust.channel == 'whatsapp') {
+                                  payc.paymentVerify = 'No';
+                                } else {
+                                  payc.paymentVerify = 'Yes';
+                                }
+                              });
 
-                              /*
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const PaymentDetails(),
-              ));
-              */
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                builder: (context) => const ProductDetails(),
+                              ));
+            
 
-                              /* Map<String?, String?> customer = {
-                                'name': cust.name,
-                                'phone': cust.phone,
-                                'address': cust.address,
-                                'email': cust.email,
-                                'channel': cust.channel
+                               Map<String?, String?> paymentb2c = {
+                                'amount': payc.amount,
+                                'paymentMethod': payc.paymentMethod,
+                                'paymentDate': payc.paymentDate,
+                                'bankName': payc.bankName,
+                                'paymentVerify': payc.paymentVerify,
+                                
                               };
 
-                              dbRef.push().set(customer);*/
+                              //dbRef.push().set(paymentb2c);
                             }
                           },
                           child: const Text(

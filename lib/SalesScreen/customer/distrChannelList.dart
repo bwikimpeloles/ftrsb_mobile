@@ -24,6 +24,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
       'Others'
     ];
     final List<Color> color = [Color.fromARGB(255, 204, 125, 7), Colors.green, Colors.lightGreen, Color.fromARGB(255, 59, 138, 177), Color.fromARGB(255, 182, 201, 12), Color.fromARGB(255, 74, 177, 127), Color.fromARGB(255, 161, 92, 173)];
+    final List<int> colorCodes = [100,200,300,400,500,600,700]; 
 
     return Scaffold(
       bottomNavigationBar: CurvedNavBar(indexnum: 3,),
@@ -51,9 +52,12 @@ class _DistrChannelListState extends State<DistrChannelList> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green, width: 2),
                       borderRadius: BorderRadius.all(Radius.circular(13)),
-                      color: color[index],
+                      //color: color[index],
                       //color: Colors.lightGreen[colorCodes[index]],
+                      //color: Colors.green[600],
+                      color: Colors.white
                     ),
                     height: 60,
                     child: Center(
@@ -61,7 +65,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
                       '${channel[index]}',
                       style: const TextStyle(
                           fontSize: 18,
-                          color: Colors.white,
+                          color: Colors.green,
                           fontWeight: FontWeight.bold),
                     )),
                   ),

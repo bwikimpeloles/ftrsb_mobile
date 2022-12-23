@@ -214,7 +214,7 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
     //submit button
     final submitButton = Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(15),
       color: Colors.green,
       child: MaterialButton(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -231,6 +231,8 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
                 'email': emailEditingController.text,
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
               });
+
+              Fluttertoast.showToast(msg: 'New prospect is successfully added');
               nameEditingController.clear();
               phoneEditingController.clear();
               emailEditingController.clear();

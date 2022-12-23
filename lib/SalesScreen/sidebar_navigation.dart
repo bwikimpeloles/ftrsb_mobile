@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/SalesScreen/customer/add_prospectUI.dart';
+import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_dashboard.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../screens/login_screen.dart';

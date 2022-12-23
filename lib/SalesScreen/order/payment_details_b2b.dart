@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/model/paymentB2B_model.dart';
 import 'package:intl/intl.dart';
 
@@ -20,9 +21,9 @@ PaymentStatus? _paymentStatus;
 
 class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
   late DatabaseReference dbRef =
-      FirebaseDatabase.instance.ref().child('Customer');
+      FirebaseDatabase.instance.ref().child('PaymentB2B');
 
-  late PaymentB2B paymentModel = PaymentB2B();
+  late PaymentB2B payb = PaymentB2B();
 
   final _formKey = GlobalKey<FormState>();
   //text field controller
@@ -279,7 +280,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                     child: SizedBox(
                       child: Material(
                         elevation: 5,
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(15),
                         color: Colors.green,
                         child: MaterialButton(
                           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -291,30 +292,30 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentStatus != null) {
                               setState(() {
-                                paymentModel.amount = amountTextCtrl.text;
-                                paymentModel.orderDate =
+                                payb.amount = amountTextCtrl.text;
+                                payb.orderDate =
                                     orderdateInput.toString();
-                                paymentModel.collectionDate =
+                                payb.collectionDate =
                                     collectdateInput.text;
-                                paymentModel.pic = picCtrl.text;
-                                paymentModel.status = _paymentStatus.toString();
+                                payb.pic = picCtrl.text;
+                                payb.status = _paymentStatus.toString();
                               });
 
-                              /*
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const PaymentDetails(),
-              ));
-              */
+                              
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ProductDetails(),
+                              ));
 
-                              /* Map<String?, String?> customer = {
-                                'name': cust.name,
-                                'phone': cust.phone,
-                                'address': cust.address,
-                                'email': cust.email,
-                                'channel': cust.channel
+
+                               Map<String?, String?> pay = {
+                                'amount': payb.amount,
+                                'orderDate': payb.orderDate,
+                                'colectionDate': payb.collectionDate,
+                                'pic': payb.pic,
+                                'status': payb.status
                               };
 
-                              dbRef.push().set(customer);*/
+                              //dbRef.push().set(customer);
                             }
                           },
                           child: const Text(

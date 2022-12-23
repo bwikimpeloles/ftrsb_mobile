@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'sidebar_navigation.dart';
 import '../model/user_model.dart';
@@ -38,6 +37,13 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
       drawer: NavigationDrawer(),
       appBar: PreferredSize(
           child: AppBar(
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    logout(context);
+                  },
+                  icon: Icon(Icons.logout_outlined, size: 25))
+            ],
             title: Image.asset(
               "assets/logo.png",
               fit: BoxFit.contain,
@@ -87,6 +93,11 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
         ),
       ),
     );
+  }
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
 }

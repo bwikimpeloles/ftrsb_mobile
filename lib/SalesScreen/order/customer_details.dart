@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
@@ -27,7 +26,7 @@ enum DistrChannel {
 
 DistrChannel? _channel;
 
-late CustomerDetails cust = CustomerDetails();
+late CustomerModel cust = CustomerModel();
 
 class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
 // form key
@@ -248,10 +247,12 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         ),
       ],
     );
+
+  
     //submit button
     final submitButton = Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(15),
       color: Colors.green,
       child: MaterialButton(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -270,6 +271,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                 cust.channel = _channel
                     .toString()
                     .substring(_channel.toString().indexOf('.') + 1);
+
               });
 
             
@@ -281,6 +283,8 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
               });*/
 
+
+
               if (_channel
                           .toString()
                           .substring(_channel.toString().indexOf('.') + 1) ==
@@ -289,21 +293,16 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                           .toString()
                           .substring(_channel.toString().indexOf('.') + 1) ==
                       'b2b_hypermarket') {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => PaymentDetailsB2B(),
                 ));
-              } else {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
+              } 
+              else {
+                Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => PaymentDetails(),
                 ));
               }
             }
-
-
-            //nameEditingController.clear();
-            //phoneEditingController.clear();
-            //addressEditingController.clear();
-            //emailEditingController.clear();
           },
           child: const Text(
             "Next",
