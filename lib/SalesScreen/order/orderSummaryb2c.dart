@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -10,31 +9,17 @@ import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
-import 'package:ftrsb_mobile/model/user_model.dart';
 
-class OrderSummary extends StatefulWidget {
-  const OrderSummary({Key? key}) : super(key: key);
+class OrderSummaryB2C extends StatefulWidget {
+  const OrderSummaryB2C({Key? key}) : super(key: key);
 
   @override
-  State<OrderSummary> createState() => _OrderSummaryState();
+  State<OrderSummaryB2C> createState() => _OrderSummaryB2CState();
 }
 
-  User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
+User? user = FirebaseAuth.instance.currentUser;
 
-  @override
-  void initState() {
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
-      
-    });
-  }
-
-class _OrderSummaryState extends State<OrderSummary> {
+class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
   late DatabaseReference dbRefCustomer =
       FirebaseDatabase.instance.ref().child('Customer');
 
@@ -48,7 +33,6 @@ class _OrderSummaryState extends State<OrderSummary> {
 
   @override
   Widget build(BuildContext context) {
-
     //submit button
     final submitButton = Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -66,17 +50,22 @@ class _OrderSummaryState extends State<OrderSummary> {
                   'phone': cust.phone,
                   'address': cust.address,
                   'email': cust.email,
-                  'channel': cust.channel
+                  'channel': cust.channel,
+                  'salesStaff': user?.uid
                 };
 
                 dbRefCustomer.push().set(customer);
 
                 Map<String?, String?> paymentb2c = {
-                  'paymentMethod': payc.paymentMethod.toString().substring(payc.paymentMethod.toString().indexOf('.') + 1),
+                  'paymentMethod': payc.paymentMethod.toString().substring(
+                      payc.paymentMethod.toString().indexOf('.') + 1),
                   'amount': payc.amount,
                   'paymentDate': payc.paymentDate,
                   'bankName': payc.bankName,
                   'paymentVerify': payc.paymentVerify,
+                  'custname': cust.name,
+                  'custphone': cust.phone,
+                  'salesStaff': user?.uid
                 };
 
                 dbRefPayment.push().set(paymentb2c);
@@ -85,8 +74,9 @@ class _OrderSummaryState extends State<OrderSummary> {
                   'custName': cust.name,
                   'custPhone': cust.phone,
                   'custAddress': cust.address,
-                  'paymentMethod': payc.paymentMethod.toString().substring(payc.paymentMethod.toString().indexOf('.') + 1),
-                  'ID': orderid,
+                  'paymentMethod': payc.paymentMethod.toString().substring(
+                      payc.paymentMethod.toString().indexOf('.') + 1),
+                  //'ID': orderid,
                   'amount': payc.amount,
                   'paymentDate': payc.paymentDate,
                   'bankName': payc.bankName,
@@ -138,10 +128,19 @@ class _OrderSummaryState extends State<OrderSummary> {
             SizedBox(height: 20),
             Text('Payment Method',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(payc.paymentMethod.toString().toString().substring(payc.paymentMethod.toString().indexOf('.') + 1).toUpperCase() + ' : ' + payc.bankName.toString(), style: TextStyle(fontSize: 16)),
+            Text(
+                payc.paymentMethod
+                        .toString()
+                        .toString()
+                        .substring(
+                            payc.paymentMethod.toString().indexOf('.') + 1)
+                        .toUpperCase() +
+                    ' : ' +
+                    payc.bankName.toString(),
+                style: TextStyle(fontSize: 16)),
             SizedBox(height: 20),
-            Text('Order ID : 346766SM',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            //Text('Order ID : 346766SM',
+            // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             Text('Order Date : ' + payc.paymentDate.toString(),
                 textAlign: TextAlign.left,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -151,12 +150,17 @@ class _OrderSummaryState extends State<OrderSummary> {
             SizedBox(height: 20),
             Text('Order List',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(product.name.toString() + ', ' + product.quantity.toString() + 'x ',
+            Text(
+                product.name.toString() +
+                    ', ' +
+                    product.quantity.toString() +
+                    'x ',
                 style: TextStyle(fontSize: 16)),
             SizedBox(height: 20),
             Text('Order Total',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text('RM ' + payc.amount.toString(), style: TextStyle(fontSize: 16)),
+            Text('RM ' + payc.amount.toString(),
+                style: TextStyle(fontSize: 16)),
             SizedBox(height: 20),
             submitButton
           ],
