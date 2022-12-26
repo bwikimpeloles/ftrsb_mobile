@@ -274,17 +274,6 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
 
               });
 
-            
-              /*FirebaseFirestore.instance.collection('customer').add({
-                'name': nameEditingController.text,
-                'phone': phoneEditingController.text,
-                'address': addressEditingController.text,
-                'email': emailEditingController.text,
-                'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
-              });*/
-
-
-
               if (_channel
                           .toString()
                           .substring(_channel.toString().indexOf('.') + 1) ==
@@ -294,12 +283,12 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                           .substring(_channel.toString().indexOf('.') + 1) ==
                       'b2b_hypermarket') {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PaymentDetailsB2B(),
+                  builder: (context) => const PaymentDetailsB2B(),
                 ));
               } 
               else {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PaymentDetails(),
+                  builder: (context) => const PaymentDetails(),
                 ));
               }
             }
