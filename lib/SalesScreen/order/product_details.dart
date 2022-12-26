@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
@@ -175,10 +177,16 @@ class _ProductDetailsState extends State<ProductDetails> {
 
               //dbRef.push().set(products);
 
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const OrderSummary()));
-
-
+              if (cust.channel == 'b2b_retail' ||
+                  cust.channel == 'b2b_hypermarket') {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => OrderSummaryB2B(),
+                ));
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => OrderSummaryB2C(),
+                ));
+              }
             }
           },
           child: const Text(
