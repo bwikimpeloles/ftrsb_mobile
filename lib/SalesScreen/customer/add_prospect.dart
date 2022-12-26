@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
@@ -22,6 +23,7 @@ enum DistrChannel {
   other
 }
  DistrChannel? _channel;
+ User? user = FirebaseAuth.instance.currentUser;
 
 class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
   // form key
@@ -225,11 +227,12 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
             }
 
             else if (_formKey.currentState!.validate()) {
-              FirebaseFirestore.instance.collection('prospect').add({
+              FirebaseFirestore.instance.collection('Prospect').add({
                 'name': nameEditingController.text,
                 'phone': phoneEditingController.text,
                 'email': emailEditingController.text,
                 'channel': _channel.toString().substring(_channel.toString().indexOf('.')+1),
+                'salesStaff': user?.uid
               });
 
               Fluttertoast.showToast(msg: 'New prospect is successfully added');
