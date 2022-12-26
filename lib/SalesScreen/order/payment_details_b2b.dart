@@ -18,12 +18,11 @@ class PaymentDetailsB2B extends StatefulWidget {
 enum PaymentStatus { paid, unpaid }
 
 PaymentStatus? _paymentStatus;
+late PaymentB2B payb = PaymentB2B();
 
 class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
   late DatabaseReference dbRef =
       FirebaseDatabase.instance.ref().child('PaymentB2B');
-
-  late PaymentB2B payb = PaymentB2B();
 
   final _formKey = GlobalKey<FormState>();
   //text field controller
@@ -77,7 +76,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
           return ("This field cannot be empty!");
         }
         if (!regex.hasMatch(value)) {
-          return ("Enter valid amount!");
+          return ("Enter valid date!");
         }
         return null;
       },
@@ -104,10 +103,10 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
             lastDate: DateTime(2101));
 
         if (orderDate != null) {
-          String? formattedDate = DateFormat('dd/MM/yyyy').format(orderDate!);
+          String? formattedDate1 = DateFormat('dd/MM/yyyy').format(orderDate!);
           setState(() {
             orderdateInput.text =
-                formattedDate; //set output date to TextField value.
+                formattedDate1; //set output date to TextField value.
           });
         } else {
           return null;
@@ -153,11 +152,11 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
             firstDate: DateTime(2000),
             lastDate: DateTime(2101));
 
-        if (orderDate != null) {
-          String? formattedDate = DateFormat('dd/MM/yyyy').format(collectDate!);
+        if (collectDate != null) {
+          String? formattedDate2 = DateFormat('dd/MM/yyyy').format(collectDate!);
           setState(() {
             collectdateInput.text =
-                formattedDate; //set output date to TextField value.
+                formattedDate2; //set output date to TextField value.
           });
         } else {
           return null;
@@ -293,12 +292,14 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                 _paymentStatus != null) {
                               setState(() {
                                 payb.amount = amountTextCtrl.text;
-                                payb.orderDate =
-                                    orderdateInput.toString();
-                                payb.collectionDate =
-                                    collectdateInput.text;
+                                payb.orderDate = orderdateInput.text;
+                                payb.collectionDate = collectdateInput.text;
                                 payb.pic = picCtrl.text;
-                                payb.status = _paymentStatus.toString();
+                                payb.status = _paymentStatus
+                                    .toString()
+                                    .substring(
+                                        _paymentStatus.toString().indexOf('.') +
+                                            1);
                               });
 
                               
