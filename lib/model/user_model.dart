@@ -4,8 +4,10 @@ class UserModel {
   String? name;
   String? role;
   bool? paymentnotification;
+  bool? approvalnotification;
+  bool? consignmentnotification;
 
-  UserModel({this.uid, this.email, this.name, this.role, this.paymentnotification});
+  UserModel({this.uid, this.email, this.name, this.role, this.paymentnotification, this.approvalnotification, this.consignmentnotification});
 
   // receiving data from server
   factory UserModel.fromMap(map) {
@@ -15,6 +17,8 @@ class UserModel {
       name: map['name'],
       role: map['role'],
       paymentnotification: map['paymentnotification'],
+      approvalnotification: map['approvalnotification'],
+      consignmentnotification: map['consignmentnotification'],
     );
   }
 
@@ -26,6 +30,8 @@ class UserModel {
       'name': name,
       'role': role,
       'paymentnotification': paymentnotification,
+      'approvalnotification': approvalnotification,
+      'consignmentnotification': consignmentnotification,
     };
   }
 }

@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
+import 'package:ftrsb_mobile/AdminScreen/paymentapproval.dart';
 
 import 'edit_paymentapproval.dart';
 
@@ -40,7 +40,7 @@ class _ViewPaymentApprovalState extends State<ViewPaymentApproval> {
     return WillPopScope(
       onWillPop: () {
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-            builder: (_) => MakePaymentFinance()), (route) => false);
+            builder: (_) => PaymentApprovalAdmin()), (route) => false);
 
         return Future.value(false);
       },
@@ -52,7 +52,7 @@ class _ViewPaymentApprovalState extends State<ViewPaymentApproval> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => MakePaymentFinance()));
+                      builder: (_) => PaymentApprovalAdmin()));
             },
           ),
           title: Text('View Payment'),

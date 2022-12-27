@@ -1,99 +1,36 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart' as Database;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'makepayment/view_payment.dart';
-import 'sidebar_navigation.dart';
-import 'makepayment/add_payment.dart';
-import 'makepayment/edit_payment.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost/add_cost.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost/edit_cost.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 
-class MakePaymentFinance extends StatefulWidget {
+class ListCostFinance extends StatefulWidget {
   @override
-  _MakePaymentFinanceState createState() => _MakePaymentFinanceState();
+  _ListCostFinanceState createState() => _ListCostFinanceState();
 }
 
-class _MakePaymentFinanceState extends State<MakePaymentFinance> {
-  late Database.Query _ref;
-  String? mtoken = "";
-  Database.DatabaseReference reference =
-  Database.FirebaseDatabase.instance.reference().child('MakePayments');
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-  User? user = FirebaseAuth.instance.currentUser;
-
+class _ListCostFinanceState extends State<ListCostFinance> {
+  late Query _ref;
+  DatabaseReference reference =
+  FirebaseDatabase.instance.reference().child('Cost');
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    requestPermission();
-
-    _ref = Database.FirebaseDatabase.instance
+    _ref = FirebaseDatabase.instance
         .reference()
-        .child('MakePayments')
-        .orderByChild('time');
+        .child('Cost')
+        .orderByChild('name');
   }
 
-  Future<bool> getSwitch() async{
-    String userid= user!.uid.toString();
-    DocumentSnapshot snap = await FirebaseFirestore.instance.collection("users").doc(userid).get();
-    bool approvalnotification = snap['approvalnotification'];
-    return approvalnotification;
-  }
-
-  void updateSwitch(bool newValue) async {
-    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
-      'approvalnotification': newValue,
-    });
-
-    if(newValue==true){
-      await FirebaseMessaging.instance.subscribeToTopic("topicapprove");
-    } else {
-      await FirebaseMessaging.instance.unsubscribeFromTopic("topicapprove");
-    }
-  }
-
-  void requestPermission() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    }
-    else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
-    } else {
-      print('User declined or has not accepted permission');
-    }
-  }
-
-
-    Widget _buildPaymentItem({required Map payment}) {
+  Widget _buildCostItem({required Map cost}) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => ViewPayment(
-                  paymentKey: payment['key'],
-                )));
-      },
+
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
         padding: EdgeInsets.all(10),
-        height: 160,
+        height: 250,
         decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
@@ -107,7 +44,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
           children: [
             Row(
               children: [
-                Text('Title: ',
+                Text('Cost Name: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -116,11 +53,11 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                   width: 6,
                 ),
                 Text(
-                  payment['title'],
+                  cost['name'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w500),
+                      fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -129,7 +66,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
             ),
             Row(
               children: [
-                Text('To: ',
+                Text('Category: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -138,11 +75,11 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                   width: 6,
                 ),
                 Text(
-                  payment['accountholder'],
+                  cost['category'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w500),
+                      fontWeight: FontWeight.w600),
                 ),
                 SizedBox(width: 15),
 
@@ -153,7 +90,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
             ),
             Row(
               children: [
-                Text('Amount (RM): ',
+                Text('Amount: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -161,12 +98,14 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                 SizedBox(
                   width: 6,
                 ),
-                Text(
-                  payment['amount'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w500),
+                Flexible(
+                  child: Text(
+                    cost['amount'],
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).accentColor,
+                        fontWeight: FontWeight.w600),
+                  ),
                 ),
                 SizedBox(width: 15),
 
@@ -175,10 +114,9 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
             SizedBox(
               height: 10,
             ),
-
             Row(
               children: [
-                Text('Status: ',
+                Text('Supplier: ',
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.green[900],
@@ -187,29 +125,106 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                   width: 6,
                 ),
                 Text(
-                  payment['status'],
+                  cost['supplier'],
                   style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w500),
+                      fontWeight: FontWeight.w600),
                 ),
                 SizedBox(width: 15),
 
               ],
             ),
             SizedBox(
-              height: 8,
+              height: 10,
+            ),
+            Row(
+              children: [
+                Text('Date: ',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.green[900],
+                      fontWeight: FontWeight.w800),),
+                SizedBox(
+                  width: 6,
+                ),
+                Flexible(
+                  child: Text(
+                    cost['date'],
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).accentColor,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+                SizedBox(width: 15),
+
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Text('Reference No.: ',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.green[900],
+                      fontWeight: FontWeight.w800),),
+                SizedBox(
+                  width: 6,
+                ),
+                Text(
+                  cost['referenceno'],
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).accentColor,
+                      fontWeight: FontWeight.w600),
+                ),
+                SizedBox(width: 15),
+
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 15,
             ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => EditCost(costKey: cost['key'],)));
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      Text('Edit',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   width: 20,
                 ),
                 GestureDetector(
                   onTap: () {
-                    _showDeleteDialog(payment: payment);
+                    _showDeleteDialog(cost: cost);
                   },
                   child: Row(
                     children: [
@@ -239,12 +254,12 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
     );
   }
 
-  _showDeleteDialog({required Map payment}) {
+  _showDeleteDialog({required Map cost}) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete ${payment['title']}'),
+            title: Text('Delete ${cost['name']}'),
             content: Text('Are you sure you want to delete?'),
             actions: [
               TextButton(
@@ -255,9 +270,11 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
               TextButton(
                   onPressed: () {
                     reference
-                        .child(payment['key'])
+                        .child(cost['key'])
                         .remove()
                         .whenComplete(() => Navigator.pop(context));
+
+                    firestore.FirebaseFirestore.instance.collection('Cost').doc(cost['key']).delete();
                   },
                   child: Text('Delete'))
             ],
@@ -268,41 +285,18 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavigationDrawer(),
       appBar: AppBar(
-        title: Text('Make Payment'),
-        actions: <Widget>[
-          FutureBuilder(
-              future: getSwitch(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null) {
-                  bool result = snapshot.data as bool;
-                  return Switch(
-                      activeTrackColor: Colors.amber,
-                      activeColor: Colors.red,
-
-                      value: result, onChanged: (bool newVal) {
-                    setState(() => result = newVal);
-                    updateSwitch(newVal);
-                  });
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              }
-          ),
-          Icon(Icons.notifications_active),
-          SizedBox(width: 10,),
-        ],
+        title: Text('Cost Information'),
       ),
       body: Container(
         height: double.infinity,
         child: FirebaseAnimatedList(
           query: _ref,
-          itemBuilder: (BuildContext context, Database.DataSnapshot snapshot,
+          itemBuilder: (BuildContext context, DataSnapshot snapshot,
               Animation<double> animation, int index) {
-            Map payment = snapshot.value as Map;
-            payment['key'] = snapshot.key;
-            return _buildPaymentItem(payment: payment);
+            Map cost = snapshot.value as Map;
+            cost['key'] = snapshot.key;
+            return _buildCostItem(cost: cost);
           },
         ),
       ),
@@ -311,7 +305,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) {
-              return AddPayment();
+              return AddCost();
             }),
           );
         },

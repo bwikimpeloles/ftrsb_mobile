@@ -1,13 +1,9 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '/FinanceScreen/make_payment.dart';
 import 'package:firebase_database/firebase_database.dart' as Database;
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +62,7 @@ class _AddPaymentState extends State<AddPayment> {
         contentTitle: message.notification!.title.toString(), htmlFormatContentTitle: true,);
 
       AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails('dbfood', 'dbfood', importance: Importance.high,
-          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true);
+          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, groupKey: 'com.example.ftrsb_mobile');
 
       NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title, message.notification?.body, platformChannelSpecifics,
@@ -98,7 +94,7 @@ class _AddPaymentState extends State<AddPayment> {
             "body": body,
             "android_channel_id": "dbfood"
           },
-          "to": "/topics/topictry",
+          "to": "/topics/topicmakepay",
         },
         ),
       );

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost/list_cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
@@ -55,7 +57,8 @@ Widget buildMenuItems(BuildContext context) => Container(
       ListTile(leading: const Icon(Icons.pie_chart),
         title: const Text('Cost'),
         onTap: (){
-
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => CostFinance(),));
         },),
       ListTile(leading: const Icon(Icons.business_center),
         title: const Text('Outright & Consignment Order'),

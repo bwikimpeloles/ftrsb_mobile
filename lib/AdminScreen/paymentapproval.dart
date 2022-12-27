@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_database/firebase_database.dart' as Database;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ftrsb_mobile/AdminScreen/sidebar_navigation.dart';
 import 'package:ftrsb_mobile/AdminScreen/view_paymentapproval.dart';
 import '../model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,9 +76,9 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
     });
 
     if(newValue==true){
-      await FirebaseMessaging.instance.subscribeToTopic("topictry");
+      await FirebaseMessaging.instance.subscribeToTopic("topicmakepay");
     } else {
-      await FirebaseMessaging.instance.unsubscribeFromTopic("topictry");
+      await FirebaseMessaging.instance.unsubscribeFromTopic("topicmakepay");
     }
   }
 
@@ -294,6 +295,7 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavigationDrawer(),
       appBar: AppBar(
         title: Text('Check Payment'),
         actions: <Widget>[
