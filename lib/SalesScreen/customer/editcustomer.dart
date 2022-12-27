@@ -21,7 +21,8 @@ enum DistrChannel {
   b2b_retail,
   b2b_hypermarket,
   grabmart,
-  other
+  other,
+  tiktok
 }
 
 DistrChannel? _channel;
@@ -211,6 +212,28 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
         ),
         RadioListTile<DistrChannel>(
           activeColor: Colors.green,
+          title: const Text("GrabMart"),
+          value: DistrChannel.grabmart,
+          groupValue: _channel,
+          onChanged: (DistrChannel? value) {
+            setState(() {
+              _channel = value;
+            });
+          },
+        ),
+                RadioListTile<DistrChannel>(
+          activeColor: Colors.green,
+          title: const Text("TikTok"),
+          value: DistrChannel.tiktok,
+          groupValue: _channel,
+          onChanged: (DistrChannel? value) {
+            setState(() {
+              _channel = value;
+            });
+          },
+        ),
+        RadioListTile<DistrChannel>(
+          activeColor: Colors.green,
           title: const Text("B2B Retail"),
           value: DistrChannel.b2b_retail,
           groupValue: _channel,
@@ -231,17 +254,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
             });
           },
         ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("GrabMart"),
-          value: DistrChannel.grabmart,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
+        
         RadioListTile<DistrChannel>(
           activeColor: Colors.green,
           title: const Text("Other"),
@@ -294,7 +307,6 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
           //minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
            _showDeleteDialog();
-            //dbref.child(widget.customerKey).remove();
           },
           child: const Text(
             "Delete",
@@ -389,7 +401,10 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
 
     emailEditingController.text = customer['email'];
 
-    _channel = customer['channel'];
+    // Convert to enum
+    DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customer['channel']);
+
+    _channel = d;
 
 
   }
@@ -442,7 +457,8 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     };
 
     dbref.child(widget.customerKey).update(customer).then((value) {
-      Navigator.pop(context);
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => DistrChannelList()));
     });
   }
 }

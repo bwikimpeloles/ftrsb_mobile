@@ -57,6 +57,11 @@ class _CustomerListState extends State<CustomerList> {
         widget.channel = 'other';
       });
     }
+    if (widget.channel == 'TikTok') {
+      setState(() {
+        widget.channel = 'tiktok';
+      });
+    }
 
     return Scaffold(
         bottomNavigationBar: CurvedNavBar(

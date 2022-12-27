@@ -21,6 +21,7 @@ enum DistrChannel {
   b2b_retail,
   b2b_hypermarket,
   grabmart,
+  tiktok,
   other
 }
 
@@ -203,6 +204,28 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         ),
         RadioListTile<DistrChannel>(
           activeColor: Colors.green,
+          title: const Text("GrabMart"),
+          value: DistrChannel.grabmart,
+          groupValue: _channel,
+          onChanged: (DistrChannel? value) {
+            setState(() {
+              _channel = value;
+            });
+          },
+        ),
+        RadioListTile<DistrChannel>(
+          activeColor: Colors.green,
+          title: const Text("TikTok"),
+          value: DistrChannel.tiktok,
+          groupValue: _channel,
+          onChanged: (DistrChannel? value) {
+            setState(() {
+              _channel = value;
+            });
+          },
+        ),
+        RadioListTile<DistrChannel>(
+          activeColor: Colors.green,
           title: const Text("B2B Retail"),
           value: DistrChannel.b2b_retail,
           groupValue: _channel,
@@ -216,17 +239,6 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           activeColor: Colors.green,
           title: const Text("B2B Hypermarket"),
           value: DistrChannel.b2b_hypermarket,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("GrabMart"),
-          value: DistrChannel.grabmart,
           groupValue: _channel,
           onChanged: (DistrChannel? value) {
             setState(() {
