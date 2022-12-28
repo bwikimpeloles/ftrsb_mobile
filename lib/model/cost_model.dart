@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CostModel {
   String? category;
   String? amount;
-  String? date;
+  DateTime? date;
   String? name;
   String? supplier;
   String? referenceno;
@@ -34,7 +36,7 @@ class CostModel {
     return CostModel(
       category: json["category"],
       amount: json["amount"],
-      date: json["date"],
+      date: (json["date"]as Timestamp).toDate(),
       name: json["name"],
       supplier: json["supplier"],
       referenceno: json["referenceno"],

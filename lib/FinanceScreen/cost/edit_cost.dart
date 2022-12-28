@@ -64,7 +64,7 @@ class _EditCostState extends State<EditCost> {
   void initialize() async{
     var document = await FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).get();
     selectedValue = document['category'];
-    dateselect = dateselect=DateTime.parse(document['date'].toString());;
+    dateselect = (document['date'] as Timestamp).toDate();
     setState(() {});
   }
 
@@ -235,6 +235,7 @@ class _EditCostState extends State<EditCost> {
     String amount = _amountController.text;
     String supplier = _supplierController.text;
     String date = dateselect.toString();//formattedDate;
+    DateTime? date2 = dateselect;//formattedDate;
     String referenceno = _referencenoController.text;
 
     Map<String,String> cost = {
@@ -245,8 +246,17 @@ class _EditCostState extends State<EditCost> {
       'date':date,
       'referenceno': referenceno,
     };
+    Map<String,Object?> cost2 = {
+      'name':name,
+      'category': category!,
+      'amount':amount,
+      'supplier': supplier,
+      'date':date2,
+      'referenceno': referenceno,
+    };
+
     if(double.tryParse(_amountController.text) != null){
-      FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).update(cost);
+      FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).update(cost2);
       _ref.child(widget.costKey).update(cost).then((value) {
         Navigator.pop(context);
       } );

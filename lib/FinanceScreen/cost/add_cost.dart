@@ -247,7 +247,7 @@ class _AddCostState extends State<AddCost> {
     costModel.category = selectedValue;
     costModel.amount = _amountController.text;
     costModel.supplier = _supplierController.text;
-    costModel.date = dateselect.toString(); //formattedDate;
+    costModel.date = dateselect; //formattedDate;
     costModel.referenceno = _referencenoController.text;
 
 
