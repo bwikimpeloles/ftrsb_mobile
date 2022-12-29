@@ -191,7 +191,7 @@ class _AddCostState extends State<AddCost> {
     String? category = selectedValue;
     String amount = _amountController.text;
     String supplier = _supplierController.text;
-    String date = dateselect.toString(); //formattedDate;
+    String date = DateFormat('dd/MM/yyyy').format(dateselect).toString();  //formattedDate;
     String referenceno = _referencenoController.text;
 
     Map<String,String> cost = {

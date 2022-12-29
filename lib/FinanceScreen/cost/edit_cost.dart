@@ -234,7 +234,7 @@ class _EditCostState extends State<EditCost> {
     String? category = selectedValue;
     String amount = _amountController.text;
     String supplier = _supplierController.text;
-    String date = dateselect.toString();//formattedDate;
+    String date = DateFormat('dd/MM/yyyy').format(dateselect!).toString();//formattedDate;
     DateTime? date2 = dateselect;//formattedDate;
     String referenceno = _referencenoController.text;
 

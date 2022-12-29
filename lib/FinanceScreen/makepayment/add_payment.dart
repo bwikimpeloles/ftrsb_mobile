@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class AddPayment extends StatefulWidget {
   @override
@@ -16,10 +17,21 @@ class AddPayment extends StatefulWidget {
 class _AddPaymentState extends State<AddPayment> {
   User? user = FirebaseAuth.instance.currentUser;
   late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
-
+  final _formKey = GlobalKey<FormState>();
   String? mtoken = "";
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+  DateTime? pickedDate;
+  List<DropdownMenuItem<String>> get dropdownItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Pending"),value: "Pending"),
+      DropdownMenuItem(child: Text("Approved"),value: "Approved"),
+      DropdownMenuItem(child: Text("Rejected"),value: "Rejected"),
+    ];
+    return menuItems;
+  }
+  String? selectedValue = null;
+
 
   late Database.DatabaseReference _ref;
   @override
@@ -157,119 +169,209 @@ class _AddPaymentState extends State<AddPayment> {
       body: Container(
         margin: EdgeInsets.all(15),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  hintText: 'Enter Title',
-                  label: Text('Title'),
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'^.{3,}$');
+                    if (value!.isEmpty) {
+                      return ("This field cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid input!");
+                    }
+                    return null;
+                  },
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    label: Text('Title'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
                 ),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _accountholderController,
-                decoration: InputDecoration(
-                  hintText: 'Enter Account Holder (Recipient)',
-                  label: Text('Account Holder (Recipient)'),
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'^.{3,}$');
+                    if (value!.isEmpty) {
+                      return ("This field cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid input!");
+                    }
+                    return null;
+                  },
+                  controller: _accountholderController,
+                  decoration: InputDecoration(
+                    label: Text('Account Holder (Recipient)'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
                 ),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _amountController,
-                decoration: InputDecoration(
-                  hintText: 'Enter Amount (RM)',
-                  label: Text('Amount (RM)'),
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'(\d+)');
+                    if (value!.isEmpty) {
+                      return ("This field cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid amount!");
+                    }
+                    return null;
+                  },
+                  controller: _amountController,
+                  decoration: InputDecoration(
+                    label: Text('Amount (RM)'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
                 ),
-              ),
-              SizedBox(height: 15),
+                SizedBox(height: 15),
               TextFormField(
                 controller: _effectivedateController,
+                autofocus: false,
+                readOnly: true,
+                validator: (value) {
+                  RegExp regex = RegExp(r'(\d+)');
+                  if (value!.isEmpty) {
+                    return ("This field cannot be empty!");
+                  }
+                  if (!regex.hasMatch(value)) {
+                    return ("Enter valid date!");
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _effectivedateController.text = value!;
+                },
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'Enter Effective Date',
+                  prefixIcon: const Icon(
+                    Icons.calendar_today,
+                    color: Colors.green,
+                  ),
                   label: Text('Effective Date'),
                   fillColor: Colors.white,
                   filled: true,
                   contentPadding: EdgeInsets.all(15),
                 ),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _ponumberController,
-                decoration: InputDecoration(
-                  hintText: 'Enter Purchase Order No.',
-                  label: Text('Purchase Order No.'),
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                enabled: false,
-                controller: _bankreferencenoController,
-                decoration: InputDecoration(
-                  hintText: 'Enter Bank Reference No.',
-                  label: Text('Bank Reference No.'),
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _statusController,
-                decoration: InputDecoration(
-                  hintText: 'Enter Status',
-                  label: Text('Status'),
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
+                onTap: () async {
+                  pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101));
 
-
-              SizedBox(height: 25,),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),child: Text('Save',style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-
-
-                ),),
-                  onPressed: ()async {
-                  String userid= user!.uid.toString();
-                  String titleText = _titleController.text;
-                  String bodyText = "Transfer request RM ${_amountController.text} to ${_accountholderController.text} \n(PO Number: ${_ponumberController.text})";
-                  savePayment();
-
-                  if(userid!=""){
-                    DocumentSnapshot snap = await FirebaseFirestore.instance.collection("users").doc(userid).get();
-
-                    String token = snap['token'];
-                    print(token);
-                    sendPushMessage(token, bodyText, titleText);
+                  if (pickedDate != null) {
+                    String? formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate!);
+                    setState(() {
+                      _effectivedateController.text =
+                          formattedDate; //set output date to TextField value.
+                    });
+                  } else {
+                    return null;
                   }
+                },
+              ),
 
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.visiblePassword,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'^.{3,}$');
+                    if (value!.isEmpty) {
+                      return ("This field cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid input!");
+                    }
+                    return null;
                   },
-
+                  controller: _ponumberController,
+                  decoration: InputDecoration(
+                    label: Text('Purchase Order No.'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
                 ),
-              )
+                SizedBox(height: 15),
+                TextFormField(
+                  enabled: false,
+                  controller: _bankreferencenoController,
+                  decoration: InputDecoration(
+                    label: Text('Bank Reference No.'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                DropdownButtonFormField(
+                    hint: Text("Status"),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(15),
+                      //fillColor: Colors.blueAccent,
+                    ),
+                    validator: (value) => value == null ? "Select status" : null,
+                    //dropdownColor: Colors.blueAccent,
+                    value: selectedValue,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedValue = newValue!;
+                      });
+                    },
+                    items: dropdownItems),
 
-            ],
+
+                SizedBox(height: 25,),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),child: Text('Save',style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+
+
+                  ),),
+                    onPressed: ()async {
+                      if(_formKey.currentState!.validate()){
+                        String userid= user!.uid.toString();
+                    String titleText = _titleController.text;
+                    String bodyText = "Transfer request RM ${_amountController.text} to ${_accountholderController.text} \n(PO Number: ${_ponumberController.text})";
+                    savePayment();
+
+                    if(userid!=""){
+                      DocumentSnapshot snap = await FirebaseFirestore.instance.collection("users").doc(userid).get();
+
+                      String token = snap['token'];
+
+                      print(token);
+                      sendPushMessage(token, bodyText, titleText);
+                    }
+                      }
+
+
+                    },
+
+                  ),
+                )
+
+              ],
+            ),
           ),
         ),
       ),
@@ -283,7 +385,7 @@ class _AddPaymentState extends State<AddPayment> {
     String effectivedate = _effectivedateController.text;
     String ponumber = _ponumberController.text;
     String bankreferenceno = _bankreferencenoController.text;
-    String status = _statusController.text;
+    String status = selectedValue!;
 
 
     Map<String,String> payment = {
