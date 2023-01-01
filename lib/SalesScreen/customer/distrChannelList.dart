@@ -24,8 +24,8 @@ class _DistrChannelListState extends State<DistrChannelList> {
       'B2B Hypermarket',
       'Other'
     ];
-    final List<Color> color = [Color.fromARGB(255, 204, 125, 7), Colors.green, Colors.lightGreen, Color.fromARGB(255, 59, 138, 177), Color.fromARGB(255, 182, 201, 12), Color.fromARGB(255, 74, 177, 127), Color.fromARGB(255, 161, 92, 173)];
-    final List<int> colorCodes = [100,200,300,400,500,600,700]; 
+    //final List<Color> color = [Color.fromARGB(255, 204, 125, 7), Colors.green, Colors.lightGreen, Color.fromARGB(255, 59, 138, 177), Color.fromARGB(255, 182, 201, 12), Color.fromARGB(255, 74, 177, 127), Color.fromARGB(255, 161, 92, 173)];
+    //final List<int> colorCodes = [100,200,300,400,500,600,700]; 
 
     return Scaffold(
       bottomNavigationBar: CurvedNavBar(indexnum: 3,),

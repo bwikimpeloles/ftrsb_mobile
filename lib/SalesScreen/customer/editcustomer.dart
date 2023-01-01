@@ -36,13 +36,15 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
   final addressEditingController = TextEditingController();
   final emailEditingController = TextEditingController();
 
-  // ignore: deprecated_member_use
-  late DatabaseReference dbref = FirebaseDatabase.instance.reference().child('Customer');
+  
+  late DatabaseReference dbref;
 
-    @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // ignore: deprecated_member_use
+    dbref = FirebaseDatabase.instance.reference().child('Customer');
     getCustomerDetail();
   }
 
@@ -394,18 +396,13 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     Map customer = snapshot.value as Map;
 
     nameEditingController.text = customer['name'];
-
     phoneEditingController.text = customer['phone'];
-
     addressEditingController.text = customer['address'];
-
     emailEditingController.text = customer['email'];
 
     // Convert to enum
     DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customer['channel']);
-
     _channel = d;
-
 
   }
 
@@ -424,15 +421,9 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
                   child: Text('Cancel')),
               TextButton(
                   onPressed: () {
-                    // ignore: deprecated_member_use
-                    FirebaseDatabase.instance
-                        .reference()
-                        .child('Customer')
-                        .child(widget.customerKey)
-                        .remove()
-                        .whenComplete(() => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => DistrChannelList())));
+                    dbref.child(widget.customerKey).remove().whenComplete(() =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DistrChannelList())));
                   },
                   child: Text('Delete'))
             ],

@@ -15,51 +15,52 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   List<int> lists = [];
+  late String _channel;
   @override
   Widget build(BuildContext context) {
     if (widget.channel == 'Shopee') {
       setState(() {
-        widget.channel = 'shopee';
+        _channel = 'shopee';
       });
     }
     if (widget.channel == 'WhatsApp') {
       setState(() {
-        widget.channel = 'whatsapp';
+        _channel = 'whatsapp';
       });
     }
     if (widget.channel == 'Website') {
       setState(() {
-        widget.channel = 'website';
+        _channel = 'website';
       });
     }
     if (widget.channel == 'B2B Retail') {
       setState(() {
-        widget.channel = 'b2b_retail';
+        _channel = 'b2b_retail';
       });
     }
     if (widget.channel == 'B2B Hypermarket') {
       setState(() {
-        widget.channel = 'b2b_hypermarket';
+        _channel = 'b2b_hypermarket';
       });
     }
     if (widget.channel == 'B2B Hypermarket') {
       setState(() {
-        widget.channel = 'b2b_hypermarket';
+        _channel = 'b2b_hypermarket';
       });
     }
     if (widget.channel == 'GrabMart') {
       setState(() {
-        widget.channel = 'grabmart';
+        _channel = 'grabmart';
       });
     }
     if (widget.channel == 'Other') {
       setState(() {
-        widget.channel = 'other';
+        _channel = 'other';
       });
     }
     if (widget.channel == 'TikTok') {
       setState(() {
-        widget.channel = 'tiktok';
+        _channel = 'tiktok';
       });
     }
 
@@ -69,7 +70,7 @@ class _CustomerListState extends State<CustomerList> {
         ),
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          child: CustomAppBar(bartitle: 'Customer List'),
+          child: CustomAppBar(bartitle: widget.channel + ' Customer List'),
           preferredSize: Size.fromHeight(65),
         ),
         body: Padding(
@@ -80,7 +81,7 @@ class _CustomerListState extends State<CustomerList> {
                 .reference()
                 .child('Customer')
                 .orderByChild('channel')
-                .equalTo(widget.channel)
+                .equalTo(_channel)
                 .onValue,
             builder: (context, AsyncSnapshot snap) {
               if (snap.hasData &&
