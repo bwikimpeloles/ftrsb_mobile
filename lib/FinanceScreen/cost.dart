@@ -22,6 +22,7 @@ class _CostFinanceState extends State<CostFinance> {
   Map<String, double> getCategoryData() {
     Map<String, double> catMap = {"":0,};
     if (_cost==null) {
+
       catMap.update("", (value) => 0);
     } else {
       // test[item.category] = test[item.category]! + 1;
@@ -39,6 +40,27 @@ class _CostFinanceState extends State<CostFinance> {
     total=catMap.toString();
     print(total);
     return catMap;
+  }
+
+  DataTable printCostData() {
+    DataTable? a;
+      Map<String, double> catMap2 = getCategoryData();
+      catMap2.remove('');
+      a= new DataTable(
+        columns: const <DataColumn>[
+          DataColumn(label: Text('Category')),
+          DataColumn(label: Text('Total (RM)')),
+        ],
+        rows: catMap2.entries
+            .map((e) => DataRow(cells: [
+          DataCell(Text(e.key.toString())),
+          DataCell(Text(e.value.toString())),
+        ]))
+            .toList(),
+      );
+
+
+    return a!;
   }
 
   List<Color> colorList = [
@@ -207,18 +229,36 @@ class _CostFinanceState extends State<CostFinance> {
                   ),
                 ],
               ),
+        SizedBox(height: 30,),
+              StreamBuilder<Object>(
+                stream: expStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("something went wrong");
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  final data = snapshot.requireData;
+                  print("Data: $data");
+                  getExpfromSnapshot(data);
+                  return Container(child: printCostData(), width: 300,);
+                },
+              ),
+
+
             ],
           ),
         ),
 
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async{
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) {
               return ListCostFinance();
             }),
-          );
+          ).then((value) => setState(() {}));
         },
         label: const Text('Manage Cost'),
         icon: const Icon(Icons.pie_chart),

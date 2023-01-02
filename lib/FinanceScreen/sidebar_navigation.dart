@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,34 @@ import 'package:ftrsb_mobile/FinanceScreen/cost/list_cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
+import '../AdminScreen/home_admin.dart';
+import '../model/user_model.dart';
 import '../screens/login_screen.dart';
 
-class NavigationDrawer extends StatelessWidget {
+class NavigationDrawer extends StatefulWidget {
+
+  @override
+  _NavigationDrawerState createState() => _NavigationDrawerState();
+}
+
+class _NavigationDrawerState extends State<NavigationDrawer> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+  @override
+  void initState() {
+    super.initState();
+    if(FirebaseAuth.instance.currentUser?.uid != null){    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });}
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) =>
       Drawer(
@@ -17,7 +43,7 @@ class NavigationDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               buildHeader(context),
-              buildMenuItems(context),
+              buildMenuItems(context, loggedInUser),
             ],
           ),
         ),
@@ -38,7 +64,7 @@ Widget buildHeader(BuildContext context) => Container(
     ],
   ),
 );
-Widget buildMenuItems(BuildContext context) => Container(
+Widget buildMenuItems(BuildContext context, UserModel loggedInUser) => Container(
   padding: const EdgeInsets.all(18),
   child:   Wrap(
     runSpacing: 16,
@@ -46,6 +72,8 @@ Widget buildMenuItems(BuildContext context) => Container(
       ListTile(leading: const Icon(Icons.home),
         title: const Text('Home'),
         onTap: (){
+          (loggedInUser.role=="Admin") ? Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomeScreenAdmin(),)) :
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const HomeScreenFinance(),));
         },),

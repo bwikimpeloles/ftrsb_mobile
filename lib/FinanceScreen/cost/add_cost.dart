@@ -15,8 +15,9 @@ class AddCost extends StatefulWidget {
 class _AddCostState extends State<AddCost> {
   late TextEditingController _nameController, _categoryController, _amountController, _supplierController, _dateController, _referencenoController;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  final _dropdownFormKey = GlobalKey<FormState>();
+
   var uuid = Uuid();
+  final _formKey = GlobalKey<FormState>();
 
 
   List<DropdownMenuItem<String>> get dropdownItems{
@@ -54,34 +55,39 @@ class _AddCostState extends State<AddCost> {
       body: Container(
         margin: EdgeInsets.all(15),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  label: Text('Cost Name'),
-                  hintText: 'Enter Cost Name',
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'^.{3,}$');
+                    if (value!.isEmpty) {
+                      return ("This field cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid input!");
+                    }
+                    return null;
+                  },
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    label: Text('Cost Name'),
+                    hintText: 'Enter Cost Name',
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
                 ),
-              ),
-              SizedBox(height: 15),
-              Form(
-                key: _dropdownFormKey,
-                child: DropdownButtonFormField(
+                SizedBox(height: 15),
+                DropdownButtonFormField(
                     hint: Text("Choose an category"),
                     decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide( width: 2),//color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide( width: 2),//color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                      fillColor: Colors.white,
                       filled: true,
+                      contentPadding: EdgeInsets.all(15),
                       //fillColor: Colors.blueAccent,
                     ),
                     validator: (value) => value == null ? "Select a category" : null,
@@ -93,90 +99,101 @@ class _AddCostState extends State<AddCost> {
                       });
                     },
                     items: dropdownItems),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _amountController,
-                decoration: InputDecoration(
-                  label: Text('Amount (RM)'),
-                  hintText: 'Enter Amount (RM)',
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _supplierController,
-                decoration: InputDecoration(
-                  label: Text('Supplier'),
-                  hintText: 'Enter Supplier',
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
-
-              SizedBox(height: 15),
-              TextFormField(
-                controller: _referencenoController,
-                decoration: InputDecoration(
-                  label: Text('Reference No.'),
-                  hintText: 'Enter Reference No.',
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
-              SizedBox(height: 15),
-              Row(
-                children: [
-                  SizedBox(width: 15),
-                  Text('Date: ${dateselect.year}-${dateselect.month}-${dateselect.day}'),
-                  TextButton(onPressed: () async {
-                    DateTime? newdate = await showDatePicker(context: context,
-                        initialDate: dateselect,
-                        firstDate: DateTime(1900), lastDate: DateTime(2200));
-
-                    //if click cancel
-                    if(newdate==null) {
-                      return;
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'(\d+)');
+                    if (value!.isEmpty) {
+                      return ("This field cannot be empty!");
                     }
-
-                    setState(() {
-                      dateselect=newdate;
-                    });
-                  }, child: Row(
-                    children: [
-                      Text('Change Date'),
-                      Icon(Icons.calendar_month),
-                    ],
-                  )),
-                ],
-              ),
-
-              SizedBox(height: 25,),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
-                  child: Text('Save',style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-
-                  ),),
-                  onPressed: (){
-                    if (_dropdownFormKey.currentState!.validate()) {
-                      //valid flow
-                      saveCost();
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid amount!");
                     }
-
+                    return null;
                   },
+                  controller: _amountController,
+                  decoration: InputDecoration(
+                    label: Text('Amount (RM)'),
+                    hintText: 'Enter Amount (RM)',
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
                 ),
-              )
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _supplierController,
+                  decoration: InputDecoration(
+                    label: Text('Supplier'),
+                    hintText: 'Enter Supplier',
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
 
-            ],
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _referencenoController,
+                  decoration: InputDecoration(
+                    label: Text('Reference No.'),
+                    hintText: 'Enter Reference No.',
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                Row(
+                  children: [
+                    SizedBox(width: 15),
+                    Text('Date: ${dateselect.year}-${dateselect.month}-${dateselect.day}'),
+                    TextButton(onPressed: () async {
+                      DateTime? newdate = await showDatePicker(context: context,
+                          initialDate: dateselect,
+                          firstDate: DateTime(1900), lastDate: DateTime(2200));
+
+                      //if click cancel
+                      if(newdate==null) {
+                        return;
+                      }
+
+                      setState(() {
+                        dateselect=newdate;
+                      });
+                    }, child: Row(
+                      children: [
+                        Text('Change Date'),
+                        Icon(Icons.calendar_month),
+                      ],
+                    )),
+                  ],
+                ),
+
+                SizedBox(height: 25,),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
+                    child: Text('Save',style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+
+                    ),),
+                    onPressed: (){
+                      if (_formKey.currentState!.validate()) {
+                        //valid flow
+                        saveCost();
+                      }
+
+                    },
+                  ),
+                )
+
+              ],
+            ),
           ),
         ),
       ),

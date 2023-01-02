@@ -90,150 +90,157 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                   paymentKey: payment['key'],
                 )));
       },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        padding: EdgeInsets.all(10),
-        height: 160,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              top: BorderSide(width: 0.5, color: Colors.lightGreen.shade500),
-              bottom: BorderSide(width: 0.5, color: Colors.lightGreen.shade500),
-            )),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.all(10),
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text('Title: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  payment['title'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
+          decoration: new BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 2), // changes position of shadow
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('To: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  payment['accountholder'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Amount (RM): ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  payment['amount'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-
-            Row(
-              children: [
-                Text('Status: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  payment['status'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 8,
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 20,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _showDeleteDialog(payment: payment);
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.delete,
-                        color: Colors.red[700],
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('Delete',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.red[700],
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-              ],
-            )
           ],
+              borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+              gradient: new LinearGradient(colors: [Colors.white70, Colors.white],
+                  begin: Alignment.centerLeft, end: Alignment.centerRight, tileMode: TileMode.clamp)
+          ),
+
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text('Title: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        payment['title'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('To: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        payment['accountholder'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Amount (RM): ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      payment['amount'],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+
+                Row(
+                  children: [
+                    Text('Status: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      payment['status'],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _showDeleteDialog(payment: payment);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: Colors.red[700],
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Delete',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.red[700],
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -278,8 +285,8 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                 if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null) {
                   bool result = snapshot.data as bool;
                   return Switch(
-                      activeTrackColor: Colors.amber,
-                      activeColor: Colors.red,
+                      activeTrackColor: Colors.white,
+                      activeColor: Colors.green.shade900,
 
                       value: result, onChanged: (bool newVal) {
                     setState(() => result = newVal);

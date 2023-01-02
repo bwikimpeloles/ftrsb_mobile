@@ -27,228 +27,232 @@ class _ListCostFinanceState extends State<ListCostFinance> {
   Widget _buildCostItem({required Map cost}) {
     return GestureDetector(
 
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        padding: EdgeInsets.all(10),
-        height: 250,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              top: BorderSide(width: 0.5, color: Colors.lightGreen.shade500),
-              bottom: BorderSide(width: 0.5, color: Colors.lightGreen.shade500),
-            )),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.all(10),
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text('Cost Name: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  cost['name'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w600),
-                ),
-              ],
+          decoration: new BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 2), // changes position of shadow
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Category: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  cost['category'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Amount: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Flexible(
-                  child: Text(
-                    cost['amount'],
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Supplier: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  cost['supplier'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Date: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Flexible(
-                  child: Text(
-                    cost['date'],
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text('Reference No.: ',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green[900],
-                      fontWeight: FontWeight.w800),),
-                SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  cost['referenceno'],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(width: 15),
-
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => EditCost(costKey: cost['key'],)));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.edit,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('Edit',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _showDeleteDialog(cost: cost);
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.delete,
-                        color: Colors.red[700],
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('Delete',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.red[700],
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-              ],
-            )
           ],
+              borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+              gradient: new LinearGradient(colors: [Colors.white70, Colors.white],
+                  begin: Alignment.centerLeft, end: Alignment.centerRight, tileMode: TileMode.clamp)
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text('Cost Name: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        cost['name'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Category: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      cost['category'],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Amount: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        cost['amount'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Supplier: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        cost['supplier'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Date: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        cost['date'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Reference No.: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        cost['referenceno'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => EditCost(costKey: cost['key'],)));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Edit',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _showDeleteDialog(cost: cost);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: Colors.red[700],
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Delete',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.red[700],
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
