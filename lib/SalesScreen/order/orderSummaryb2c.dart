@@ -14,6 +14,7 @@ import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
+import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:intl/intl.dart';
 
 class OrderSummaryB2C extends StatefulWidget {
@@ -26,6 +27,7 @@ class OrderSummaryB2C extends StatefulWidget {
 User? user = FirebaseAuth.instance.currentUser;
 
 class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
+  
   late DatabaseReference dbRefCustomer =
       FirebaseDatabase.instance.ref().child('Customer');
 
@@ -42,6 +44,7 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
   static const _chars ='AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random.secure();
   final now = DateTime.now();
+  
   
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
@@ -111,8 +114,54 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       ],
     );
 
+    //preview product list
+    final previewProductList = Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey,
+          )),
+      child: Column(
+        children: [
+          SizedBox(child: Text('Selected Product:',style: TextStyle(color: Colors.grey),)),
+          ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: selectedProduct.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: ListTile(
+                        title: Text(selectedProduct[index].name.toString(),
+                            style: TextStyle(fontSize: 15.0)),
+                        subtitle: Text(
+                            'Qty: ' +
+                                selectedProduct[index].quantity.toString(),
+                            style: TextStyle(fontSize: 13.0)),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 18,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              selectedProduct.removeAt(index);
+                            });
+                          },
+                        ))
+                    ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+
     //submit button
-    final submitButton = Expanded(
+    final submitButton = Container(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Column(
@@ -221,96 +270,93 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
       bottomNavigationBar: CurvedNavBar(
-        indexnum: 2,
+        indexnum: 1,
       ),
       appBar: PreferredSize(
         child: CustomAppBar(bartitle: 'Order Summary'),
         preferredSize: const Size.fromHeight(65),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //Text("${user!.uid}"),
-            const Text('Delivery Address',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(cust.name.toString(), style: TextStyle(fontSize: 16)),
-            Text(cust.phone.toString(), style: TextStyle(fontSize: 16)),
-            Text(cust.address.toString(), style: TextStyle(fontSize: 16)),
-            const SizedBox(height: 20),
-            const Text('Payment Method',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(
-                payc.paymentMethod
-                        .toString()
-                        .toString()
-                        .substring(
-                            payc.paymentMethod.toString().indexOf('.') + 1)
-                        .toUpperCase() +
-                    ' : ' +
-                    payc.bankName.toString(),
-                style: TextStyle(fontSize: 16)),
-            SizedBox(height: 20),
-            //Text('Order ID : ' + date + orderid.toString(),
-             //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text('Order Date : ' + payc.paymentDate.toString(),
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text('Payment Date : ' + payc.paymentDate.toString(),
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            SizedBox(height: 20),
-            Text('Order List',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(
-                product.name.toString() +
-                    ', ' +
-                    product.quantity.toString() +
-                    'x ',
-                style: TextStyle(fontSize: 16)),
-            SizedBox(height: 20),
-            Text('Order Total',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text('RM ' + payc.amount.toString(),
-                style: TextStyle(fontSize: 16)),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.grey,
-                  )),
-              child: Column(
-                children: [
-                  SizedBox(
-                      child: Text(
-                    'Upload Sales Document',
-                    style: TextStyle(color: Colors.grey),
-                  )),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      selectFileButton,
-                      deleteFileButton,
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  previewDoc,
-                ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //Text("${user!.uid}"),
+              const Text('Delivery Address',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text(cust.name.toString(), style: TextStyle(fontSize: 16)),
+              Text(cust.phone.toString(), style: TextStyle(fontSize: 16)),
+              Text(cust.address.toString(), style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 20),
+              const Text('Payment Method',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text(
+                  payc.paymentMethod
+                          .toString()
+                          .toString()
+                          .substring(
+                              payc.paymentMethod.toString().indexOf('.') + 1)
+                          .toUpperCase() +
+                      ' : ' +
+                      payc.bankName.toString(),
+                  style: TextStyle(fontSize: 16)),
+              SizedBox(height: 20),
+              //Text('Order ID : ' + date + orderid.toString(),
+               //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text('Order Date : ' + payc.paymentDate.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text('Payment Date : ' + payc.paymentDate.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              SizedBox(height: 20),
+              Text('Order List',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              previewProductList,
+              SizedBox(height: 20),
+              Text('Order Total',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text('RM ' + payc.amount.toString(),
+                  style: TextStyle(fontSize: 16)),
+              SizedBox(
+                height: 20,
               ),
-            ),
-            SizedBox(height: 20),
-            submitButton
-          ],
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.grey,
+                    )),
+                child: Column(
+                  children: [
+                    SizedBox(
+                        child: Text(
+                      'Upload Sales Document',
+                      style: TextStyle(color: Colors.grey),
+                    )),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        selectFileButton,
+                        deleteFileButton,
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    previewDoc,
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              submitButton
+            ],
+          ),
         ),
       ),
     );
