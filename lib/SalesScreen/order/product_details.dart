@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
@@ -18,30 +17,14 @@ class ProductDetails extends StatefulWidget {
 }
 
 late ProductModel product = ProductModel();
+List<ProductModel> selectedProduct = [];
 
-String? _selectedValue = 'No product chosen';
-
-var listOfValue = [
-  'KUNYIT KISAR FROZEN 250g',
-  'LENGKUAS KISAR FROZEN 250g',
-  'HALIA KISAR FROZEN 250g',
-  'CILI KERING KISAR FROZEN 250g',
-  'CILI API KISAR FROZEN 250g'
-];
+String? _selectedValue = 'HALIA KISAR FROZEN 250g';
 
 class _ProductDetailsState extends State<ProductDetails> {
-
-    //late DatabaseReference dbRef =
-    //  FirebaseDatabase.instance.ref().child('ProductTemp');
-
-  // form key
-  final _formKey = GlobalKey<FormState>();
-  // editing Controller
   final nameEditingController = TextEditingController();
   final skuEditingController = TextEditingController();
   final barcodeEditingController = TextEditingController();
-  final quantityEditingController = TextEditingController();
-  final docUrlEditingController = TextEditingController();
 
   int _count = 1;
 
@@ -57,10 +40,24 @@ class _ProductDetailsState extends State<ProductDetails> {
     });
   }
 
+  late CollectionReference _collectionRef;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _collectionRef = FirebaseFirestore.instance.collection('product');
+    setState(() {
+      selectedProduct = [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 //dropdown product name
     final productName = Container(
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -69,85 +66,146 @@ class _ProductDetailsState extends State<ProductDetails> {
           )),
       child: Column(
         children: [
-          DropdownButtonFormField(
-              items: listOfValue.map((e) {
-                return DropdownMenuItem(
-                  child: Text(e),
-                  value: e,
-                );
-              }).toList(),
-              onChanged: (String? val) {
-                setState(() {
-                  _selectedValue = val!;
-                  if (_selectedValue == 'KUNYIT KISAR FROZEN 250g') {
-                    skuEditingController.text = '20';
-                    barcodeEditingController.text = '7634273';
-                  } else if (_selectedValue == 'LENGKUAS KISAR FROZEN 250g') {
-                    skuEditingController.text = '20';
-                    barcodeEditingController.text = '935627';
-                  } else if (_selectedValue == 'HALIA KISAR FROZEN 250g') {
-                    skuEditingController.text = '21';
-                    barcodeEditingController.text = '935459';
-                  } else if (_selectedValue ==
-                      'CILI KERING KISAR FROZEN 250g') {
-                    skuEditingController.text = '22';
-                    barcodeEditingController.text = '7645372';
-                  } else if (_selectedValue == 'CILI API KISAR FROZEN 250g') {
-                    skuEditingController.text = '22';
-                    barcodeEditingController.text = '762513';
-                  }
-                });
-              },
-              icon: Icon(Icons.arrow_drop_down_circle_rounded,
-                  color: Colors.green),
-              dropdownColor: Colors.green.shade50,
-              decoration: InputDecoration(
-                labelText: 'Product Name',
-                prefixIcon: Icon(
-                  Icons.library_add,
-                ),
-              )),
+          StreamBuilder<QuerySnapshot>(
+              stream: _collectionRef.snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return DropdownButtonFormField(
+                    icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                        color: Colors.green),
+                    dropdownColor: Colors.green.shade50,
+                    decoration: InputDecoration(
+                      labelText: 'Product Name',
+                      prefixIcon: Icon(
+                        Icons.library_add,
+                      ),
+                    ),
+                    itemHeight: kMinInteractiveDimension,
+                    items: snapshot.data!.docs
+                        .map(
+                          (map) => DropdownMenuItem(
+                            child: Text(map.id),
+                            value: map.id,
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (String? val) {
+                      for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                        DocumentSnapshot snap = snapshot.data!.docs[i];
+                        setState(() {
+                          _selectedValue = val!;
+                          if (_selectedValue == snap.get('name')) {
+                            skuEditingController.text = snap.get('SKU');
+                            barcodeEditingController.text = snap.get('barcode');
+                          }
+                        });
+                      }
+                    },
+                  );
+                }
+              }),
         ],
       ),
     );
 
-//select file button
-    final selectFileButton = Material(
-        elevation: 5,
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.lightGreen,
-        child: MaterialButton(
-            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-            minWidth: 10,
-            onPressed: (() {}),
-            child: const Text(
-              "Select File",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-                //fontWeight: FontWeight.bold
-              ),
-            )));
+    //add button
+    final addButton = Material(
+      elevation: 5,
+      borderRadius: BorderRadius.circular(15),
+      color: Colors.lightGreen,
+      child: MaterialButton(
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          //minWidth: MediaQuery.of(context).size.width,
+          onPressed: () {
+            Map<String, dynamic> prodmap = {
+              'name': _selectedValue,
+              'SKU': skuEditingController.text,
+              'barcode': barcodeEditingController.text,
+              'quantity': _count,
+            };
+            product = ProductModel.fromMap(prodmap);
+            setState(() {
+              if (_count <= 0) {
+                Fluttertoast.showToast(
+                  msg: "Please check your product quantity",
+                  gravity: ToastGravity.CENTER,
+                  fontSize: 16.0,
+                );
+              } else if(skuEditingController.text == ''){
+                Fluttertoast.showToast(
+                  msg: "Please choose a product",
+                  gravity: ToastGravity.CENTER,
+                  fontSize: 16.0,
+                );
+              } else{
+                selectedProduct.add(product);
+                skuEditingController.clear();
+                barcodeEditingController.clear();
+                _count = 1;
+                _selectedValue = null;
+              }
+            });
+            //print(_selectedProduct.length);
+          },
+          child: const Text(
+            "Add To List",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+          )),
+    );
 
-    //select file button
-    final takePhotoButton = Material(
-        elevation: 5,
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.lightGreen,
-        child: MaterialButton(
-            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-            minWidth: 10,
-            onPressed: (() {}),
-            child: const Text(
-              "Take Photo",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-                //fontWeight: FontWeight.bold
-              ),
-            )));
+    //preview list
+    final previewProductList = Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey,
+          )),
+      child: Column(
+        children: [
+          SizedBox(child: Text('Selected Product:',style: TextStyle(color: Colors.grey),)),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: selectedProduct.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: ListTile(
+                        title: Text(selectedProduct[index].name.toString(),
+                            style: TextStyle(fontSize: 15.0)),
+                        subtitle: Text(
+                            'Qty: ' +
+                                selectedProduct[index].quantity.toString(),
+                            style: TextStyle(fontSize: 13.0)),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 18,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              selectedProduct.removeAt(index);
+                              skuEditingController.clear();
+                              barcodeEditingController.clear();
+                              _count = 1;
+                              _selectedValue = null;
+                            });
+                          },
+                        ))
+                    ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
 
     //submit button
     final submitButton = Material(
@@ -156,26 +214,18 @@ class _ProductDetailsState extends State<ProductDetails> {
       color: Colors.green,
       child: MaterialButton(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          minWidth: MediaQuery.of(context).size.width,
+          //minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            if (skuEditingController.text == '') {
-              Fluttertoast.showToast(msg: 'Please choose a product!');
+            if (selectedProduct.isEmpty) {
+              Fluttertoast.showToast(
+                msg: 'Please choose a product!',
+                gravity: ToastGravity.CENTER,
+                fontSize: 16.0,
+              );
             } else {
               setState(() {
-                product.name = _selectedValue;
-                product.sku = skuEditingController.text;
-                product.quantity = _count;
-                product.barcode = barcodeEditingController.text;
+                selectedProduct = selectedProduct;
               });
-
-              Map<String?, String?> products = {
-                'name': product.name,
-                'sku': product.sku,
-                'quantity': product.quantity.toString(),
-                'barcode': product.barcode,
-              };
-
-              //dbRef.push().set(products);
 
               if (cust.channel == 'b2b_retail' ||
                   cust.channel == 'b2b_hypermarket') {
@@ -280,7 +330,9 @@ class _ProductDetailsState extends State<ProductDetails> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FloatingActionButton.small(
-                heroTag: Text("btn1",),
+                heroTag: Text(
+                  "btn1",
+                ),
                 child: Icon(Icons.remove),
                 onPressed: () {
                   decrementCount();
@@ -313,64 +365,40 @@ class _ProductDetailsState extends State<ProductDetails> {
           child: CustomAppBar(bartitle: 'Add Product Information'),
           preferredSize: Size.fromHeight(65),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: StreamBuilder(
-              stream:
-                  FirebaseFirestore.instance.collection('product').snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                return Column(
-                  children: [
-                    productName,
-                    SizedBox(
-                      height: 20,
-                    ),
-                    skuField,
-                    SizedBox(
-                      height: 20,
-                    ),
-                    barcodeField,
-                    SizedBox(
-                      height: 20,
-                    ),
-                    quantityField,
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.grey,
-                          )),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                              child: Text(
-                            'Upload Sales Document',
-                            style: TextStyle(color: Colors.grey),
-                          )),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              selectFileButton,
-                              takePhotoButton,
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    submitButton,
-                  ],
-                );
-              }),
+        body: SingleChildScrollView(
+          child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  productName,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  skuField,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  barcodeField,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  quantityField,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  previewProductList,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      addButton,
+                      submitButton,
+                    ],
+                  ),
+                ],
+              )),
         ));
   }
 }
