@@ -3,9 +3,8 @@ class ProductModel {
   String? sku;
   String? barcode;
   int? quantity;
-  String? docUrl;
 
-  ProductModel({this.name, this.sku, this.barcode, this.quantity, this.docUrl});
+  ProductModel({this.name, this.sku, this.barcode, this.quantity});
 
   factory ProductModel.fromMap(map) {
     return ProductModel(
@@ -13,7 +12,6 @@ class ProductModel {
       sku: map["sku"],
       barcode: map["barcode"],
       quantity: map["quantity"],
-      docUrl: map["docUrl"],
     );
   }
 
@@ -23,7 +21,6 @@ class ProductModel {
       'sku': sku,
       'barcode': barcode,
       'quantity': quantity,
-      'docUrl': docUrl,
     };
   }
 }
