@@ -63,9 +63,7 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
           ),
           preferredSize: Size.fromHeight(65)),
 
-      bottomNavigationBar: CurvedNavBar(
-        indexnum: 0,
-      ),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 0,),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),

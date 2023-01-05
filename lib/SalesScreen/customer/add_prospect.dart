@@ -248,7 +248,7 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
                 'salesStaff': user?.uid
               });
 
-              Fluttertoast.showToast(msg: 'New prospect is successfully added');
+              Fluttertoast.showToast(msg: 'New prospect is successfully added', gravity: ToastGravity.CENTER, fontSize: 16);
               nameEditingController.clear();
               phoneEditingController.clear();
               emailEditingController.clear();
@@ -263,7 +263,7 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
     );
 
     return Scaffold(
-      bottomNavigationBar: CurvedNavBar(indexnum: 2,),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 2),
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
       appBar: PreferredSize(

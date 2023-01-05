@@ -6,6 +6,7 @@ import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
+import 'package:ftrsb_mobile/model/customer_model.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -356,9 +357,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
 
     return Scaffold(
-        bottomNavigationBar: CurvedNavBar(
-          indexnum: 1,
-        ),
+        //bottomNavigationBar: CurvedNavBar(indexnum: 1,),
         backgroundColor: Colors.white,
         drawer: NavigationDrawer(),
         appBar: PreferredSize(

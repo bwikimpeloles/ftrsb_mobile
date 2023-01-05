@@ -12,6 +12,7 @@ class DistrChannelList extends StatefulWidget {
 }
 
 class _DistrChannelListState extends State<DistrChannelList> {
+
   @override
   Widget build(BuildContext context) {
     final List<String> channel = <String>[
@@ -28,7 +29,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
     //final List<int> colorCodes = [100,200,300,400,500,600,700]; 
 
     return Scaffold(
-      bottomNavigationBar: CurvedNavBar(indexnum: 3,),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 3,),
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
       appBar: PreferredSize(
