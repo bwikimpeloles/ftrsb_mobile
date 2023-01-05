@@ -12,9 +12,8 @@ class FinanceCurvedNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
-      backgroundColor: Colors.transparent,   //Color.fromARGB(255, 147, 245, 198),
+      backgroundColor: Colors.transparent,
       color: Colors.black54,
-      //animationCurve: Curves.bounceInOut,
       height: 55,
       index: indexnum,
       items:[
