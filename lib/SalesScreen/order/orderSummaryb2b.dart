@@ -203,7 +203,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     };
 
                     if (payb.pic != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2C').add(paymentb2b);
+                      FirebaseFirestore.instance.collection('PaymentB2B').add(paymentb2b);
                     }
 
                     Map<String, dynamic> orderb2b = {
@@ -233,7 +233,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
 
                     if (cust.name != null && payb.pic != null) {
                       FirebaseFirestore.instance
-                          .collection('OrderB2C')
+                          .collection('OrderB2B')
                           .add(orderb2b);
                       if (pickedFile != null) {
                         uploadFile();
