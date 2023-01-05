@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,7 +31,7 @@ class _AddCostState extends State<AddCost> {
   String? selectedValue = null;
 
 
-  late DatabaseReference _ref;
+  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -43,7 +42,7 @@ class _AddCostState extends State<AddCost> {
     _supplierController = TextEditingController();
     _dateController = TextEditingController();
     _referencenoController = TextEditingController();
-    _ref = FirebaseDatabase.instance.reference().child('Cost');
+    _ref = FirebaseFirestore.instance.collection('Cost');
   }
 
   @override
@@ -221,9 +220,6 @@ class _AddCostState extends State<AddCost> {
     };
 
     if(double.tryParse(_amountController.text) != null){
-      _ref.child(v1).set(cost).then((value) {
-        Navigator.pop(context);
-      });
       postDetailsToFirestore(v1);
 
     } else{
@@ -272,7 +268,9 @@ class _AddCostState extends State<AddCost> {
     await firebaseFirestore
         .collection("Cost")
         .doc(v1)
-        .set(costModel.toMap());
+        .set(costModel.toMap()).then((value) {
+      Navigator.pop(context);
+    });
 
 
   }

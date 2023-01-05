@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,7 +27,7 @@ class _EditPaymentState extends State<EditPayment> {
     return menuItems;
   }
   String? selectedValue = null;
-  late DatabaseReference _ref;
+  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -39,14 +39,14 @@ class _EditPaymentState extends State<EditPayment> {
     _ponumberController = TextEditingController();
     _bankreferencenoController = TextEditingController();
     _statusController = TextEditingController();
-    _ref = FirebaseDatabase.instance.reference().child('MakePayments');
+    _ref = FirebaseFirestore.instance.collection('MakePayments');
     getPaymentDetail();
     initialize();
   }
 
   void initialize() async{
-    DataSnapshot snapshot = (await _ref.child(widget.paymentKey).once()).snapshot;
-    Map payment = snapshot.value as Map;
+    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
+    Map payment = snapshot.data() as Map;
     selectedValue = payment['status'];
     dateselect = DateFormat('dd/MM/yyyy').parse(payment['effectivedate']);
     setState(() {});
@@ -269,9 +269,9 @@ class _EditPaymentState extends State<EditPayment> {
   }
 
   getPaymentDetail() async {
-    DataSnapshot snapshot = (await _ref.child(widget.paymentKey).once()).snapshot;
+    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
 
-    Map payment = snapshot.value as Map;
+    Map payment = snapshot.data() as Map;
 
     _titleController.text = payment['title'];
 
@@ -308,7 +308,7 @@ class _EditPaymentState extends State<EditPayment> {
       'status':status,
     };
 
-    _ref.child(widget.paymentKey).update(payment).then((value) {
+    _ref.doc(widget.paymentKey).update(payment).then((value) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

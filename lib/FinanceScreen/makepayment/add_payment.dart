@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart' as Database;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,7 +33,7 @@ class _AddPaymentState extends State<AddPayment> {
   String? selectedValue = null;
 
 
-  late Database.DatabaseReference _ref;
+  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -48,7 +48,7 @@ class _AddPaymentState extends State<AddPayment> {
     _ponumberController = TextEditingController();
     _bankreferencenoController = TextEditingController();
     _statusController = TextEditingController();
-    _ref = Database.FirebaseDatabase.instance.reference().child('MakePayments');
+    _ref = FirebaseFirestore.instance.collection('MakePayments');
   }
 
   initInfo(){
@@ -398,7 +398,7 @@ class _AddPaymentState extends State<AddPayment> {
       'status':status,
     };
 
-    _ref.push().set(payment).then((value) {
+    _ref.doc().set(payment).then((value) {
       Navigator.pop(context);
     });
 

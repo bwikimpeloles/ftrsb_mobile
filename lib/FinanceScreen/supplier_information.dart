@@ -1,5 +1,6 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 
 import 'sidebar_navigation.dart';
@@ -13,16 +14,13 @@ class SupplierInformationFinance extends StatefulWidget {
 
 class _SupplierInformationFinanceState extends State<SupplierInformationFinance> {
   late Query _ref;
-  DatabaseReference reference =
-  FirebaseDatabase.instance.reference().child('Suppliers');
+  CollectionReference reference =
+  FirebaseFirestore.instance.collection('Suppliers');
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _ref = FirebaseDatabase.instance
-        .reference()
-        .child('Suppliers')
-        .orderByChild('companyname');
+    _ref = FirebaseFirestore.instance.collection('Suppliers').orderBy('companyname');
   }
 
   Widget _buildSupplierItem({required Map supplier}) {
@@ -247,8 +245,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
               TextButton(
                   onPressed: () {
                     reference
-                        .child(supplier['key'])
-                        .remove()
+                        .doc(supplier['key']).delete()
                         .whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Delete'))
@@ -266,13 +263,14 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
       ),
       body: Container(
         height: double.infinity,
-        child: FirebaseAnimatedList(
+        child: FirestoreAnimatedList(
           query: _ref,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
               Animation<double> animation, int index) {
-            Map supplier = snapshot.value as Map;
-            supplier['key'] = snapshot.key;
-            return _buildSupplierItem(supplier: supplier);
+            Map<String, dynamic> supplier = snapshot?.data() as Map<String, dynamic>;
+            print(snapshot.toString());
+            supplier?['key'] = snapshot?.id;
+            return _buildSupplierItem(supplier: supplier!);
           },
         ),
       ),

@@ -1,9 +1,10 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/add_cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/edit_cost.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class ListCostFinance extends StatefulWidget {
   @override
@@ -12,16 +13,14 @@ class ListCostFinance extends StatefulWidget {
 
 class _ListCostFinanceState extends State<ListCostFinance> {
   late Query _ref;
-  DatabaseReference reference =
-  FirebaseDatabase.instance.reference().child('Cost');
+  CollectionReference reference =
+  FirebaseFirestore.instance.collection('Cost');
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _ref = FirebaseDatabase.instance
-        .reference()
-        .child('Cost')
-        .orderByChild('name');
+    _ref = FirebaseFirestore.instance.collection('Cost')
+        .orderBy('name');
   }
 
   Widget _buildCostItem({required Map cost}) {
@@ -153,7 +152,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                     ),
                     Flexible(
                       child: Text(
-                        cost['date'],
+                        DateFormat('dd/MM/yyyy').format((cost['date'] as Timestamp).toDate()),
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600),
@@ -273,12 +272,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                   child: Text('Cancel')),
               TextButton(
                   onPressed: () {
-                    reference
-                        .child(cost['key'])
-                        .remove()
-                        .whenComplete(() => Navigator.pop(context));
-
-                    firestore.FirebaseFirestore.instance.collection('Cost').doc(cost['key']).delete();
+                    FirebaseFirestore.instance.collection('Cost').doc(cost['key']).delete().whenComplete(() => Navigator.pop(context));;
                   },
                   child: Text('Delete'))
             ],
@@ -294,12 +288,12 @@ class _ListCostFinanceState extends State<ListCostFinance> {
       ),
       body: Container(
         height: double.infinity,
-        child: FirebaseAnimatedList(
+        child: FirestoreAnimatedList(
           query: _ref,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
               Animation<double> animation, int index) {
-            Map cost = snapshot.value as Map;
-            cost['key'] = snapshot.key;
+            Map<String, dynamic> cost = snapshot?.data() as Map<String, dynamic>;
+            cost['key'] = snapshot?.id;
             return _buildCostItem(cost: cost);
           },
         ),

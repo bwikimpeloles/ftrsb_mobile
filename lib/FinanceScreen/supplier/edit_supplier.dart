@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class EditSupplier extends StatefulWidget {
@@ -13,7 +13,7 @@ class EditSupplier extends StatefulWidget {
 class _EditSupplierState extends State<EditSupplier> {
   late TextEditingController _companynameController, _phonenumberController, _shippingaddressController, _emailController, _picController;
   final _formKey = GlobalKey<FormState>();
-  late DatabaseReference _ref;
+  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -23,7 +23,7 @@ class _EditSupplierState extends State<EditSupplier> {
     _shippingaddressController = TextEditingController();
     _emailController = TextEditingController();
     _picController = TextEditingController();
-    _ref = FirebaseDatabase.instance.reference().child('Suppliers');
+    _ref = FirebaseFirestore.instance.collection('Suppliers');
     getSupplierDetail();
   }
 
@@ -180,9 +180,9 @@ class _EditSupplierState extends State<EditSupplier> {
   }
 
   getSupplierDetail() async {
-    DataSnapshot snapshot = (await _ref.child(widget.supplierKey).once()).snapshot;
+    DocumentSnapshot snapshot = (await _ref.doc(widget.supplierKey).get());
 
-    Map supplier = snapshot.value as Map;
+    Map supplier = snapshot.data() as Map;
 
     _companynameController.text = supplier['companyname'];
 
@@ -211,7 +211,7 @@ class _EditSupplierState extends State<EditSupplier> {
       'pic':pic,
     };
 
-    _ref.child(widget.supplierKey).update(supplier).then((value) {
+    _ref.doc(widget.supplierKey).update(supplier).then((value) {
       Navigator.pop(context);
     });
   }

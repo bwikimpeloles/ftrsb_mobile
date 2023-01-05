@@ -6,10 +6,13 @@ import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/list_cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/payment_verification.dart';
+import 'package:ftrsb_mobile/FinanceScreen/revenue/revenue.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
 import '../AdminScreen/home_admin.dart';
 import '../model/user_model.dart';
 import '../screens/login_screen.dart';
+
 
 class NavigationDrawer extends StatefulWidget {
 
@@ -80,7 +83,8 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) => Container
       ListTile(leading: const Icon(Icons.bar_chart),
         title: const Text('Revenue'),
         onTap: (){
-
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => RevenueFinance(),));
         },),
       ListTile(leading: const Icon(Icons.pie_chart),
         title: const Text('Cost'),
@@ -96,7 +100,8 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) => Container
       ListTile(leading: const Icon(Icons.domain_verification),
         title: const Text('Payment Verification'),
         onTap: (){
-
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => PaymentVerificationFinance(),));
         },),
       ListTile(leading: const Icon(Icons.monetization_on),
         title: const Text('Make Payment'),

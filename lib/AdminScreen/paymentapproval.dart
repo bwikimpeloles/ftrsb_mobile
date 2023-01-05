@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_database/firebase_database.dart' as Database;
+import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ftrsb_mobile/AdminScreen/sidebar_navigation.dart';
@@ -22,9 +22,9 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
   String? mtoken = "";
-  late Database.Query _ref;
-  Database.DatabaseReference reference =
-  Database.FirebaseDatabase.instance.reference().child('MakePayments');
+  late Query _ref;
+  CollectionReference reference =
+  FirebaseFirestore.instance.collection('MakePayments');
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   bool isSwitched = false;
@@ -43,10 +43,8 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
     getToken();
     requestPermission();
 
-    _ref = Database.FirebaseDatabase.instance
-        .reference()
-        .child('MakePayments')
-        .orderByChild('time');
+    _ref = FirebaseFirestore.instance.collection('MakePayments')
+        .orderBy('effectivedate');
   }
   void getToken() async {
     await FirebaseMessaging.instance.getToken().then((token) {
@@ -289,8 +287,8 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
               TextButton(
                   onPressed: () {
                     reference
-                        .child(payment['key'])
-                        .remove()
+                        .doc(payment['key'])
+                        .delete()
                         .whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Delete'))
@@ -330,12 +328,12 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
       ),
       body: Container(
         height: double.infinity,
-        child: FirebaseAnimatedList(
+        child: FirestoreAnimatedList(
           query: _ref,
-          itemBuilder: (BuildContext context, Database.DataSnapshot snapshot,
+          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
               Animation<double> animation, int index) {
-            Map payment = snapshot.value as Map;
-            payment['key'] = snapshot.key;
+            Map payment = snapshot?.data() as Map;
+            payment['key'] = snapshot?.id;
             return _buildPaymentItem(payment: payment);
           },
         ),
