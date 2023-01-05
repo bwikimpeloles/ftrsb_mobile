@@ -48,10 +48,10 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
-            return ("Name cannot be Empty");
+            return ("Name cannot be empty");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter Valid name(Min. 3 Character)");
+            return ("Please enter valid name (Min. 3 Character)");
           }
           return null;
         },
@@ -271,7 +271,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
             if (_channel == null){
-              Fluttertoast.showToast(msg: 'Choose a distribution channel!');
+              Fluttertoast.showToast(msg: 'Choose a distribution channel!', gravity: ToastGravity.CENTER, fontSize: 16);
             }
 
             else if (_formKey.currentState!.validate() && _channel != null ) {
@@ -314,7 +314,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
     );
 
     return Scaffold(
-      bottomNavigationBar: CurvedNavBar(indexnum: 1),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 1),
       drawer: NavigationDrawer(),
       backgroundColor: Colors.white,
       appBar: PreferredSize(

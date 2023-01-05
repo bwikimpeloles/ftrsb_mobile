@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -27,15 +28,6 @@ User? user = FirebaseAuth.instance.currentUser;
 
 class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
 
-  
-  late DatabaseReference dbRefCustomer =
-      FirebaseDatabase.instance.ref().child('Customer');
-
-  late DatabaseReference dbRefPayment =
-      FirebaseDatabase.instance.ref().child('PaymentB2B');
-
-  late DatabaseReference dbRefOrder =
-      FirebaseDatabase.instance.ref().child('OrderB2B');
 
   String? orderid = 'TEST12345';
 
@@ -48,6 +40,15 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
+  getProductlist() {
+    List<String> list = [];
+    print(list.toString());
+    for (int i = 0; i < selectedProduct.length ; i++) {
+      list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
+    }
+
+    return list;
+  }
   @override
   Widget build(BuildContext context) {
 //select file button
@@ -177,7 +178,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     setState(() {
                       orderid = getRandomString(10);
                     });
-                    Map<String?, String?> customer = {
+                    Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
                       'address': cust.address,
@@ -187,10 +188,10 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     };
 
                     if (cust.name != null) {
-                      dbRefCustomer.push().set(customer);
+                      FirebaseFirestore.instance.collection('Customer').add(customer);
                     }
 
-                    Map<String?, String?> paymentb2b = {
+                    Map<String,dynamic> paymentb2b = {
                       'orderdate': payb.orderDate,
                       'amount': payb.amount,
                       'collectionDate': payb.collectionDate,
@@ -202,10 +203,10 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     };
 
                     if (payb.pic != null) {
-                      dbRefPayment.push().set(paymentb2b);
+                      FirebaseFirestore.instance.collection('PaymentB2C').add(paymentb2b);
                     }
 
-                    Map<String?, String?> orderb2b = {
+                    Map<String, dynamic> orderb2b = {
                       'custName': cust.name,
                       'custPhone': cust.phone,
                       'custAddress': cust.address,
@@ -215,7 +216,9 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'collectionDate': payb.collectionDate,
                       'pic': payb.pic,
                       'paymentStatus': payb.status,
-                      'salesStaff': user?.uid
+                      'salesStaff': user?.uid,
+                      'product': getProductlist(),
+                      'channel': cust.channel,
                     };
 
                     Future uploadFile() async {
@@ -229,8 +232,12 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     }
 
                     if (cust.name != null && payb.pic != null) {
-                      dbRefOrder.push().set(orderb2b);
-                      uploadFile();
+                      FirebaseFirestore.instance
+                          .collection('OrderB2C')
+                          .add(orderb2b);
+                      if (pickedFile != null) {
+                        uploadFile();
+                      }
                       Fluttertoast.showToast(
                           msg: 'Order submitted',
                           gravity: ToastGravity.CENTER,
@@ -266,9 +273,9 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
-      bottomNavigationBar: CurvedNavBar(
-        indexnum: 1,
-      ),
+      //bottomNavigationBar: CurvedNavBar(
+       // indexnum: 1,
+      //),
       appBar: PreferredSize(
         child: CustomAppBar(bartitle: 'Order Summary'),
         preferredSize: Size.fromHeight(65),

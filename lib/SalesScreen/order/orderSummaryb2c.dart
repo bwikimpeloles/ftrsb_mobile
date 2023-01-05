@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -28,24 +29,26 @@ User? user = FirebaseAuth.instance.currentUser;
 
 class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
   
-  late DatabaseReference dbRefCustomer =
-      FirebaseDatabase.instance.ref().child('Customer');
-
-  late DatabaseReference dbRefPayment =
-      FirebaseDatabase.instance.ref().child('PaymentB2C');
-
-  late DatabaseReference dbRefOrder =
-      FirebaseDatabase.instance.ref().child('OrderB2C');
-
   String? orderid = 'TEST12345';
+
+  int counter = 0;
 
   PlatformFile? pickedFile;
 
   static const _chars ='AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random.secure();
   final now = DateTime.now();
-  
-  
+
+  getProductlist() {
+    List<String> list = [];
+    print(list.toString());
+    for (int i = 0; i < selectedProduct.length ; i++) {
+      list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
+    }
+
+    return list;
+  }
+
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
@@ -88,6 +91,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
             minWidth: 10,
             onPressed: (() {
               setState(() {
+                getProductlist();
                 pickedFile = null;
               });
             }),
@@ -176,22 +180,23 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () {
                     setState(() {
-                      orderid = getRandomString(10);
+                      orderid = getRandomString(10);                      
                     });
-                    Map<String?, String?> customer = {
+
+                    Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
                       'address': cust.address,
                       'email': cust.email,
                       'channel': cust.channel,
-                      'salesStaff': user?.uid
+                      'salesStaff': user?.uid,
                     };
 
                     if (cust.phone != null) {
-                      dbRefCustomer.push().set(customer);
-                    }
+                      FirebaseFirestore.instance.collection('Customer').add(customer);
+                    } 
 
-                    Map<String?, String?> paymentb2c = {
+                    Map<String, dynamic> paymentb2c = {
                       'paymentMethod': payc.paymentMethod.toString().substring(
                           payc.paymentMethod.toString().indexOf('.') + 1),
                       'amount': payc.amount,
@@ -204,10 +209,11 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                     };
 
                     if (payc.paymentMethod != null) {
-                      dbRefPayment.push().set(paymentb2c);
+                      FirebaseFirestore.instance.collection('PaymentB2C').add(paymentb2c);
+                      //dbRefPayment.push().set(paymentb2c);
                     }
 
-                    Map<String, String?> orderb2c = {
+                    Map<String, dynamic> orderb2c = {
                       'custName': cust.name,
                       'custPhone': cust.phone,
                       'custAddress': cust.address,
@@ -219,7 +225,8 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'bankName': payc.bankName,
                       'paymentVerify': payc.paymentVerify,
                       'salesStaff': user?.uid,
-                      
+                      'product': getProductlist(),
+                      'channel': cust.channel,
                     };
 
                     Future uploadFile() async{
@@ -232,14 +239,17 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                     }
                      
                     if (cust.phone != null && payc.paymentMethod != null) {
-                      dbRefOrder.push().set(orderb2c);
-                      uploadFile();
+                      //dbRefOrder.push().set(orderb2c);
+                      FirebaseFirestore.instance.collection('OrderB2C').add(orderb2c);
+                      if(pickedFile != null){uploadFile();}
+                      
                       Fluttertoast.showToast(
                           msg: 'Order submitted',
                           gravity: ToastGravity.CENTER,
                           fontSize: 16.0);
                       setState(
-                        () {},
+                        () {
+                        },
                       );
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const HomeScreenSales(),
@@ -269,9 +279,9 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
-      bottomNavigationBar: CurvedNavBar(
-        indexnum: 1,
-      ),
+      //bottomNavigationBar: CurvedNavBar(
+      //  indexnum: 1,
+      //),
       appBar: PreferredSize(
         child: CustomAppBar(bartitle: 'Order Summary'),
         preferredSize: const Size.fromHeight(65),
@@ -304,10 +314,10 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
               SizedBox(height: 20),
               //Text('Order ID : ' + date + orderid.toString(),
                //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              Text('Order Date : ' + payc.paymentDate.toString(),
+              Text('Order Date : ' + payc.tempDate.toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              Text('Payment Date : ' + payc.paymentDate.toString(),
+              Text('Payment Date : ' + payc.tempDate.toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               SizedBox(height: 20),

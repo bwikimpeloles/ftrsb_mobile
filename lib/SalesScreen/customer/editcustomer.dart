@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,7 +9,7 @@ import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
 class EditCustomerDetailsForm extends StatefulWidget {
   String customerKey;
-  EditCustomerDetailsForm({required this.customerKey});
+  EditCustomerDetailsForm({required this.customerKey,});
 
   @override
   State<EditCustomerDetailsForm> createState() => _EditCustomerDetailsFormState();
@@ -44,7 +45,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     // TODO: implement initState
     super.initState();
     // ignore: deprecated_member_use
-    dbref = FirebaseDatabase.instance.reference().child('Customer');
+    //dbref = FirebaseDatabase.instance.reference().child('Customer');
     getCustomerDetail();
   }
 
@@ -319,7 +320,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     );
 
     return Scaffold(
-      bottomNavigationBar: CurvedNavBar(indexnum: 3),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 3),
       drawer: NavigationDrawer(),
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -375,10 +376,10 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        updateButton, deleteButton,
+                        updateButton,
+                        deleteButton,
                       ],
                     ),
-                   
                     SizedBox(height: 15),
                   ],
                 ),
@@ -391,6 +392,24 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
   }
 
     getCustomerDetail() async {
+
+    DocumentSnapshot snapfirestore = await FirebaseFirestore.instance
+    .collection('Customer')
+    .doc(widget.customerKey)
+    .get();
+
+    Map customerfromfirestore = snapfirestore.data() as Map;
+
+    nameEditingController.text = customerfromfirestore['name'];
+    phoneEditingController.text = customerfromfirestore['phone'];
+    addressEditingController.text = customerfromfirestore['address'];
+    emailEditingController.text = customerfromfirestore['email'];
+
+        // Convert to enum
+    DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customerfromfirestore['channel']);
+    _channel = d; 
+
+/*
     DataSnapshot snapshot = (await dbref.child(widget.customerKey).once()).snapshot;
 
     Map customer = snapshot.value as Map;
@@ -398,11 +417,11 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     nameEditingController.text = customer['name'];
     phoneEditingController.text = customer['phone'];
     addressEditingController.text = customer['address'];
-    emailEditingController.text = customer['email'];
+    emailEditingController.text = customer['email'];  
 
     // Convert to enum
     DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customer['channel']);
-    _channel = d;
+    _channel = d; */
 
   }
 
@@ -446,8 +465,11 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
       'email': email,
       'channel': channel
     };
-
-    dbref.child(widget.customerKey).update(customer).then((value) {
+    FirebaseFirestore.instance
+        .collection('Customer')
+        .doc(widget.customerKey)
+        .update(customer)
+        .then((value) {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => DistrChannelList()));
     });
