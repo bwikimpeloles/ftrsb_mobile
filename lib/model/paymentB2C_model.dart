@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PaymentB2C {
   String? paymentMethod;
   String? amount;
-  String? paymentDate;
+  Timestamp? paymentDate;
+  String? tempDate;
   String? bankName;
   String? paymentVerify;
 

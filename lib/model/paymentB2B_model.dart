@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PaymentB2B {
   String? amount;
-  String? orderDate;
-  String? collectionDate;
+  String? orderDateDisplay;
+  String? collectionDateDisplay;
+  Timestamp? orderDate;
+  Timestamp? collectionDate;
   String? pic;
   String? status;
 
