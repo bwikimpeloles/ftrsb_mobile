@@ -1,14 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart' as Database;
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'makepayment/view_payment.dart';
 import 'sidebar_navigation.dart';
 import 'makepayment/add_payment.dart';
-import 'makepayment/edit_payment.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MakePaymentFinance extends StatefulWidget {
   @override
@@ -16,10 +14,10 @@ class MakePaymentFinance extends StatefulWidget {
 }
 
 class _MakePaymentFinanceState extends State<MakePaymentFinance> {
-  late Database.Query _ref;
+  late Query _ref;
   String? mtoken = "";
-  Database.DatabaseReference reference =
-  Database.FirebaseDatabase.instance.reference().child('MakePayments');
+  CollectionReference reference =
+  FirebaseFirestore.instance.collection('MakePayments');
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   User? user = FirebaseAuth.instance.currentUser;
@@ -30,10 +28,8 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
     super.initState();
     requestPermission();
 
-    _ref = Database.FirebaseDatabase.instance
-        .reference()
-        .child('MakePayments')
-        .orderByChild('time');
+    _ref = FirebaseFirestore.instance.collection('MakePayments')
+        .orderBy('effectivedate');
   }
 
   Future<bool> getSwitch() async{
@@ -262,8 +258,8 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
               TextButton(
                   onPressed: () {
                     reference
-                        .child(payment['key'])
-                        .remove()
+                        .doc(payment['key'])
+                        .delete()
                         .whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Delete'))
@@ -303,12 +299,12 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
       ),
       body: Container(
         height: double.infinity,
-        child: FirebaseAnimatedList(
+        child: FirestoreAnimatedList(
           query: _ref,
-          itemBuilder: (BuildContext context, Database.DataSnapshot snapshot,
+          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
               Animation<double> animation, int index) {
-            Map payment = snapshot.value as Map;
-            payment['key'] = snapshot.key;
+            Map<String, dynamic> payment = snapshot?.data() as Map<String, dynamic>;
+            payment['key'] = snapshot?.id;
             return _buildPaymentItem(payment: payment);
           },
         ),

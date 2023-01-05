@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AddSupplier extends StatefulWidget {
@@ -11,7 +11,7 @@ class _AddSupplierState extends State<AddSupplier> {
   // form key
   final _formKey = GlobalKey<FormState>();
 
-  late DatabaseReference _ref;
+  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -21,7 +21,7 @@ class _AddSupplierState extends State<AddSupplier> {
     _shippingaddressController = TextEditingController();
     _emailController = TextEditingController();
     _picController = TextEditingController();
-    _ref = FirebaseDatabase.instance.reference().child('Suppliers');
+    _ref = FirebaseFirestore.instance.collection('Suppliers');
   }
 
   @override
@@ -190,7 +190,7 @@ class _AddSupplierState extends State<AddSupplier> {
       'pic':pic,
     };
 
-    _ref.push().set(supplier).then((value) {
+    _ref.doc().set(supplier).then((value) {
       Navigator.pop(context);
     });
 

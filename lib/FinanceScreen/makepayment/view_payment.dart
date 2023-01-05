@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
 
@@ -16,7 +16,7 @@ class ViewPayment extends StatefulWidget {
 class _ViewPaymentState extends State<ViewPayment> {
   late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
 
-  late DatabaseReference _ref;
+  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -28,7 +28,7 @@ class _ViewPaymentState extends State<ViewPayment> {
     _ponumberController = TextEditingController();
     _bankreferencenoController = TextEditingController();
     _statusController = TextEditingController();
-    _ref = FirebaseDatabase.instance.reference().child('MakePayments');
+    _ref = FirebaseFirestore.instance.collection('MakePayments');
     getPaymentDetail();
     setState(() {
 
@@ -171,9 +171,9 @@ class _ViewPaymentState extends State<ViewPayment> {
   }
 
   getPaymentDetail() async {
-    DataSnapshot snapshot = (await _ref.child(widget.paymentKey).once()).snapshot;
+    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
 
-    Map payment = snapshot.value as Map;
+    Map payment = snapshot.data() as Map;
 
     _titleController.text = payment['title'];
 

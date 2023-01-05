@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,13 +13,12 @@ class EditCost extends StatefulWidget {
 
 class _EditCostState extends State<EditCost> {
   late TextEditingController _nameController, _categoryController, _amountController, _supplierController, _dateController, _referencenoController;
-  late DatabaseReference _ref;
+  late CollectionReference _ref;
   final _formKey = GlobalKey<FormState>();
   late String sentence;
   int year1=1;
   int month1=1;
   int day1=1;
-  late DatabaseReference db;
   DateTime? dateselect = new DateTime.now();
   String? selectedValue;
 
@@ -35,9 +33,8 @@ class _EditCostState extends State<EditCost> {
   }
 
   Future<DateTime> getDate() async {
-    DataSnapshot snapshot = (await _ref.child(widget.costKey).once()).snapshot;
-
-    Map cost = snapshot.value as Map;
+    DocumentSnapshot snapshot = (await _ref.doc(widget.costKey).get());
+    Map cost = snapshot.data() as Map;
     dateselect=DateTime.parse(cost['date'].toString());
     return dateselect!;
 
@@ -53,9 +50,8 @@ class _EditCostState extends State<EditCost> {
     _supplierController = TextEditingController();
     _dateController = TextEditingController();
     _referencenoController = TextEditingController();
-    db = FirebaseDatabase.instance.reference().child("Users");
     getDate();
-    _ref = FirebaseDatabase.instance.reference().child('Cost');
+    _ref = FirebaseFirestore.instance.collection('Cost');
     getCostDetail();
     initialize();
     setState(() {});
@@ -225,9 +221,8 @@ class _EditCostState extends State<EditCost> {
 
 
   getCostDetail() async {
-    DataSnapshot snapshot = (await _ref.child(widget.costKey).once()).snapshot;
-
-    Map cost = snapshot.value as Map;
+    DocumentSnapshot snapshot = (await _ref.doc(widget.costKey).get());
+    Map cost = snapshot.data() as Map;
 
     _nameController.text = cost['name'];
 
@@ -273,8 +268,7 @@ class _EditCostState extends State<EditCost> {
     };
 
     if(double.tryParse(_amountController.text) != null){
-      FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).update(cost2);
-      _ref.child(widget.costKey).update(cost).then((value) {
+      FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).update(cost2).then((value) {
         Navigator.pop(context);
       } );
     } else{
