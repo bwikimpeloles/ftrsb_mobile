@@ -16,12 +16,17 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
   late Query _ref;
   CollectionReference reference =
   FirebaseFirestore.instance.collection('Suppliers');
+  TextEditingController _searchController= TextEditingController();
+  String search='';
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _ref = FirebaseFirestore.instance.collection('Suppliers').orderBy('companyname');
+
   }
+
 
   Widget _buildSupplierItem({required Map supplier}) {
     return GestureDetector(
@@ -261,18 +266,53 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
       appBar: AppBar(
         title: Text('Supplier Information'),
       ),
-      body: Container(
-        height: double.infinity,
-        child: FirestoreAnimatedList(
-          query: _ref,
-          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
-              Animation<double> animation, int index) {
-            Map<String, dynamic> supplier = snapshot?.data() as Map<String, dynamic>;
-            print(snapshot.toString());
-            supplier?['key'] = snapshot?.id;
-            return _buildSupplierItem(supplier: supplier!);
-          },
-        ),
+      body: Column(
+        children: [
+          SizedBox(height: 10,),
+          SizedBox(
+              height: 50,
+              width: 200,
+              child: TextField(
+                onChanged: (text){
+                  setState(() {
+                    _ref = FirebaseFirestore.instance.collection('Suppliers').orderBy('companyname').startAt([text])
+                        .endAt([text + '\uf8ff']);
+                  });
+
+                },
+                controller: _searchController,
+                cursorColor: Colors.teal,
+                decoration: InputDecoration(
+                    fillColor: Colors.white30,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.teal)
+                    ),
+                    hintText: 'Search',
+                    hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 18
+                    ),
+                    prefixIcon: Icon(Icons.search)
+                ),
+              ),
+            ),
+          Flexible(
+            child: SizedBox(
+              child: FirestoreAnimatedList(
+                query: _ref,
+                itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
+                    Animation<double> animation, int index) {
+                  Map<String, dynamic> supplier = snapshot?.data() as Map<String, dynamic>;
+                  print(snapshot.toString());
+                  supplier?['key'] = snapshot?.id;
+                  return _buildSupplierItem(supplier: supplier!);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

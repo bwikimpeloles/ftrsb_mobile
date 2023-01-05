@@ -16,7 +16,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
   FirebaseFirestore.instance.collection('PaymentB2C');
   List<String> filter = ["Unverified","Approved","Rejected"];
   String? selectedValue="Unverified";
-  TextEditingController _searchController= TextEditingController();
+  String search='';
 
   @override
   void initState() {
@@ -285,17 +285,17 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
   @override
   Widget build(BuildContext context) {
     if (selectedValue == "Approved") {
-      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('action', isEqualTo: "Approved").orderBy("custname").startAt([_searchController.text])
-          .endAt([_searchController.text + '\uf8ff']);
+      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('action', isEqualTo: "Approved").orderBy("custname").startAt([search])
+          .endAt([search + '\uf8ff']);
       print(selectedValue);
     } else if (selectedValue == "Rejected") {
-      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('action', isEqualTo: "Rejected").orderBy("custname").startAt([_searchController.text])
-          .endAt([_searchController.text + '\uf8ff']);
+      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('action', isEqualTo: "Rejected").orderBy("custname").startAt([search])
+          .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
     else{
-      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('paymentVerify', isEqualTo: "No").orderBy("custname").startAt([_searchController.text])
-          .endAt([_searchController.text + '\uf8ff']);
+      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('paymentVerify', isEqualTo: "No").orderBy("custname").startAt([search])
+          .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
     return Scaffold(
@@ -315,7 +315,11 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
               height: 50,
               width: 200,
               child: TextField(
-                controller: _searchController,
+                onChanged: (text){
+                  setState(() {
+                    search=text;
+                  });
+                },
                 cursorColor: Colors.teal,
                 decoration: InputDecoration(
                     fillColor: Colors.white30,
