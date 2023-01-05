@@ -1,10 +1,11 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
+import 'package:ftrsb_mobile/model/customer_model.dart';
 import 'package:ftrsb_mobile/model/paymentB2C_model.dart';
 import 'package:intl/intl.dart';
 
@@ -29,6 +30,8 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   final amountTextCtrl = TextEditingController();
   final banknameCtrl = TextEditingController();
   final dateInput = TextEditingController();
+
+  late DateTime? pdate;
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +108,11 @@ class _PaymentDetailsState extends State<PaymentDetails> {
           String? formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate!);
           setState(() {
             dateInput.text =
-                formattedDate; //set output date to TextField value.
+                formattedDate;
+             pdate = pickedDate;    //set output date to TextField value.
           });
-        } else {
-          return null;
-        }
+        } 
+        print(pickedDate);
       },
     );
 
@@ -201,8 +204,13 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       ],
     );
 
+    Timestamp _toTimeStamp(DateTime? date) {
+      return Timestamp.fromMillisecondsSinceEpoch(date!.millisecondsSinceEpoch);
+    }
+
+
     return Scaffold(
-      bottomNavigationBar: CurvedNavBar(indexnum: 1,),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 1,),
       backgroundColor: Colors.white,
       //drawer: NavigationDrawer(),
       appBar: PreferredSize(
@@ -245,11 +253,19 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                   msg: "Please select a payment method");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentMethod != null) {
+                              //print(pdate);
+
+                              _toTimeStamp(pdate);
+
+                              print(_toTimeStamp(pdate));
+
+                              
                               setState(() {
                                 payc.amount = amountTextCtrl.text;
                                 payc.paymentMethod = _paymentMethod.toString().substring(payc.paymentMethod.toString().indexOf('.') + 1);
-                                payc.paymentDate = dateInput.text;
+                                payc.paymentDate = _toTimeStamp(pdate);
                                 payc.bankName = banknameCtrl.text;
+                                payc.tempDate = dateInput.text;
 
                                 if (cust.channel == 'whatsapp') {
                                   payc.paymentVerify = 'No';
@@ -262,18 +278,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                   .push(MaterialPageRoute(
                                 builder: (context) => const ProductDetails(),
                               ));
-            
-
-                               Map<String?, String?> paymentb2c = {
-                                'amount': payc.amount,
-                                'paymentMethod': payc.paymentMethod,
-                                'paymentDate': payc.paymentDate,
-                                'bankName': payc.bankName,
-                                'paymentVerify': payc.paymentVerify,
-                                
-                              };
-
-                              //dbRef.push().set(paymentb2c);
                             }
                           },
                           child: const Text(

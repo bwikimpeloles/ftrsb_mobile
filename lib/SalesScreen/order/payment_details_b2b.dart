@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,6 +31,8 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
   final picCtrl = TextEditingController();
   final orderdateInput = TextEditingController();
   final collectdateInput = TextEditingController();
+
+  late DateTime? pdatec,pdateo;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +109,8 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
           String? formattedDate1 = DateFormat('dd/MM/yyyy').format(orderDate!);
           setState(() {
             orderdateInput.text =
-                formattedDate1; //set output date to TextField value.
+                formattedDate1;
+            pdateo=orderDate; //set output date to TextField value.
           });
         } else {
           return null;
@@ -156,10 +160,9 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
           String? formattedDate2 = DateFormat('dd/MM/yyyy').format(collectDate!);
           setState(() {
             collectdateInput.text =
-                formattedDate2; //set output date to TextField value.
+                formattedDate2;
+            pdatec=collectDate;     //set output date to TextField value.
           });
-        } else {
-          return null;
         }
       },
     );
@@ -239,13 +242,15 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
         )
       ],
     );
+    
+    Timestamp _toTimeStamp(DateTime? date) {
+      return Timestamp.fromMillisecondsSinceEpoch(date!.millisecondsSinceEpoch);
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
       //drawer: NavigationDrawer(),
-      bottomNavigationBar: CurvedNavBar(
-        indexnum: 1,
-      ),
+      //bottomNavigationBar: CurvedNavBar(indexnum: 1,),
       appBar: PreferredSize(
         child: CustomAppBar(bartitle: 'Add Payment Information'),
         preferredSize: Size.fromHeight(65),
@@ -290,10 +295,17 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                   msg: "Please select a payment status");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentStatus != null) {
+
+                                  
+                              _toTimeStamp(pdatec);
+                              _toTimeStamp(pdateo);
+
                               setState(() {
                                 payb.amount = amountTextCtrl.text;
-                                payb.orderDate = orderdateInput.text;
-                                payb.collectionDate = collectdateInput.text;
+                                payb.orderDateDisplay = orderdateInput.text;
+                                payb.collectionDateDisplay = collectdateInput.text;
+                                payb.collectionDate = _toTimeStamp(pdatec);
+                                payb.orderDate = _toTimeStamp(pdateo);
                                 payb.pic = picCtrl.text;
                                 payb.status = _paymentStatus
                                     .toString()
@@ -307,16 +319,6 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                 builder: (context) => const ProductDetails(),
                               ));
 
-
-                               Map<String?, String?> pay = {
-                                'amount': payb.amount,
-                                'orderDate': payb.orderDate,
-                                'colectionDate': payb.collectionDate,
-                                'pic': payb.pic,
-                                'status': payb.status
-                              };
-
-                              //dbRef.push().set(customer);
                             }
                           },
                           child: const Text(
