@@ -15,6 +15,7 @@ import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
+import 'package:ftrsb_mobile/model/customer_model.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:intl/intl.dart';
 
@@ -45,7 +46,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
     for (int i = 0; i < selectedProduct.length ; i++) {
       list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
     }
-
     return list;
   }
 
@@ -205,7 +205,8 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'paymentVerify': payc.paymentVerify,
                       'custname': cust.name,
                       'custphone': cust.phone,
-                      'salesStaff': user?.uid
+                      'salesStaff': user?.uid,
+                      'orderid': dateStr + orderid.toString()
                     };
 
                     if (payc.paymentMethod != null) {

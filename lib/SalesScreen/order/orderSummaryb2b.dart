@@ -199,7 +199,8 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'paymentStatus': payb.status,
                       'custname': cust.name,
                       'custphone': cust.phone,
-                      'salesStaff': user?.uid
+                      'salesStaff': user?.uid,
+                      'orderid': dateStr + orderid.toString()
                     };
 
                     if (payb.pic != null) {
