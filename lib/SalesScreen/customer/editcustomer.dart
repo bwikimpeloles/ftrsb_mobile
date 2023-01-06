@@ -26,8 +26,6 @@ enum DistrChannel {
   tiktok
 }
 
-DistrChannel? _channel;
-
 class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
 // form key
   final _formKey = GlobalKey<FormState>();
@@ -37,13 +35,15 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
   final addressEditingController = TextEditingController();
   final emailEditingController = TextEditingController();
 
+  late DistrChannel? _channel = DistrChannel.shopee;
+
   
   late DatabaseReference dbref;
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+    //super.initState();
     // ignore: deprecated_member_use
     //dbref = FirebaseDatabase.instance.reference().child('Customer');
     getCustomerDetail();
@@ -407,22 +407,9 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
 
         // Convert to enum
     DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customerfromfirestore['channel']);
-    _channel = d; 
-
-/*
-    DataSnapshot snapshot = (await dbref.child(widget.customerKey).once()).snapshot;
-
-    Map customer = snapshot.value as Map;
-
-    nameEditingController.text = customer['name'];
-    phoneEditingController.text = customer['phone'];
-    addressEditingController.text = customer['address'];
-    emailEditingController.text = customer['email'];  
-
-    // Convert to enum
-    DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customer['channel']);
-    _channel = d; */
-
+    setState(() {
+      _channel = d; 
+    });
   }
 
     _showDeleteDialog() {
