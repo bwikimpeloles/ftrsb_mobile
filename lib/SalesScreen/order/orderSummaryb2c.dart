@@ -178,7 +178,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
               child: MaterialButton(
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       orderid = getRandomString(10);                      
                     });
@@ -214,6 +214,17 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       //dbRefPayment.push().set(paymentb2c);
                     }
 
+                    Future<int> getOrderCount(String? phone) async {
+                      var docs = await FirebaseFirestore.instance
+                          .collection('OrderB2C')
+                          .where('custPhone', isEqualTo: phone)
+                          .get();
+                      int count = docs.size;
+                      return count;
+                    }
+
+                    int _count = await getOrderCount(cust.phone) + 1;
+
                     Map<String, dynamic> orderb2c = {
                       'custName': cust.name,
                       'custPhone': cust.phone,
@@ -224,10 +235,11 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'amount': payc.amount,
                       'paymentDate': payc.paymentDate,
                       'bankName': payc.bankName,
-                      'paymentVerify': payc.paymentVerify,
+                      //'paymentVerify': payc.paymentVerify,
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
+                      'count': _count
                     };
 
                     Future uploadFile() async{
