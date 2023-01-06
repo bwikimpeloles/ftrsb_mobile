@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
+import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_dashboard.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
@@ -77,7 +80,7 @@ Widget buildMenuItems(BuildContext context) => Container(
           ),
           ListTile(
             leading: const Icon(Icons.person_add_rounded),
-            title: const Text('Add Prospect'),
+            title: const Text('Prospect'),
             onTap: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const ProspectDetailsForm(),
@@ -85,8 +88,8 @@ Widget buildMenuItems(BuildContext context) => Container(
             },
           ),
           ListTile(
-            leading: const Icon(Icons.source_rounded),
-            title: const Text('Manage Customer Details'),
+            leading: const Icon(Icons.group),
+            title: const Text('Customer'),
             onTap: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const DistrChannelList(),

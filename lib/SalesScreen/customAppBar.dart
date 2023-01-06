@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/screens/login_screen.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -12,10 +13,16 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () =>
-                    Navigator.pop(context),
-                    ),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          if (bartitle == 'Add Customer Information' || bartitle == 'Add Prospect' || bartitle == 'Customer') {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomeScreenSales()));
+          } else {
+            Navigator.pop(context);
+          }
+        },
+      ),
       actions: [
         IconButton(
             onPressed: () {

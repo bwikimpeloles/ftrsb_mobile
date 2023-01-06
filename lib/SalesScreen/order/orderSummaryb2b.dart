@@ -196,7 +196,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'amount': payb.amount,
                       'collectionDate': payb.collectionDate,
                       'pic': payb.pic,
-                      'paymentStatus': payb.status,
+                      //'paymentStatus': payb.status,
                       'custname': cust.name,
                       'custphone': cust.phone,
                       'salesStaff': user?.uid,

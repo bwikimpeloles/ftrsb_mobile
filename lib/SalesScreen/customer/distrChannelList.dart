@@ -25,6 +25,18 @@ class _DistrChannelListState extends State<DistrChannelList> {
       'B2B Hypermarket',
       'Other'
     ];
+
+    final List<String> channel1 = <String>[
+      'shopee',
+      'whatsApp',
+      'website',
+      'grabmart',
+      'tiktok',
+      'b2b_retail',
+      'b2b_hypermarket',
+      'other'
+    ];
+
     //final List<Color> color = [Color.fromARGB(255, 204, 125, 7), Colors.green, Colors.lightGreen, Color.fromARGB(255, 59, 138, 177), Color.fromARGB(255, 182, 201, 12), Color.fromARGB(255, 74, 177, 127), Color.fromARGB(255, 161, 92, 173)];
     //final List<int> colorCodes = [100,200,300,400,500,600,700]; 
 
@@ -33,7 +45,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
       appBar: PreferredSize(
-        child: CustomAppBar(bartitle: 'Manage Customer Information'),
+        child: CustomAppBar(bartitle: 'Customer'),
         preferredSize: Size.fromHeight(65),
       ),
       body: Column(
@@ -48,7 +60,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CustomerList(channel: channel[index]),
+                        builder: (context) => CustomerList(channel: channel1[index]),
                       ),
                     );
                   },
