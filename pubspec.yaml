@@ -51,6 +51,12 @@ dependencies:
   firebase_storage:
   dio: ^4.0.6
   firestore_ui: ^1.24.0
+  provider:
+  local_auth:
+  google_fonts:
+  image_picker:
+  transparent_image:
+  path_provider:
 
 dev_dependencies:
   flutter_test:

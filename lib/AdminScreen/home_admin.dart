@@ -60,141 +60,143 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 90,
-                child: Image.asset("assets/logo.png", fit: BoxFit.contain),
-              ),
-              Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text("${loggedInUser.name}",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  )),
-              Text("${loggedInUser.email}",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  )),
-              SizedBox(
-                height: 15,
-              ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      //warehouse button
-                      SizedBox(
-                        height: 100,
-                        width: 150,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            textStyle: const TextStyle(fontSize: 16),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 90,
+                  child: Image.asset("assets/logo.png", fit: BoxFit.contain),
+                ),
+                Text(
+                  "Welcome Back",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text("${loggedInUser.name}",
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                    )),
+                Text("${loggedInUser.email}",
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                    )),
+                SizedBox(
+                  height: 15,
+                ),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        //warehouse button
+                        SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () {},
+                            child: const Text('WAREHOUSE', style: TextStyle(color: Colors.white),),
                           ),
-                          onPressed: () {},
-                          child: const Text('WAREHOUSE', style: TextStyle(color: Colors.white),),
                         ),
-                      ),
-                      SizedBox(width: 20,),
+                        SizedBox(width: 20,),
 
-                      //sales & marketing button button
+                        //sales & marketing button button
+                        SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context, MaterialPageRoute(builder: (context) => const HomeScreenSales(),));
+                            },
+                            child: const Text('SALES \n&\nMARKETING', style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,),
+                          ),
+                        ),
+
+                      ],),
+
+                    SizedBox(height: 20,),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        //finance button
                       SizedBox(
                         height: 100,
                         width: 150,
                         child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            textStyle: const TextStyle(fontSize: 16),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => const HomeScreenSales(),));
-                          },
-                          child: const Text('SALES \n&\nMARKETING', style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.amber[700],
+                          textStyle: const TextStyle(fontSize: 16),
                         ),
+                        onPressed: () {
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => const HomeScreenFinance(),));
+                        },
+                        child: const Text('FINANCE', style: TextStyle(color: Colors.white),),
+                    ),
                       ),
+                        SizedBox(width: 20,),
+
+                        //employee accounts button
+                        SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.purple,
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () {},
+                            child: const Text('EMPLOYEE \nACCOUNTS', style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,),
+                          ),
+                        ),
 
                     ],),
-
-                  SizedBox(height: 20,),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      //finance button
+                    SizedBox(height: 20,),
                     SizedBox(
                       height: 100,
                       width: 150,
                       child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.amber[700],
-                        textStyle: const TextStyle(fontSize: 16),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context, MaterialPageRoute(builder: (context) => const HomeScreenFinance(),));
-                      },
-                      child: const Text('FINANCE', style: TextStyle(color: Colors.white),),
-                  ),
-                    ),
-                      SizedBox(width: 20,),
-
-                      //employee accounts button
-                      SizedBox(
-                        height: 100,
-                        width: 150,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.purple,
-                            textStyle: const TextStyle(fontSize: 16),
-                          ),
-                          onPressed: () {},
-                          child: const Text('EMPLOYEE \nACCOUNTS', style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.brown,
+                          textStyle: const TextStyle(fontSize: 16),
                         ),
+                        onPressed: () {
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => const PaymentApprovalAdmin(),));
+                        },
+                        child: const Text('TRANSACTION \n APPROVAL', style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,),
                       ),
-
-                  ],),
-                  SizedBox(height: 20,),
-                  SizedBox(
-                    height: 100,
-                    width: 150,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.brown,
-                        textStyle: const TextStyle(fontSize: 16),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context, MaterialPageRoute(builder: (context) => const PaymentApprovalAdmin(),));
-                      },
-                      child: const Text('TRANSACTION \n APPROVAL', style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20,),
-              ActionChip(
-                  label: Text("Logout"),
-                  onPressed: () {
-                    logout(context);
-                  }),
-            ],
+                  ],
+                ),
+                SizedBox(height: 20,),
+                ActionChip(
+                    label: Text("Logout"),
+                    onPressed: () {
+                      logout(context);
+                    }),
+              ],
+            ),
           ),
         ),
       ),

@@ -13,7 +13,7 @@ class PaymentVerificationFinance extends StatefulWidget {
 class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance> {
   late Query _ref;
   CollectionReference reference =
-  FirebaseFirestore.instance.collection('PaymentB2C');
+  FirebaseFirestore.instance.collection('OrderB2C');
   List<String> filter = ["Unverified","Approved","Rejected"];
   String? selectedValue="Unverified";
   String search='';
@@ -22,7 +22,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
   void initState() {
     // TODO: implement initState
     super.initState();
-    _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('paymentVerify', isEqualTo: "No");
+    _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "No");
 
   }
 
@@ -63,7 +63,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     ),
                     Flexible(
                       child: Text(
-                        verify['custname'],
+                        verify['custName'],
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600),
@@ -76,7 +76,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Amount: ',
+                    Text('Amount: RM',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800),),
@@ -251,7 +251,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Verify ${verify['custname']}'),
+            title: Text('Verify ${verify['custName']}'),
             content: Text('Select Action:'),
             actions: [
               TextButton(
@@ -285,16 +285,16 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
   @override
   Widget build(BuildContext context) {
     if (selectedValue == "Approved") {
-      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('action', isEqualTo: "Approved").orderBy("custname").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('action', isEqualTo: "Approved").orderBy("custName").startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     } else if (selectedValue == "Rejected") {
-      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('action', isEqualTo: "Rejected").orderBy("custname").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('action', isEqualTo: "Rejected").orderBy("custName").startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
     else{
-      _ref = FirebaseFirestore.instance.collection('PaymentB2C').where('paymentVerify', isEqualTo: "No").orderBy("custname").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "No").orderBy("custName").startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }

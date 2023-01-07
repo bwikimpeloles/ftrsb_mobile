@@ -286,17 +286,52 @@ class _ListCostFinanceState extends State<ListCostFinance> {
       appBar: AppBar(
         title: Text('Cost Information'),
       ),
-      body: Container(
-        height: double.infinity,
-        child: FirestoreAnimatedList(
-          query: _ref,
-          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
-              Animation<double> animation, int index) {
-            Map<String, dynamic> cost = snapshot?.data() as Map<String, dynamic>;
-            cost['key'] = snapshot?.id;
-            return _buildCostItem(cost: cost);
-          },
-        ),
+      body: Column(
+        children: [
+          SizedBox(height: 10,),
+          SizedBox(
+            height: 50,
+            width: 200,
+            child: TextField(
+              onChanged: (text){
+                setState(() {
+                  _ref = FirebaseFirestore.instance.collection('Cost').orderBy('name').startAt([text])
+                      .endAt([text + '\uf8ff']);
+                });
+
+              },
+              cursorColor: Colors.teal,
+              decoration: InputDecoration(
+                  fillColor: Colors.white30,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.teal)
+                  ),
+                  hintText: 'Search',
+                  hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18
+                  ),
+                  prefixIcon: Icon(Icons.search)
+              ),
+            ),
+          ),
+          Flexible(
+            child: SizedBox(
+              height: double.infinity,
+              child: FirestoreAnimatedList(
+                query: _ref,
+                itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
+                    Animation<double> animation, int index) {
+                  Map<String, dynamic> cost = snapshot?.data() as Map<String, dynamic>;
+                  cost['key'] = snapshot?.id;
+                  return _buildCostItem(cost: cost);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

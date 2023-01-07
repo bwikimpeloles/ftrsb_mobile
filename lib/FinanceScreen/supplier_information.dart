@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 
 import 'sidebar_navigation.dart';
 import 'supplier/add_supplier.dart';
 import 'supplier/edit_supplier.dart';
+import 'supplier/photo_page.dart';
 
 class SupplierInformationFinance extends StatefulWidget {
   @override
@@ -169,8 +171,39 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                 ),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) => PhotoPage(supplierKey: supplier['key'],),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.image,
+                            color: Colors.teal,
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('DO',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.teal,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -221,9 +254,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                         ],
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+
                   ],
                 )
               ],
@@ -248,7 +279,12 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                   },
                   child: Text('Cancel')),
               TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+
+          await FirebaseStorage.instance.ref('doimages/${supplier['key']}').listAll().then((value) {
+          value.items.forEach((element) {
+          FirebaseStorage.instance.ref(element.fullPath).delete();
+          });});
                     reference
                         .doc(supplier['key']).delete()
                         .whenComplete(() => Navigator.pop(context));

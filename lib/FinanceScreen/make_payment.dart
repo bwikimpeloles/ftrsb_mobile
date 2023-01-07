@@ -78,14 +78,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
 
     Widget _buildPaymentItem({required Map payment}) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => ViewPayment(
-                  paymentKey: payment['key'],
-                )));
-      },
+
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
         child: Container(
@@ -205,6 +198,32 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => ViewPayment(
+                                  paymentKey: payment['key'],
+                                )));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.receipt,
+                            color: Colors.green,
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('View',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
                     SizedBox(
                       width: 20,
                     ),
