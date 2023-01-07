@@ -191,7 +191,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       FirebaseFirestore.instance.collection('Customer').add(customer);
                     }
 
-                    Map<String,dynamic> paymentb2b = {
+                   /* Map<String,dynamic> paymentb2b = {
                       'orderdate': payb.orderDate,
                       'amount': payb.amount,
                       'collectionDate': payb.collectionDate,
@@ -204,8 +204,8 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     };
 
                     if (payb.pic != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2B').add(paymentb2b);
-                    }
+                      FirebaseFirestore.instance.collection('PaymentB2B').doc(dateStr + orderid.toString()).set(paymentb2b);
+                    }*/
 
                     Map<String, dynamic> orderb2b = {
                       'custName': cust.name,
@@ -235,7 +235,8 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     if (cust.name != null && payb.pic != null) {
                       FirebaseFirestore.instance
                           .collection('OrderB2B')
-                          .add(orderb2b);
+                          .doc(dateStr + orderid.toString())
+                          .set(orderb2b);
                       if (pickedFile != null) {
                         uploadFile();
                       }

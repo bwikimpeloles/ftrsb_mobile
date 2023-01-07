@@ -196,7 +196,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       FirebaseFirestore.instance.collection('Customer').add(customer);
                     } 
 
-                    Map<String, dynamic> paymentb2c = {
+                    /*Map<String, dynamic> paymentb2c = {
                       'paymentMethod': payc.paymentMethod.toString().substring(
                           payc.paymentMethod.toString().indexOf('.') + 1),
                       'amount': payc.amount,
@@ -210,9 +210,9 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                     };
 
                     if (payc.paymentMethod != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2C').add(paymentb2c);
+                      FirebaseFirestore.instance.collection('PaymentB2C').doc(dateStr + orderid.toString()).set(paymentb2c);
                       //dbRefPayment.push().set(paymentb2c);
-                    }
+                    }*/
 
                     Future<int> getOrderCount(String? phone) async {
                       var docs = await FirebaseFirestore.instance
@@ -253,7 +253,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                      
                     if (cust.phone != null && payc.paymentMethod != null) {
                       //dbRefOrder.push().set(orderb2c);
-                      FirebaseFirestore.instance.collection('OrderB2C').add(orderb2c);
+                      FirebaseFirestore.instance.collection('OrderB2C').doc(dateStr + orderid.toString()).set(orderb2c);
                       if(pickedFile != null){uploadFile();}
                       
                       Fluttertoast.showToast(
