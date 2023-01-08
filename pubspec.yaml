@@ -57,6 +57,9 @@ dependencies:
   image_picker:
   transparent_image:
   path_provider:
+  flutter_barcode_scanner: ^2.0.0
+  flutter_spinkit: ^5.1.0
+  font_awesome_flutter: ^10.3.0
 
 dev_dependencies:
   flutter_test:
