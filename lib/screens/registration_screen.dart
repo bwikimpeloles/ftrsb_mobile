@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ftrsb_mobile/AdminScreen/home_admin.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
+import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
+import 'package:ftrsb_mobile/WarehouseScreen/nav.dart';
 import '../model/user_model.dart';
 import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -310,7 +312,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => (role=="Finance")? HomeScreenFinance():(role=="Admin")? HomeScreenAdmin():HomeScreen()),
+        MaterialPageRoute(builder: (context) => (role=="Finance")? HomeScreenFinance():(role=="Admin")? HomeScreenAdmin():(role=="Warehouse")? WarehouseNav():(role=="Sales & Marketing")? HomeScreenSales():HomeScreen()),
             (route) => false);
   }
 }
