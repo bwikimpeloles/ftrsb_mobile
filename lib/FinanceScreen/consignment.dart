@@ -164,6 +164,12 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     });
   }
 
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
 
 
   Widget _buildVerifyItem({required Map verify}) {
@@ -192,6 +198,18 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                (verify['paymentStatus'] == 'unpaid')?
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('COLLECT IN ${(daysBetween(DateTime.now(), (verify['collectionDate']as Timestamp).toDate())).toString()} DAYS',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.red,
+                          fontWeight: FontWeight.w800),),
+                  ],):Text(''),
+
                 Row(
                   children: [
                     Text('Customer Name: ',
