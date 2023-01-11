@@ -235,7 +235,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'amount': payc.amount,
                       'paymentDate': payc.paymentDate,
                       'bankName': payc.bankName,
-                      //'paymentVerify': payc.paymentVerify,
+                      'paymentVerify': payc.paymentVerify,
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
@@ -261,12 +261,12 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                           gravity: ToastGravity.CENTER,
                           fontSize: 16.0);
                       setState(
-                        () {
-                        },
+                        () {},
                       );
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreenSales(),
-                      ));
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreenSales()),
+                          (Route<dynamic> route) => false);
                     } else {
                       Fluttertoast.showToast(
                         msg: 'Order submission failed!',

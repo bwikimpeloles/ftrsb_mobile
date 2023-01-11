@@ -247,9 +247,10 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       setState(
                         () {},
                       );
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreenSales(),
-                      ));
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreenSales()),
+                          (Route<dynamic> route) => false);
                     } else {
                       Fluttertoast.showToast(
                         msg: 'Order submission failed!',
