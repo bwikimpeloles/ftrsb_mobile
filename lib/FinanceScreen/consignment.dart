@@ -5,9 +5,12 @@ import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import 'sidebar_navigation.dart';
 
@@ -27,6 +30,10 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   User? user = FirebaseAuth.instance.currentUser;
+  late DateTime scheduleDate;
+  String token1='';
+  bool agree=false;
+  late DateTime? dateselect = new DateTime.now();
 
 
   @override
@@ -35,25 +42,90 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     super.initState();
     requestPermission();
     _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid");
+    tz.initializeTimeZones();
+    const AndroidInitializationSettings androidInitializationSettings =
+    AndroidInitializationSettings("@mipmap/ic_launcher");
 
+    const IOSInitializationSettings iosInitializationSettings =
+    IOSInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+    InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: iosInitializationSettings,
+      macOS: null,
+      linux: null,
+    );
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: (dataYouNeedToUseWhenNotificationIsClicked) {},
+    );
   }
 
   Future<bool> getSwitch() async{
     String userid= user!.uid.toString();
     DocumentSnapshot snap = await FirebaseFirestore.instance.collection("users").doc(userid).get();
     bool consignmentnotification = snap['consignmentnotification'];
+    token1 = snap['token'];
+    agree = snap['consignmentnotification'];
+    print(agree);
     return consignmentnotification;
   }
 
+  showNotification(int nom,String title, String body) {
+
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      "ScheduleNotification001",
+      "Notify Me",
+      importance: Importance.high,
+    );
+
+    const IOSNotificationDetails iosNotificationDetails =
+    IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: iosNotificationDetails,
+      macOS: null,
+      linux: null,
+    );
+
+    // flutterLocalNotificationsPlugin.show(
+    //     01, _title.text, _desc.text, notificationDetails);
+
+    tz.initializeTimeZones();
+    final tz.TZDateTime scheduledAt = tz.TZDateTime.from(scheduleDate, tz.local);
+
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        nom, title, body, scheduledAt, notificationDetails,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.wallClockTime,
+        androidAllowWhileIdle: true,
+        payload: 'This is the data');
+    print('there is notification on ${scheduleDate}');
+  }
+
   void updateSwitch(bool newValue) async {
+    final String currentTimeZone =  await FlutterNativeTimezone.getLocalTimezone();
+    print(currentTimeZone);
     await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
       'consignmentnotification': newValue,
     });
 
     if(newValue==true){
       await FirebaseMessaging.instance.subscribeToTopic("topicconsignment");
+      setState(() {
+
+      });
     } else {
       await FirebaseMessaging.instance.unsubscribeFromTopic("topicconsignment");
+      await flutterLocalNotificationsPlugin.cancelAll();
     }
   }
 
@@ -81,7 +153,10 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     }
   }
 
-  initInfo(){
+  initInfo() async {
+    final String currentTimeZone =  await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    print(currentTimeZone);
     var androidInitialize = const AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings = InitializationSettings(android: androidInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async{
@@ -107,14 +182,16 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
           styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, groupKey: 'com.example.ftrsb_mobile');
 
       NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
-      await flutterLocalNotificationsPlugin.show(0, message.notification?.title, message.notification?.body, platformChannelSpecifics,
-          //navigate second page - payload
-          payload: message.data['title']);
+      final tz.TZDateTime scheduleAt = tz.TZDateTime.from(scheduleDate, tz.local);
+      await flutterLocalNotificationsPlugin.zonedSchedule(0, message.notification?.title, message.notification?.body, scheduleAt, platformChannelSpecifics,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime, androidAllowWhileIdle: true);
+
     });
   }
 
   void sendPushMessage(String token, String body, String title) async {
     try{
+      print('schedule reminder');
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: <String,String>{
@@ -170,9 +247,58 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     return (to.difference(from).inHours / 24).round();
   }
 
+  Future<DateTime?> pickDate() =>
+    showDatePicker(
+        context: context,
+        initialDate: dateselect!,
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100));
+
+  Future<TimeOfDay?> pickTime() =>
+      showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(
+              hour: dateselect!.hour,
+              minute: dateselect!.minute));
+
+  Future pickDateTime() async {
+    DateTime? date = await pickDate();
+    if (date == null) return;
+
+    TimeOfDay? time = await pickTime();
+    if (time == null) return;
+
+    final dateselect = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+
+    setState(() {
+      this.dateselect=dateselect;
+    });
+  }
 
 
   Widget _buildVerifyItem({required Map verify}) {
+    print(agree);
+    //scheduleDate = DateFormat('dd-MM-yyyy h:mm:ssa', 'en_US').parseLoose('${DateFormat('dd-MM-yyyy').format((verify['collectionDate']as Timestamp).toDate()).toString()} 10:00:00AM');
+    scheduleDate = (verify['collectionDate'] as Timestamp).toDate();
+    if(verify['paymentStatus'] == 'unpaid' && agree==true && scheduleDate.isAfter(DateTime.now())){
+
+      print(scheduleDate);
+      String userid= user!.uid.toString();
+      String titleText = "Payment Collection Reminder";
+      String bodyText = "Collect from ${verify['custName']} RM ${verify['amount']} \n(Collection Date: ${DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString()})";
+      if(userid!=""){
+        print(token1);
+        //sendPushMessage(token1, bodyText, titleText);
+        showNotification(int.parse(verify['custPhone']),titleText,bodyText);
+      }
+    }
+
     return GestureDetector(
 
       child: Padding(
@@ -265,7 +391,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     ),
                     Flexible(
                       child: Text(
-                        DateFormat('dd/MM/yyyy').format((verify['collectionDate']as Timestamp).toDate()).toString(),
+                        DateFormat('dd/MM/yyyy hh:mma').format(scheduleDate),
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600),
@@ -412,8 +538,35 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                 ),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    GestureDetector(
+                      onTap: () async {
+                        await pickDateTime();
+                        print('This is ${dateselect}');
+                        await reference
+                            .doc(verify['key']).update({
+                          'collectionDate' : dateselect,
+                        }).whenComplete(() => setState(() {}));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Change Date',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20,),
                     GestureDetector(
                       onTap: () {
                         _showActionDialog(verify: verify);
@@ -427,7 +580,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                           SizedBox(
                             width: 6,
                           ),
-                          Text('Change Payment Status',
+                          Text('Update Status',
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Theme.of(context).primaryColor,
@@ -435,9 +588,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+
                   ],
                 )
               ],

@@ -37,7 +37,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       setState(() {});
     });}
 
-    setState(() {});
   }
 
   @override

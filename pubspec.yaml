@@ -60,6 +60,9 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   flutter_spinkit: ^5.1.0
   font_awesome_flutter: ^10.3.0
+  flutter_datetime_picker: ^1.5.1
+  timezone:
+  flutter_native_timezone:
 
 dev_dependencies:
   flutter_test:

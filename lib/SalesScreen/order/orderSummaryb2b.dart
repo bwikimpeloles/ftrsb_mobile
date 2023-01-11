@@ -214,7 +214,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'orderDate': payb.orderDate,
                       'orderID': dateStr + orderid.toString(),
                       'amount': payb.amount,
-                      'collectionDate': payb.collectionDate,
+                      'collectionDate': Timestamp.fromDate(DateFormat('dd-MM-yyyy h:mm:ssa', 'en_US').parseLoose('${DateFormat('dd-MM-yyyy').format((payb.collectionDate as Timestamp).toDate()).toString()} 10:00:00AM')),
                       'pic': payb.pic,
                       'paymentStatus': payb.status,
                       'salesStaff': user?.uid,
