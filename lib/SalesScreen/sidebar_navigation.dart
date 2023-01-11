@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/AdminScreen/home_admin.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salestrend_b2c_month.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
@@ -8,11 +11,36 @@ import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order_history.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../screens/login_screen.dart';
+import '../model/user_model.dart';
 
-class NavigationDrawer extends StatelessWidget {
+class NavigationDrawer extends StatefulWidget {
+
+  @override
+  _NavigationDrawerState createState() => _NavigationDrawerState();
+}
+
+class _NavigationDrawerState extends State<NavigationDrawer> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+  @override
+  void initState() {
+    super.initState();
+    if (FirebaseAuth.instance.currentUser?.uid != null) {
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(user!.uid)
+          .get()
+          .then((value) {
+        this.loggedInUser = UserModel.fromMap(value.data());
+        setState(() {});
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Drawer(
         child: SingleChildScrollView(
@@ -23,7 +51,7 @@ class NavigationDrawer extends StatelessWidget {
               SizedBox(
                 height: 60,
               ),
-              buildMenuItems(context),
+              buildMenuItems(context, loggedInUser),
             ],
           ),
         ),
@@ -46,7 +74,7 @@ Container(
   ),
 );*/
 
-Widget buildMenuItems(BuildContext context) => Container(
+Widget buildMenuItems(BuildContext context, UserModel loggedInUser) => Container(
       padding: const EdgeInsets.all(18),
       child: Wrap(
         runSpacing: 16,
@@ -55,9 +83,22 @@ Widget buildMenuItems(BuildContext context) => Container(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const HomeScreenSales(),
-              ));
+              (loggedInUser.role=="Admin") ? Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => HomeScreenAdmin(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          ) :
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => HomeScreenSales(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
             },
           ),
           
