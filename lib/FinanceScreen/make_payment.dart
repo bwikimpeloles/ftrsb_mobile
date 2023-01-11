@@ -17,9 +17,9 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
   late Query _ref;
   String? mtoken = "";
   CollectionReference reference =
-  FirebaseFirestore.instance.collection('MakePayments');
+      FirebaseFirestore.instance.collection('MakePayments');
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -28,13 +28,15 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
     super.initState();
     requestPermission();
 
-    _ref = FirebaseFirestore.instance.collection('MakePayments')
+    _ref = FirebaseFirestore.instance
+        .collection('MakePayments')
         .orderBy('effectivedate');
   }
 
-  Future<bool> getSwitch() async{
-    String userid= user!.uid.toString();
-    DocumentSnapshot snap = await FirebaseFirestore.instance.collection("users").doc(userid).get();
+  Future<bool> getSwitch() async {
+    String userid = user!.uid.toString();
+    DocumentSnapshot snap =
+        await FirebaseFirestore.instance.collection("users").doc(userid).get();
     bool approvalnotification = snap['approvalnotification'];
     return approvalnotification;
   }
@@ -44,7 +46,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
       'approvalnotification': newValue,
     });
 
-    if(newValue==true){
+    if (newValue == true) {
       await FirebaseMessaging.instance.subscribeToTopic("topicapprove");
     } else {
       await FirebaseMessaging.instance.unsubscribeFromTopic("topicapprove");
@@ -64,40 +66,38 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
       sound: true,
     );
 
-
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
-    }
-    else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       print('User granted provisional permission');
     } else {
       print('User declined or has not accepted permission');
     }
   }
 
-
-    Widget _buildPaymentItem({required Map payment}) {
+  Widget _buildPaymentItem({required Map payment}) {
     return GestureDetector(
-
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10),
           padding: EdgeInsets.all(10),
-
-          decoration: new BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ],
+          decoration: new BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 2), // changes position of shadow
+                ),
+              ],
               borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
-              gradient: new LinearGradient(colors: [Colors.white70, Colors.white],
-                  begin: Alignment.centerLeft, end: Alignment.centerRight, tileMode: TileMode.clamp)
-          ),
-
+              gradient: new LinearGradient(
+                  colors: [Colors.white70, Colors.white],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  tileMode: TileMode.clamp)),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,10 +105,11 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
               children: [
                 Row(
                   children: [
-                    Text('Title: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Title: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
@@ -116,8 +117,7 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                       child: Text(
                         payment['title'],
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
+                            fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     ),
                   ],
@@ -127,10 +127,11 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                 ),
                 Row(
                   children: [
-                    Text('To: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'To: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
@@ -138,12 +139,10 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                       child: Text(
                         payment['accountholder'],
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
+                            fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
@@ -151,50 +150,46 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                 ),
                 Row(
                   children: [
-                    Text('Amount (RM): ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Amount (RM): ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
                     Text(
                       payment['amount'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
-
                 Row(
                   children: [
-                    Text('Status: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Status: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
                     Text(
                       payment['status'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
                   height: 8,
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -204,8 +199,8 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => ViewPayment(
-                                  paymentKey: payment['key'],
-                                )));
+                                      paymentKey: payment['key'],
+                                    )));
                       },
                       child: Row(
                         children: [
@@ -297,23 +292,25 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
           FutureBuilder(
               future: getSwitch(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null) {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data != null) {
                   bool result = snapshot.data as bool;
                   return Switch(
                       activeTrackColor: Colors.white,
                       activeColor: Colors.green.shade900,
-
-                      value: result, onChanged: (bool newVal) {
-                    setState(() => result = newVal);
-                    updateSwitch(newVal);
-                  });
+                      value: result,
+                      onChanged: (bool newVal) {
+                        setState(() => result = newVal);
+                        updateSwitch(newVal);
+                      });
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }
-              }
-          ),
+              }),
           Icon(Icons.notifications_active),
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
         ],
       ),
       body: Container(
@@ -322,7 +319,8 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
           query: _ref,
           itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
               Animation<double> animation, int index) {
-            Map<String, dynamic> payment = snapshot?.data() as Map<String, dynamic>;
+            Map<String, dynamic> payment =
+                snapshot?.data() as Map<String, dynamic>;
             payment['key'] = snapshot?.id;
             return _buildPaymentItem(payment: payment);
           },
@@ -341,6 +339,4 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
       ),
     );
   }
-
-
 }

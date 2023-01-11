@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProductModel {
   String? name;
   String? category;
@@ -33,4 +35,11 @@ class ProductModel {
       'quantity': quantity,
     };
   }
+
+  ProductModel.fromDocumenSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
+      : name = doc.data()!["name"],
+        category = doc.data()!["category"],
+        sku = doc.data()!["sku"],
+        barcode = doc.id,
+        quantity = doc.data()!["quantity"];
 }

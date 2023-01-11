@@ -30,15 +30,6 @@ class _WarehouseNavState extends State<WarehouseNav> {
   final PageController _pageController = PageController(initialPage: 0);
   int currentPageIndex = 0;
 
-  Future<UserModel?> getUserModel() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get();
-
-    return UserModel.fromMap(snapshot.data());
-  }
-
   changePage(int index) {
     setState(() {
       currentPageIndex = index;
@@ -48,6 +39,7 @@ class _WarehouseNavState extends State<WarehouseNav> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel? user = Provider.of<UserModel?>(context);
     return Scaffold(
         appBar: AppBar(
           title: Image.asset(
@@ -71,33 +63,16 @@ class _WarehouseNavState extends State<WarehouseNav> {
             ),
           ),
         ),
-        body: FutureProvider<UserModel?>.value(
-            value: getUserModel(),
-            initialData: null,
-            builder: (context, child) {
-              UserModel? user = Provider.of<UserModel?>(context);
-
-              if (user == null) {
-                return Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  child: SpinKitPulse(
-                    color: Color.fromARGB(255, 160, 202, 159),
-                  ),
-                );
-              }
-
-              return PageView(
-                controller: _pageController,
-                children: [
-                  HomeScreenWarehouse(changePage: changePage),
-                  InventoryScreenWarehouse(),
-                  BarcodeScanner(),
-                  PackageScreenWarehouse(),
-                  DeliveryListScreen(),
-                ],
-              );
-            }),
+        body: PageView(
+          controller: _pageController,
+          children: [
+            HomeScreenWarehouse(changePage: changePage),
+            InventoryScreenWarehouse(),
+            BarcodeScanner(),
+            PackageScreenWarehouse(),
+            DeliveryListScreen(),
+          ],
+        ),
         bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: Colors.white,
