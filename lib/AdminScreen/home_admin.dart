@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ftrsb_mobile/AdminScreen/paymentapproval.dart';
+import 'package:ftrsb_mobile/AdminScreen/user_list.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/nav.dart';
@@ -167,7 +168,10 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                               backgroundColor: Colors.purple,
                               textStyle: const TextStyle(fontSize: 16),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => const UserList(),));
+                            },
                             child: const Text('EMPLOYEE \nACCOUNTS', style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,),
                           ),

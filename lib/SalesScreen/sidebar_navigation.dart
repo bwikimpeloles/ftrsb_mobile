@@ -8,7 +8,7 @@ import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
-import 'package:ftrsb_mobile/SalesScreen/sales_dashboard.dart';
+import 'package:ftrsb_mobile/SalesScreen/order_history.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../screens/login_screen.dart';
 
@@ -21,7 +21,7 @@ class NavigationDrawer extends StatelessWidget {
             children: <Widget>[
               //buildHeader(context),
               SizedBox(
-                height: 40,
+                height: 60,
               ),
               buildMenuItems(context),
             ],
@@ -60,15 +60,7 @@ Widget buildMenuItems(BuildContext context) => Container(
               ));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.analytics_outlined),
-            title: const Text('Dashboard'),
-            onTap: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const SalesDashboard(),
-              ));
-            },
-          ),
+          
           ListTile(
             leading: const Icon(Icons.assignment_outlined),
             title: const Text('Submit New Order'),
@@ -93,6 +85,15 @@ Widget buildMenuItems(BuildContext context) => Container(
             onTap: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const DistrChannelList(),
+              ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text('Order History'),
+            onTap: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => OrderHistory(),
               ));
             },
           ),

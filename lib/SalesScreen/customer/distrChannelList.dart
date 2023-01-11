@@ -28,7 +28,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
 
     final List<String> channel1 = <String>[
       'shopee',
-      'whatsApp',
+      'whatsapp',
       'website',
       'grabmart',
       'tiktok',
@@ -51,7 +51,7 @@ class _DistrChannelListState extends State<DistrChannelList> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.separated(
+            child: ListView.builder(
               padding: const EdgeInsets.all(25),
               itemCount: channel.length,
               itemBuilder: (BuildContext context, int index) {
@@ -64,29 +64,34 @@ class _DistrChannelListState extends State<DistrChannelList> {
                       ),
                     );
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.green, width: 2),
-                      borderRadius: BorderRadius.all(Radius.circular(13)),
-                      //color: color[index],
-                      //color: Colors.lightGreen[colorCodes[index]],
-                      //color: Colors.green[600],
-                      color: Colors.white
-                    ),
-                    height: 60,
-                    child: Center(
-                        child: Text(
-                      '${channel[index]}',
-                      style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold),
-                    )),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.green, width: 2),
+                          borderRadius: BorderRadius.all(Radius.circular(13)),
+                          //color: color[index],
+                          //color: Colors.lightGreen[colorCodes[index]],
+                          //color: Colors.green[600],
+                          color: Colors.white
+                        ),
+                        height: 60,
+                        child: Center(
+                            child: Text(
+                          '${channel[index]}',
+                          style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold),
+                        )),
+                      ),
+                      const SizedBox(height:15)
+                    ],
                   ),
                 );
               },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
+             // separatorBuilder: (BuildContext context, int index) =>
+             //    const Divider(),
             ),
           )
         ],
