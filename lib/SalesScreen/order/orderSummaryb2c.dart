@@ -196,24 +196,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       FirebaseFirestore.instance.collection('Customer').add(customer);
                     } 
 
-                    /*Map<String, dynamic> paymentb2c = {
-                      'paymentMethod': payc.paymentMethod.toString().substring(
-                          payc.paymentMethod.toString().indexOf('.') + 1),
-                      'amount': payc.amount,
-                      'paymentDate': payc.paymentDate,
-                      'bankName': payc.bankName,
-                      'paymentVerify': payc.paymentVerify,
-                      'custname': cust.name,
-                      'custphone': cust.phone,
-                      'salesStaff': user?.uid,
-                      'orderid': dateStr + orderid.toString()
-                    };
-
-                    if (payc.paymentMethod != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2C').doc(dateStr + orderid.toString()).set(paymentb2c);
-                      //dbRefPayment.push().set(paymentb2c);
-                    }*/
-
                     Future<int> getOrderCount(String? phone) async {
                       var docs = await FirebaseFirestore.instance
                           .collection('OrderB2C')

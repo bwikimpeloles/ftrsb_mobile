@@ -174,7 +174,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
               child: MaterialButton(
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       orderid = getRandomString(10);
                     });
@@ -191,21 +191,16 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       FirebaseFirestore.instance.collection('Customer').add(customer);
                     }
 
-                   /* Map<String,dynamic> paymentb2b = {
-                      'orderdate': payb.orderDate,
-                      'amount': payb.amount,
-                      'collectionDate': payb.collectionDate,
-                      'pic': payb.pic,
-                      //'paymentStatus': payb.status,
-                      'custname': cust.name,
-                      'custphone': cust.phone,
-                      'salesStaff': user?.uid,
-                      'orderid': dateStr + orderid.toString()
-                    };
+                    Future<int> getOrderCount(String? phone) async {
+                      var docs = await FirebaseFirestore.instance
+                          .collection('OrderB2C')
+                          .where('custPhone', isEqualTo: phone)
+                          .get();
+                      int count = docs.size;
+                      return count;
+                    }
 
-                    if (payb.pic != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2B').doc(dateStr + orderid.toString()).set(paymentb2b);
-                    }*/
+                    int _count = await getOrderCount(cust.phone) + 1;
 
                     Map<String, dynamic> orderb2b = {
                       'custName': cust.name,
@@ -220,6 +215,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
+                      'count': _count
                     };
 
                     Future uploadFile() async {
