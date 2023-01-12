@@ -285,6 +285,14 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
           value.items.forEach((element) {
           FirebaseStorage.instance.ref(element.fullPath).delete();
           });});
+
+          await FirebaseFirestore.instance.collection('details').where('supplierkey', isEqualTo: supplier['key']).get()
+              .then((snapshot) async {
+            for(DocumentSnapshot ds in snapshot.docs) {
+              await ds.reference.delete();
+              print(ds.reference);
+            }
+          });
                     reference
                         .doc(supplier['key']).delete()
                         .whenComplete(() => Navigator.pop(context));
@@ -307,7 +315,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
           SizedBox(height: 10,),
           SizedBox(
               height: 50,
-              width: 200,
+              width: 250,
               child: TextField(
                 onChanged: (text){
                   setState(() {
@@ -325,7 +333,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: Colors.teal)
                     ),
-                    hintText: 'Search',
+                    hintText: 'Search Company Name',
                     hintStyle: TextStyle(
                         color: Colors.grey,
                         fontSize: 18

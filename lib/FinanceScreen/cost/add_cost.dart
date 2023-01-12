@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
@@ -14,7 +15,7 @@ class AddCost extends StatefulWidget {
 class _AddCostState extends State<AddCost> {
   late TextEditingController _nameController, _categoryController, _amountController, _supplierController, _dateController, _referencenoController;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
+  var selectedSupplier;
   var uuid = Uuid();
   final _formKey = GlobalKey<FormState>();
 
@@ -121,16 +122,52 @@ class _AddCostState extends State<AddCost> {
                   ),
                 ),
                 SizedBox(height: 15),
-                TextFormField(
-                  controller: _supplierController,
-                  decoration: InputDecoration(
-                    label: Text('Supplier'),
-                    hintText: 'Enter Supplier',
-                    fillColor: Colors.white,
-                    filled: true,
-                    contentPadding: EdgeInsets.all(15),
-                  ),
-                ),
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection("Suppliers").snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return const Text("Loading.....");
+                      else {
+                        List<DropdownMenuItem> supplierItems = [];
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          DocumentSnapshot snap = snapshot.data!.docs[i];
+                          supplierItems.add(
+                            DropdownMenuItem(
+                              child: Text(
+                                snap['companyname'],
+                              ),
+                              value: "${snap['companyname']}",
+                            ),
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: DropdownButtonFormField<dynamic>(
+                                items: supplierItems,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(15),
+                                  //fillColor: Colors.blueAccent,
+                                ),
+                                onChanged: (supplierValue) {
+                                  setState(() {
+                                    selectedSupplier = supplierValue;
+                                  });
+                                },
+                                value: selectedSupplier,
+                                isExpanded: false,
+                                hint: new Text(
+                                  "Choose Supplier",
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
 
                 SizedBox(height: 15),
                 TextFormField(
@@ -206,7 +243,7 @@ class _AddCostState extends State<AddCost> {
     String name = _nameController.text;
     String? category = selectedValue;
     String amount = _amountController.text;
-    String supplier = _supplierController.text;
+    String supplier = selectedSupplier;
     String date = DateFormat('dd/MM/yyyy').format(dateselect).toString();  //formattedDate;
     String referenceno = _referencenoController.text;
 
@@ -259,7 +296,7 @@ class _AddCostState extends State<AddCost> {
     costModel.name = _nameController.text;
     costModel.category = selectedValue;
     costModel.amount = _amountController.text;
-    costModel.supplier = _supplierController.text;
+    costModel.supplier = selectedSupplier;
     costModel.date = dateselect; //formattedDate;
     costModel.referenceno = _referencenoController.text;
 

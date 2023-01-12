@@ -192,13 +192,6 @@ class _PhotoPageState extends State<PhotoPage> {
                                                             file.url)
                                                             .delete();
 
-                                                        await FirebaseFirestore.instance.collection('imageURLs').where('url', isEqualTo: file.url).get()
-                                                          .then((snapshot) async {
-                                                        for(DocumentSnapshot ds in snapshot.docs) {
-                                                        await ds.reference.delete();
-                                                        print(ds.reference);
-                                                        }
-                                                        });
 
                                                         await FirebaseFirestore.instance.collection('details').where('url', isEqualTo: file.url).get()
                                                             .then((snapshot) async {
