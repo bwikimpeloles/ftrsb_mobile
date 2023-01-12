@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
-import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/editcustomer.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 
 class CustomerList extends StatefulWidget {
   String channel;

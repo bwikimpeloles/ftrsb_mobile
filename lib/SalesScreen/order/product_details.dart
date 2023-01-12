@@ -48,7 +48,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _collectionRef = FirebaseFirestore.instance.collection('product');
+    _collectionRef = FirebaseFirestore.instance.collection('Product');
     setState(() {
       selectedProduct = [];
     });
@@ -85,8 +85,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 itemHeight: kMinInteractiveDimension,
                 items: snapshot.data!.docs
                     .map(
-                      (map) => DropdownMenuItem(
-                        
+                      (map) => DropdownMenuItem(  
                         child: Text(map.id, overflow: TextOverflow.fade,),
                         value: map.id,
                       ),
@@ -97,8 +96,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     DocumentSnapshot snap = snapshot.data!.docs[i];
                     setState(() {
                       _selectedValue = val!;
-                      if (_selectedValue == snap.get('name')) {
-                        skuEditingController.text = snap.get('SKU');
+                      if (_selectedValue == snap.reference.id) {
+                        skuEditingController.text = snap.get('sku');
                         barcodeEditingController.text = snap.get('barcode');
                       }
                     });

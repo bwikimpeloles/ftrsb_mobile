@@ -4,19 +4,15 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
-import 'package:ftrsb_mobile/model/customer_model.dart';
-import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:intl/intl.dart';
 
 class OrderSummaryB2C extends StatefulWidget {
@@ -42,7 +38,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
 
   getProductlist() {
     List<String> list = [];
-    print(list.toString());
     for (int i = 0; i < selectedProduct.length ; i++) {
       list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
     }
