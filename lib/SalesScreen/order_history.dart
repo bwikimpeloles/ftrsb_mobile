@@ -1,10 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
-import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:intl/intl.dart';
 
@@ -61,62 +57,63 @@ class _OrderHistoryState extends State<OrderHistory> {
           child: Column(
             children: [
               SizedBox(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width,
-                    child: TextField(
-                      onChanged: (text) {
-                        setState(() {
-                          _ref = FirebaseFirestore.instance
-                              .collection('OrderB2C')
-                              .orderBy('orderID')
-                              .startAt([text]).endAt([text + '\uf8ff']);
-                        });
-                      },
-                      controller: _searchController,
-                      cursorColor: Colors.teal,
-                      decoration: InputDecoration(
-                          fillColor: Colors.white30,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.teal)),
-                          hintText: 'Search by Order ID',
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
-                          prefixIcon: Icon(Icons.search)),
-                    ),
-                  ),SizedBox(
-                    height: 10,
-                  ),
+                height: 50,
+                width: MediaQuery.of(context).size.width,
+                child: TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      _ref = FirebaseFirestore.instance
+                          .collection('OrderB2C')
+                          .orderBy('orderID')
+                          .startAt([text]).endAt([text + '\uf8ff']);
+                    });
+                  },
+                  controller: _searchController,
+                  cursorColor: Colors.teal,
+                  decoration: InputDecoration(
+                      fillColor: Colors.white30,
+                      filled: true,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.teal)),
+                      hintText: 'Search by Order ID',
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                      prefixIcon: Icon(Icons.search)),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: _ref.snapshots(),
                     builder: (context, snap) {
-                      if (snap.hasData) {  
+                      if (snap.hasData) {
                         return ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: snap.data!.docs.length,
                           itemBuilder: (context, index) {
-                            final data = snap.data!.docs[index];
+                            DocumentSnapshot data = snap.data!.docs[index];
+
                             FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(data['salesStaff'])
                                 .get()
                                 .then((value) {
                               this.staff = UserModel.fromMap(value.data());
+                              
                             });
-                        
+
                             return Column(
                               children: [
                                 Material(
                                   elevation: 4,
                                   child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width,
+                                    width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(20),
                                       color: Colors.white,
                                     ),
                                     child: Padding(
@@ -143,8 +140,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors
-                                                          .grey[600])),
+                                                      color: Colors.grey[600])),
                                             ],
                                           ),
                                           SizedBox(
@@ -162,11 +158,16 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(width: 3),
-                                              Text(data['custName'],
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                              Expanded(
+                                                child: Text(data['custName'],
+                                                    overflow: TextOverflow.fade,
+                                                    maxLines: 2,
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Colors.grey[600])),
+                                              ),
                                             ],
                                           ),
                                           SizedBox(
@@ -187,8 +188,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               Text(data['custPhone'],
                                                   style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                                      color: Colors.grey[600])),
                                             ],
                                           ),
                                           SizedBox(
@@ -199,18 +199,23 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               Text(
                                                 'Address: ',
                                                 style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Color.fromARGB(
-                                                        255, 36, 117, 59),
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  fontSize: 16,
+                                                  color: Color.fromARGB(
+                                                      255, 36, 117, 59),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                               SizedBox(width: 3),
-                                              Text(data['custAddress'],
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                              Expanded(
+                                                child: Text(data['custAddress'],
+                                                    overflow: TextOverflow.fade,
+                                                    maxLines: 3,
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Colors.grey[600])),
+                                              ),
                                             ],
                                           ),
                                           SizedBox(
@@ -230,15 +235,14 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               SizedBox(width: 3),
                                               Text(
                                                   DateFormat.yMEd()
-                                                      .format((data[
-                                                                  'paymentDate']
-                                                              as Timestamp)
-                                                          .toDate())
+                                                      .format(
+                                                          (data['paymentDate']
+                                                                  as Timestamp)
+                                                              .toDate())
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                                      color: Colors.grey[600])),
                                             ],
                                           ),
                                           SizedBox(
@@ -261,8 +265,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                                      color: Colors.grey[600])),
                                             ],
                                           ),
                                           SizedBox(
@@ -280,13 +283,10 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(width: 3),
-                                              Text(
-                                                  getChannel(
-                                                      data['channel']),
+                                              Text(getChannel(data['channel']),
                                                   style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                                      color: Colors.grey[600])),
                                             ],
                                           ),
                                           SizedBox(
@@ -297,19 +297,22 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               Text(
                                                 'Submitted by ',
                                                 style: TextStyle(
-                                                    fontStyle:
-                                                        FontStyle.italic,
+                                                    fontStyle: FontStyle.italic,
                                                     fontSize: 15,
-                                                    color:
-                                                        Colors.grey[600]),
+                                                    color: Colors.grey[600]),
                                               ),
-                                              Text("${staff.name}",
-                                                  style: TextStyle(
-                                                      fontStyle:
-                                                          FontStyle.italic,
-                                                      fontSize: 15,
-                                                      color: Colors
-                                                          .grey[600])),
+                                              Expanded(
+                                                child: Text('${staff.name}', 
+                                                    overflow: TextOverflow.fade,
+                                                    maxLines: 2,
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        fontSize: 15,
+                                                        color:
+                                                            Colors.grey[600])),
+                                              ),
                                             ],
                                           ),
                                         ],
@@ -317,7 +320,10 @@ class _OrderHistoryState extends State<OrderHistory> {
                                     ),
                                   ),
                                 ),
-                              SizedBox(height: 10,)],
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ],
                             );
                           },
                         );

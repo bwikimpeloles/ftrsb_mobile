@@ -65,50 +65,48 @@ class _ProductDetailsState extends State<ProductDetails> {
           border: Border.all(
             color: Colors.grey,
           )),
-      child: Column(
-        children: [
-          StreamBuilder<QuerySnapshot>(
-              stream: _collectionRef.snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                } else {
-                  return DropdownButtonFormField(
-                    icon: Icon(Icons.arrow_drop_down_circle_rounded,
-                        color: Colors.green),
-                    dropdownColor: Colors.green.shade50,
-                    decoration: InputDecoration(
-                      labelText: 'Product Name',
-                      prefixIcon: Icon(
-                        Icons.library_add,
+      child: StreamBuilder<QuerySnapshot>(
+          stream: _collectionRef.snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const CircularProgressIndicator();
+            } else {
+              return DropdownButtonFormField(
+                isExpanded: true,
+                icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                    color: Colors.green),
+                dropdownColor: Colors.green.shade50,
+                decoration: InputDecoration(
+                  labelText: 'Product Name',
+                  prefixIcon: Icon(
+                    Icons.library_add,
+                  ),
+                ),
+                itemHeight: kMinInteractiveDimension,
+                items: snapshot.data!.docs
+                    .map(
+                      (map) => DropdownMenuItem(
+                        
+                        child: Text(map.id, overflow: TextOverflow.fade,),
+                        value: map.id,
                       ),
-                    ),
-                    itemHeight: kMinInteractiveDimension,
-                    items: snapshot.data!.docs
-                        .map(
-                          (map) => DropdownMenuItem(
-                            child: Text(map.id),
-                            value: map.id,
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (String? val) {
-                      for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                        DocumentSnapshot snap = snapshot.data!.docs[i];
-                        setState(() {
-                          _selectedValue = val!;
-                          if (_selectedValue == snap.get('name')) {
-                            skuEditingController.text = snap.get('SKU');
-                            barcodeEditingController.text = snap.get('barcode');
-                          }
-                        });
+                    )
+                    .toList(),
+                onChanged: (String? val) {
+                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                    DocumentSnapshot snap = snapshot.data!.docs[i];
+                    setState(() {
+                      _selectedValue = val!;
+                      if (_selectedValue == snap.get('name')) {
+                        skuEditingController.text = snap.get('SKU');
+                        barcodeEditingController.text = snap.get('barcode');
                       }
-                    },
-                  );
-                }
-              }),
-        ],
-      ),
+                    });
+                  }
+                },
+              );
+            }
+          }),
     );
 
     //add button
