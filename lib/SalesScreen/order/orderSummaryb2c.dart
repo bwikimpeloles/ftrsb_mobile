@@ -178,19 +178,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       orderid = getRandomString(10);                      
                     });
 
-                    Map<String, dynamic> customer = {
-                      'name': cust.name,
-                      'phone': cust.phone,
-                      'address': cust.address,
-                      'email': cust.email,
-                      'channel': cust.channel,
-                      'salesStaff': user?.uid,
-                    };
-
-                    if (cust.phone != null) {
-                      FirebaseFirestore.instance.collection('Customer').add(customer);
-                    } 
-
                     Future<int> getOrderCount(String? phone) async {
                       var docs = await FirebaseFirestore.instance
                           .collection('OrderB2C')
@@ -201,6 +188,20 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                     }
 
                     int _count = await getOrderCount(cust.phone) + 1;
+
+                    Map<String, dynamic> customer = {
+                      'name': cust.name,
+                      'phone': cust.phone,
+                      'address': cust.address,
+                      'email': cust.email,
+                      'channel': cust.channel,
+                      'salesStaff': user?.uid,
+                      'count': _count
+                    };
+
+                    if (cust.phone != null) {
+                      FirebaseFirestore.instance.collection('Customer').add(customer);
+                    } 
 
                     Map<String, dynamic> orderb2c = {
                       'custName': cust.name,
@@ -216,7 +217,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
-                      'count': _count
                     };
 
                     Future uploadFile() async{
