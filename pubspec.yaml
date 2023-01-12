@@ -63,6 +63,7 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   timezone:
   flutter_native_timezone:
+  notification_permissions: ^0.6.1
 
 dev_dependencies:
   flutter_test:

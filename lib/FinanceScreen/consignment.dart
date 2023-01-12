@@ -2,16 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
 import 'sidebar_navigation.dart';
 
 class ConsignmentFinance extends StatefulWidget {
@@ -47,10 +43,8 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     tz.initializeTimeZones();
     const AndroidInitializationSettings androidInitializationSettings =
     AndroidInitializationSettings("@mipmap/ic_launcher");
-
     const IOSInitializationSettings iosInitializationSettings =
     IOSInitializationSettings();
-
     const InitializationSettings initializationSettings =
     InitializationSettings(
       android: androidInitializationSettings,
@@ -73,44 +67,6 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     agree = snap['consignmentnotification'];
     print(agree);
     return consignmentnotification;
-  }
-
-  showNotification(int nom,String title, String body) {
-
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails(
-      "ScheduleNotification001",
-      "Notify Me",
-      importance: Importance.high,
-    );
-
-    const IOSNotificationDetails iosNotificationDetails =
-    IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: iosNotificationDetails,
-      macOS: null,
-      linux: null,
-    );
-
-    // flutterLocalNotificationsPlugin.show(
-    //     01, _title.text, _desc.text, notificationDetails);
-
-    tz.initializeTimeZones();
-    final tz.TZDateTime scheduledAt = tz.TZDateTime.from(scheduleDate, tz.local);
-
-    flutterLocalNotificationsPlugin.zonedSchedule(
-        nom, title, body, scheduledAt, notificationDetails,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.wallClockTime,
-        androidAllowWhileIdle: true,
-        payload: 'This is the data');
-    print('there is notification on ${scheduleDate}');
   }
 
   void updateSwitch(bool newValue) async {
@@ -155,76 +111,37 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     }
   }
 
-  initInfo() async {
-    final String currentTimeZone =  await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
-    print(currentTimeZone);
-    var androidInitialize = const AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettings = InitializationSettings(android: androidInitialize);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async{
-      try{
-        if(payload !=null && payload.isNotEmpty){
+  showNotification(int nom,String title, String body) {
+    tz.initializeTimeZones();
+    final tz.TZDateTime scheduledAt = tz.TZDateTime.from(scheduleDate, tz.local);
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      "ScheduleNotification001",
+      "Notify Me",
+      importance: Importance.high,
+    );
 
-        } else{
+    const IOSNotificationDetails iosNotificationDetails =
+    IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
 
-        }
-      } catch(e){
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: iosNotificationDetails,
+      macOS: null,
+      linux: null,
+    );
 
-      }
-      return;
-    });
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print(".......onMessage.......");
-      print("onMessage: ${message.notification?.title}/${message.notification?.body}");
-
-      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(message.notification!.body.toString(), htmlFormatBigText: true,
-        contentTitle: message.notification!.title.toString(), htmlFormatContentTitle: true,);
-
-      AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails('dbfood', 'dbfood', importance: Importance.high,
-          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, groupKey: 'com.example.ftrsb_mobile');
-
-      NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
-      final tz.TZDateTime scheduleAt = tz.TZDateTime.from(scheduleDate, tz.local);
-      await flutterLocalNotificationsPlugin.zonedSchedule(0, message.notification?.title, message.notification?.body, scheduleAt, platformChannelSpecifics,
-          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime, androidAllowWhileIdle: true);
-
-    });
-  }
-
-  void sendPushMessage(String token, String body, String title) async {
-    try{
-      print('schedule reminder');
-      await http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-        headers: <String,String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'key=AAAAquYJm3g:APA91bHUq0lYoo_IHhXkWn7xeIY4WkJbW_D9P3d0Kpkfv1kJDq50L8LOBHE4VSZkw03mk91ICY72-z8Mv8MoBmmJWPHlZJa8X6vDxXmOTkl4gWux9zhIJNtnUlOeZTiNrlye6OaXZTZS',
-        },
-        body: jsonEncode(
-          <String, dynamic>{
-            'priority': 'high',
-            'data'  : <String, dynamic>{
-              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-              'status': 'done',
-              'body': body,
-              'title': title,
-            },
-
-            "notification" : <String, dynamic>{
-              "title": title,
-              "body": body,
-              "android_channel_id": "dbfood"
-            },
-            "to": "/topics/topicconsignment",
-          },
-        ),
-      );
-    } catch(e){
-      if(kDebugMode){
-        print("error push notification");
-      }
-    }
-
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        nom, title, body, scheduledAt, notificationDetails,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.wallClockTime,
+        androidAllowWhileIdle: true,
+        payload: 'This is the data');
+    print('there is notification on ${scheduleDate}');
   }
 
   void getToken() async {
@@ -283,10 +200,71 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     });
   }
 
+  _showActionDialog({required Map verify}) async{
+    actualamount.text = verify['amount'];
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Payment from ${verify['custName']} has been collected?'),
+            content: Form(
+              key: _formKey,
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  RegExp regex = RegExp(r'(\d+)');
+                  if (value!.isEmpty) {
+                    return ("This field cannot be empty!");
+                  }
+                  if (!regex.hasMatch(value)) {
+                    return ("Enter valid amount!");
+                  }
+                  return null;
+                },
+                controller: actualamount,
+                decoration: InputDecoration(
+                  label: Text('Actual Amount Collected (RM)'),
+                  hintText: 'Enter Actual Amount Collected(RM)',
+                  fillColor: Colors.white,
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel', style: TextStyle(color: Colors.grey),)),
+              TextButton(
+                  onPressed: () async {
+
+                    await reference
+                        .doc(verify['key']).update({
+                      'paymentStatus' : 'unpaid',
+                    }).whenComplete(() => Navigator.pop(context));
+                  },
+                  child: Text('No', style: TextStyle(color: Colors.red),)),
+              TextButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      //valid flow
+                      await reference
+                          .doc(verify['key']).update({
+                        'amount': actualamount.text,
+                        'paymentStatus' : 'paid',
+                      }).whenComplete(() => Navigator.pop(context));
+                    }
+
+                  },
+                  child: Text('Yes', style: TextStyle(color: Colors.green),)),
+            ],
+          );
+        });
+  }
 
   Widget _buildVerifyItem({required Map verify}) {
     print(agree);
-    //scheduleDate = DateFormat('dd-MM-yyyy h:mm:ssa', 'en_US').parseLoose('${DateFormat('dd-MM-yyyy').format((verify['collectionDate']as Timestamp).toDate()).toString()} 10:00:00AM');
+
     scheduleDate = (verify['collectionDate'] as Timestamp).toDate();
     if(verify['paymentStatus'] == 'unpaid' && agree==true && scheduleDate.isAfter(DateTime.now())){
 
@@ -296,7 +274,6 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
       String bodyText = "Collect from ${verify['custName']} RM ${verify['amount']} \n(Collection Date: ${DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString()})";
       if(userid!=""){
         print(token1);
-        //sendPushMessage(token1, bodyText, titleText);
         showNotification(int.parse(verify['custPhone']),titleText,bodyText);
       }
     }
@@ -329,7 +306,6 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                 (verify['paymentStatus'] == 'unpaid')?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  //crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('COLLECT IN ${(daysBetween(DateTime.now(), (verify['collectionDate']as Timestamp).toDate())).toString()} DAYS',
                       style: TextStyle(
@@ -604,68 +580,6 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     );
   }
 
-  _showActionDialog({required Map verify}) async{
-    actualamount.text = verify['amount'];
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Payment from ${verify['custName']} has been collected?'),
-            content: Form(
-              key: _formKey,
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  RegExp regex = RegExp(r'(\d+)');
-                  if (value!.isEmpty) {
-                    return ("This field cannot be empty!");
-                  }
-                  if (!regex.hasMatch(value)) {
-                    return ("Enter valid amount!");
-                  }
-                  return null;
-                },
-                controller: actualamount,
-                decoration: InputDecoration(
-                  label: Text('Actual Amount Collected (RM)'),
-                  hintText: 'Enter Actual Amount Collected(RM)',
-                  fillColor: Colors.white,
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel', style: TextStyle(color: Colors.grey),)),
-              TextButton(
-                  onPressed: () async {
-
-                    await reference
-                        .doc(verify['key']).update({
-                      'paymentStatus' : 'unpaid',
-                    }).whenComplete(() => Navigator.pop(context));
-                  },
-                  child: Text('No', style: TextStyle(color: Colors.red),)),
-              TextButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                    //valid flow
-                      await reference
-                          .doc(verify['key']).update({
-                        'amount': actualamount.text,
-                        'paymentStatus' : 'paid',
-                      }).whenComplete(() => Navigator.pop(context));
-                  }
-
-                  },
-                  child: Text('Yes', style: TextStyle(color: Colors.green),)),
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
   if (selectedValue == "paid") {
@@ -772,6 +686,5 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
 
     );
   }
-
 
 }

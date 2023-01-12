@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/cupertino.dart';
@@ -105,6 +104,32 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
     } else {
       print('User declined or has not accepted permission');
     }
+  }
+
+  _showDeleteDialog({required Map payment}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Delete ${payment['title']}'),
+            content: Text('Are you sure you want to delete?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    reference
+                        .doc(payment['key'])
+                        .delete()
+                        .whenComplete(() => Navigator.pop(context));
+                  },
+                  child: Text('Delete'))
+            ],
+          );
+        });
   }
 
 
@@ -318,31 +343,7 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
     );
   }
 
-  _showDeleteDialog({required Map payment}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Delete ${payment['title']}'),
-            content: Text('Are you sure you want to delete?'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              TextButton(
-                  onPressed: () {
-                    reference
-                        .doc(payment['key'])
-                        .delete()
-                        .whenComplete(() => Navigator.pop(context));
-                  },
-                  child: Text('Delete'))
-            ],
-          );
-        });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -455,11 +456,6 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
     );
   }
 
-  // the logout function
-  Future<void> logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
+
 }
 

@@ -5,9 +5,10 @@ import 'package:ftrsb_mobile/screens/login_screen.dart';
 
 class CustomAppBar extends StatelessWidget {
   String bartitle = '';
-  //String backpath = '';
 
-  CustomAppBar({required this.bartitle,});
+  CustomAppBar({
+    required this.bartitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +16,12 @@ class CustomAppBar extends StatelessWidget {
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () {
-          if (bartitle == 'Add Customer Information' || bartitle == 'Add Prospect' || bartitle == 'Customer'|| bartitle == 'Order History') {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const HomeScreenSales()));
+          if (bartitle == 'Add Customer Information' ||
+              bartitle == 'Add Prospect' ||
+              bartitle == 'Customer' ||
+              bartitle == 'Order History') {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const HomeScreenSales()));
           } else {
             Navigator.pop(context);
           }

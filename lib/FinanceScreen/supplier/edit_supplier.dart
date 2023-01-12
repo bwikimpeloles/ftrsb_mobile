@@ -14,6 +14,7 @@ class _EditSupplierState extends State<EditSupplier> {
   late TextEditingController _companynameController, _phonenumberController, _shippingaddressController, _emailController, _picController;
   final _formKey = GlobalKey<FormState>();
   late CollectionReference _ref;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -25,6 +26,43 @@ class _EditSupplierState extends State<EditSupplier> {
     _picController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('Suppliers');
     getSupplierDetail();
+  }
+
+  getSupplierDetail() async {
+    DocumentSnapshot snapshot = (await _ref.doc(widget.supplierKey).get());
+
+    Map supplier = snapshot.data() as Map;
+
+    _companynameController.text = supplier['companyname'];
+
+    _phonenumberController.text = supplier['phonenumber'];
+
+    _shippingaddressController.text = supplier['shippingaddress'];
+
+    _emailController.text = supplier['email'];
+
+    _picController.text = supplier['pic'];
+
+  }
+
+  void saveSupplier() {
+    String companyname = _companynameController.text;
+    String phonenumber = _phonenumberController.text;
+    String shippingaddress = _shippingaddressController.text;
+    String email = _emailController.text;
+    String pic = _picController.text;
+
+    Map<String,String> supplier = {
+      'companyname':companyname,
+      'phonenumber': phonenumber,
+      'shippingaddress':shippingaddress,
+      'email': email,
+      'pic':pic,
+    };
+
+    _ref.doc(widget.supplierKey).update(supplier).then((value) {
+      Navigator.pop(context);
+    });
   }
 
   @override
@@ -179,40 +217,4 @@ class _EditSupplierState extends State<EditSupplier> {
     );
   }
 
-  getSupplierDetail() async {
-    DocumentSnapshot snapshot = (await _ref.doc(widget.supplierKey).get());
-
-    Map supplier = snapshot.data() as Map;
-
-    _companynameController.text = supplier['companyname'];
-
-    _phonenumberController.text = supplier['phonenumber'];
-
-    _shippingaddressController.text = supplier['shippingaddress'];
-
-    _emailController.text = supplier['email'];
-
-    _picController.text = supplier['pic'];
-
-  }
-
-  void saveSupplier() {
-    String companyname = _companynameController.text;
-    String phonenumber = _phonenumberController.text;
-    String shippingaddress = _shippingaddressController.text;
-    String email = _emailController.text;
-    String pic = _picController.text;
-
-    Map<String,String> supplier = {
-      'companyname':companyname,
-      'phonenumber': phonenumber,
-      'shippingaddress':shippingaddress,
-      'email': email,
-      'pic':pic,
-    };
-
-    _ref.doc(widget.supplierKey).update(supplier).then((value) {
-      Navigator.pop(context);
-    });
-  }
 }

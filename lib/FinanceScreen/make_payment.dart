@@ -78,8 +78,33 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
     }
   }
 
+  _showDeleteDialog({required Map payment}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Delete ${payment['title']}'),
+            content: Text('Are you sure you want to delete?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    reference
+                        .doc(payment['key'])
+                        .delete()
+                        .whenComplete(() => Navigator.pop(context));
+                  },
+                  child: Text('Delete'))
+            ],
+          );
+        });
+  }
 
-    Widget _buildPaymentItem({required Map payment}) {
+  Widget _buildPaymentItem({required Map payment}) {
     return GestureDetector(
 
       child: Padding(
@@ -287,32 +312,6 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
         ),
       ),
     );
-  }
-
-  _showDeleteDialog({required Map payment}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Delete ${payment['title']}'),
-            content: Text('Are you sure you want to delete?'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              TextButton(
-                  onPressed: () {
-                    reference
-                        .doc(payment['key'])
-                        .delete()
-                        .whenComplete(() => Navigator.pop(context));
-                  },
-                  child: Text('Delete'))
-            ],
-          );
-        });
   }
 
   @override

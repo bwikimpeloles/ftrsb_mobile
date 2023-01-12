@@ -18,7 +18,6 @@ import '../screens/login_screen.dart';
 import '../model/user_model.dart';
 
 class NavigationDrawer extends StatefulWidget {
-
   @override
   _NavigationDrawerState createState() => _NavigationDrawerState();
 }
@@ -58,23 +57,8 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       );
 }
 
-/*Widget buildHeader(BuildContext context) => 
-Container(
-  color: Colors.white,
-  padding: EdgeInsets.only(
-    top: MediaQuery.of(context).padding.top,
-  ),
-  child: Column(
-    children: [
-      SizedBox(height: 10,),
-      Text('',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-      SizedBox(height: 23,),
-    ],
-  ),
-);*/
-
-Widget buildMenuItems(BuildContext context, UserModel loggedInUser) => Container(
+Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
+    Container(
       padding: const EdgeInsets.all(18),
       child: Wrap(
         runSpacing: 16,
@@ -83,25 +67,27 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) => Container
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              (loggedInUser.role=="Admin") ? Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => HomeScreenAdmin(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          ) :
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => HomeScreenSales(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
+              (loggedInUser.role == "Admin")
+                  ? Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            HomeScreenAdmin(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    )
+                  : Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            HomeScreenSales(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
             },
           ),
-          
           ListTile(
             leading: const Icon(Icons.assignment_outlined),
             title: const Text('Submit New Order'),

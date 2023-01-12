@@ -81,7 +81,7 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
                     ),
                   ),
                 ),
-              ), /* add child content here */
+              ),
             ),
           ),
         );

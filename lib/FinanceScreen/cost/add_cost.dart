@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../model/cost_model.dart';
-import '../cost.dart';
 
 class AddCost extends StatefulWidget {
   @override
@@ -13,12 +10,12 @@ class AddCost extends StatefulWidget {
 }
 
 class _AddCostState extends State<AddCost> {
-  late TextEditingController _nameController, _categoryController, _amountController, _supplierController, _dateController, _referencenoController;
+  late TextEditingController _nameController, _amountController,  _referencenoController;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   var selectedSupplier;
+  String? selectedValue = null;
   var uuid = Uuid();
   final _formKey = GlobalKey<FormState>();
-
 
   List<DropdownMenuItem<String>> get dropdownItems{
     List<DropdownMenuItem<String>> menuItems = [
@@ -29,21 +26,33 @@ class _AddCostState extends State<AddCost> {
     ];
     return menuItems;
   }
-  String? selectedValue = null;
-
-
-  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _nameController = TextEditingController();
-    _categoryController = TextEditingController();
     _amountController = TextEditingController();
-    _supplierController = TextEditingController();
-    _dateController = TextEditingController();
     _referencenoController = TextEditingController();
-    _ref = FirebaseFirestore.instance.collection('Cost');
+  }
+
+  postDetailsToFirestore(String v1) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    CostModel costModel = CostModel();
+    costModel.name = _nameController.text;
+    costModel.category = selectedValue;
+    costModel.amount = _amountController.text;
+    costModel.supplier = selectedSupplier;
+    costModel.date = dateselect; //formattedDate;
+    costModel.referenceno = _referencenoController.text;
+
+    await firebaseFirestore
+        .collection("Cost")
+        .doc(v1)
+        .set(costModel.toMap()).then((value) {
+      Navigator.pop(context);
+    });
+
+
   }
 
   @override
@@ -88,10 +97,8 @@ class _AddCostState extends State<AddCost> {
                       fillColor: Colors.white,
                       filled: true,
                       contentPadding: EdgeInsets.all(15),
-                      //fillColor: Colors.blueAccent,
                     ),
                     validator: (value) => value == null ? "Select a category" : null,
-                    //dropdownColor: Colors.blueAccent,
                     value: selectedValue,
                     onChanged: (String? newValue) {
                       setState(() {
@@ -150,7 +157,6 @@ class _AddCostState extends State<AddCost> {
                                   fillColor: Colors.white,
                                   filled: true,
                                   contentPadding: EdgeInsets.all(15),
-                                  //fillColor: Colors.blueAccent,
                                 ),
                                 onChanged: (supplierValue) {
                                   setState(() {
@@ -236,29 +242,9 @@ class _AddCostState extends State<AddCost> {
     );
   }
   void saveCost(){
-    //var formatter = new DateFormat('yyyy-MM-dd');
-    //String formattedDate = formatter.format(dateselect);
     String v1 = uuid.v1();
-
-    String name = _nameController.text;
-    String? category = selectedValue;
-    String amount = _amountController.text;
-    String supplier = selectedSupplier;
-    String date = DateFormat('dd/MM/yyyy').format(dateselect).toString();  //formattedDate;
-    String referenceno = _referencenoController.text;
-
-    Map<String,String> cost = {
-      'name':name,
-      'category': category!,
-      'amount':amount,
-      'supplier': supplier,
-      'date':date,
-      'referenceno': referenceno,
-    };
-
     if(double.tryParse(_amountController.text) != null){
       postDetailsToFirestore(v1);
-
     } else{
       showDialog(
         context: context,
@@ -280,35 +266,5 @@ class _AddCostState extends State<AddCost> {
 
   }
 
-  postDetailsToFirestore(String v1) async {
-    // calling our firestore
-    // calling our cost model
-    // sedning these values
 
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    //User? user = _auth.currentUser;
-
-    CostModel costModel = CostModel();
-
-    // writing all the values
-
-    //costModel.name = nameEditingController.text;
-    costModel.name = _nameController.text;
-    costModel.category = selectedValue;
-    costModel.amount = _amountController.text;
-    costModel.supplier = selectedSupplier;
-    costModel.date = dateselect; //formattedDate;
-    costModel.referenceno = _referencenoController.text;
-
-
-
-    await firebaseFirestore
-        .collection("Cost")
-        .doc(v1)
-        .set(costModel.toMap()).then((value) {
-      Navigator.pop(context);
-    });
-
-
-  }
 }

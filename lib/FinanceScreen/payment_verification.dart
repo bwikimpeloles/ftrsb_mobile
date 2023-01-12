@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'sidebar_navigation.dart';
 
 class PaymentVerificationFinance extends StatefulWidget {
@@ -24,6 +23,42 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
     super.initState();
     _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "No");
 
+  }
+
+  _showActionDialog({required Map verify}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Verify ${verify['custName']}'),
+            content: Text('Select Action:'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel', style: TextStyle(color: Colors.grey),)),
+              TextButton(
+                  onPressed: () async {
+                    await reference
+                        .doc(verify['key']).update({
+                      'action' : 'Rejected',
+                      'paymentVerify' : 'Yes',
+                    }).whenComplete(() => Navigator.pop(context));
+                  },
+                  child: Text('Reject', style: TextStyle(color: Colors.red),)),
+              TextButton(
+                  onPressed: () async {
+                    await reference
+                        .doc(verify['key']).update({
+                      'action' : 'Approved',
+                      'paymentVerify' : 'Yes',
+                    }).whenComplete(() => Navigator.pop(context));
+                  },
+                  child: Text('Approve', style: TextStyle(color: Colors.green),)),
+            ],
+          );
+        });
   }
 
   Widget _buildVerifyItem({required Map verify}) {
@@ -246,42 +281,6 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
     );
   }
 
-  _showActionDialog({required Map verify}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Verify ${verify['custName']}'),
-            content: Text('Select Action:'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel', style: TextStyle(color: Colors.grey),)),
-              TextButton(
-                  onPressed: () async {
-                    await reference
-                        .doc(verify['key']).update({
-                      'action' : 'Rejected',
-                      'paymentVerify' : 'Yes',
-                    }).whenComplete(() => Navigator.pop(context));
-                  },
-                  child: Text('Reject', style: TextStyle(color: Colors.red),)),
-              TextButton(
-                  onPressed: () async {
-                    await reference
-                        .doc(verify['key']).update({
-                      'action' : 'Approved',
-                      'paymentVerify' : 'Yes',
-                    }).whenComplete(() => Navigator.pop(context));
-                  },
-                  child: Text('Approve', style: TextStyle(color: Colors.green),)),
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     if (selectedValue == "Approved") {
@@ -370,6 +369,5 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
 
     );
   }
-
 
 }

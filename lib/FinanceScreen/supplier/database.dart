@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Database {
   late FirebaseFirestore firestore;
+
   initiliase() {
     firestore = FirebaseFirestore.instance;
   }
