@@ -20,6 +20,7 @@ class ConsignmentFinance extends StatefulWidget {
 }
 
 class _ConsignmentFinanceState extends State<ConsignmentFinance> {
+  TextEditingController actualamount = TextEditingController();
   late Query _ref;
   String? mtoken = "";
   CollectionReference reference =
@@ -34,6 +35,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
   String token1='';
   bool agree=false;
   late DateTime? dateselect = new DateTime.now();
+  final _formKey = GlobalKey<FormState>();
 
 
   @override
@@ -360,7 +362,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                 ),
                 Row(
                   children: [
-                    Text('Amount: ',
+                    Text('Amount: RM',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800),),
@@ -542,6 +544,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                   children: [
                     GestureDetector(
                       onTap: () async {
+                        dateselect = (verify['collectionDate'] as Timestamp).toDate();
                         await pickDateTime();
                         print('This is ${dateselect}');
                         await reference
@@ -554,13 +557,14 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                           Icon(
                             Icons.access_time,
                             color: Theme.of(context).primaryColor,
+                            size: 16,
                           ),
                           SizedBox(
                             width: 6,
                           ),
-                          Text('Change Date',
+                          Text('Change Collection Date',
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 13,
                                   color: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w600)),
                         ],
@@ -576,13 +580,14 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                           Icon(
                             Icons.edit_note,
                             color: Theme.of(context).primaryColor,
+                            size: 16,
                           ),
                           SizedBox(
                             width: 6,
                           ),
                           Text('Update Status',
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 13,
                                   color: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w600)),
                         ],
@@ -599,13 +604,35 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
     );
   }
 
-  _showActionDialog({required Map verify}) {
+  _showActionDialog({required Map verify}) async{
+    actualamount.text = verify['amount'];
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Order B2B from ${verify['custName']}'),
-            content: Text('Payment Collected?'),
+            title: Text('Payment from ${verify['custName']} has been collected?'),
+            content: Form(
+              key: _formKey,
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  RegExp regex = RegExp(r'(\d+)');
+                  if (value!.isEmpty) {
+                    return ("This field cannot be empty!");
+                  }
+                  if (!regex.hasMatch(value)) {
+                    return ("Enter valid amount!");
+                  }
+                  return null;
+                },
+                controller: actualamount,
+                decoration: InputDecoration(
+                  label: Text('Actual Amount Collected (RM)'),
+                  hintText: 'Enter Actual Amount Collected(RM)',
+                  fillColor: Colors.white,
+                ),
+              ),
+            ),
             actions: [
               TextButton(
                   onPressed: () {
@@ -614,6 +641,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                   child: Text('Cancel', style: TextStyle(color: Colors.grey),)),
               TextButton(
                   onPressed: () async {
+
                     await reference
                         .doc(verify['key']).update({
                       'paymentStatus' : 'unpaid',
@@ -622,10 +650,15 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                   child: Text('No', style: TextStyle(color: Colors.red),)),
               TextButton(
                   onPressed: () async {
-                    await reference
-                        .doc(verify['key']).update({
-                      'paymentStatus' : 'paid',
-                    }).whenComplete(() => Navigator.pop(context));
+                    if (_formKey.currentState!.validate()) {
+                    //valid flow
+                      await reference
+                          .doc(verify['key']).update({
+                        'amount': actualamount.text,
+                        'paymentStatus' : 'paid',
+                      }).whenComplete(() => Navigator.pop(context));
+                  }
+
                   },
                   child: Text('Yes', style: TextStyle(color: Colors.green),)),
             ],
@@ -636,12 +669,12 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
   @override
   Widget build(BuildContext context) {
   if (selectedValue == "paid") {
-      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").orderBy("custName").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").orderBy('orderID').startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
     else{
-      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").orderBy("custName").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").orderBy('orderID').startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
@@ -697,7 +730,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.teal)
                         ),
-                        hintText: 'Search',
+                        hintText: 'Search Order ID',
                         hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 18

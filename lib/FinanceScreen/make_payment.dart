@@ -21,6 +21,9 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   User? user = FirebaseAuth.instance.currentUser;
+  List<String> filter = ["Pending","Approved", "Rejected"];
+  String? selectedValue="Pending";
+  String search='';
 
   @override
   void initState() {
@@ -174,6 +177,31 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
 
                 Row(
                   children: [
+                    Text('PO Number: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        payment['ponumber'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+
+                Row(
+                  children: [
                     Text('Status: ',
                       style: TextStyle(
                           fontSize: 16,
@@ -289,6 +317,21 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
 
   @override
   Widget build(BuildContext context) {
+    if (selectedValue == "Approved") {
+      _ref = FirebaseFirestore.instance.collection('MakePayments').where('status', isEqualTo: "Approved").orderBy('ponumber').startAt([search])
+          .endAt([search + '\uf8ff']);
+      print(selectedValue);
+
+    } else if (selectedValue == "Rejected") {
+      _ref = FirebaseFirestore.instance.collection('MakePayments').where('status', isEqualTo: "Rejected").orderBy('ponumber').startAt([search])
+          .endAt([search + '\uf8ff']);
+      print(selectedValue);
+    }
+    else{
+      _ref = FirebaseFirestore.instance.collection('MakePayments').where('status', isEqualTo: "Pending").orderBy('ponumber').startAt([search])
+          .endAt([search + '\uf8ff']);
+      print(selectedValue);
+    }
     return Scaffold(
       drawer: NavigationDrawer(),
       appBar: AppBar(
@@ -316,17 +359,69 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
           SizedBox(width: 10,),
         ],
       ),
-      body: Container(
-        height: double.infinity,
-        child: FirestoreAnimatedList(
-          query: _ref,
-          itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
-              Animation<double> animation, int index) {
-            Map<String, dynamic> payment = snapshot?.data() as Map<String, dynamic>;
-            payment['key'] = snapshot?.id;
-            return _buildPaymentItem(payment: payment);
-          },
+      body: Column(
+        children: <Widget>[
+          SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, //Center Row contents horizontally,
+            crossAxisAlignment: CrossAxisAlignment.center, //Center Row contents vertically,
+            children: [
+              Flexible(
+                child: SizedBox(
+                  height: 50,
+                  width: 200,
+                  child: TextField(
+                    onChanged: (text){
+                      setState(() {
+                        search=text;
+                      });
+                    },
+                    cursorColor: Colors.teal,
+                    decoration: InputDecoration(
+                        fillColor: Colors.white30,
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.teal)
+                        ),
+                        hintText: 'PO Number',
+                        hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18
+                        ),
+                        prefixIcon: Icon(Icons.search)
+                    ),
+                  ),
+                ),
+              ),
+              Stack(
+                children: [
+                  Text("Filter: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
+                  DropdownButton(
+                    value: selectedValue,
+                    items: filter.map((item) => DropdownMenuItem<String>(value: item,child: Text(item))).toList(),
+                    onChanged: (String? newValue){
+                      setState(() {
+                        selectedValue = newValue!;
+                      });
+                    },
+
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Flexible(
+            child: FirestoreAnimatedList(
+            query: _ref,
+            itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
+                Animation<double> animation, int index) {
+              Map<String, dynamic> payment = snapshot?.data() as Map<String, dynamic>;
+              payment['key'] = snapshot?.id;
+              return _buildPaymentItem(payment: payment);
+            },
         ),
+          )],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
