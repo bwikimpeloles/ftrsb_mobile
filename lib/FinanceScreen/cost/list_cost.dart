@@ -1,4 +1,3 @@
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/add_cost.dart';
@@ -21,6 +20,29 @@ class _ListCostFinanceState extends State<ListCostFinance> {
     super.initState();
     _ref = FirebaseFirestore.instance.collection('Cost')
         .orderBy('name');
+  }
+
+  _showDeleteDialog({required Map cost}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Delete ${cost['name']}'),
+            content: Text('Are you sure you want to delete?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    FirebaseFirestore.instance.collection('Cost').doc(cost['key']).delete().whenComplete(() => Navigator.pop(context));;
+                  },
+                  child: Text('Delete'))
+            ],
+          );
+        });
   }
 
   Widget _buildCostItem({required Map cost}) {
@@ -255,29 +277,6 @@ class _ListCostFinanceState extends State<ListCostFinance> {
         ),
       ),
     );
-  }
-
-  _showDeleteDialog({required Map cost}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Delete ${cost['name']}'),
-            content: Text('Are you sure you want to delete?'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              TextButton(
-                  onPressed: () {
-                    FirebaseFirestore.instance.collection('Cost').doc(cost['key']).delete().whenComplete(() => Navigator.pop(context));;
-                  },
-                  child: Text('Delete'))
-            ],
-          );
-        });
   }
 
   @override

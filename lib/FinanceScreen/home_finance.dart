@@ -19,8 +19,6 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
   UserModel loggedInUser = UserModel();
   String? mtoken = "";
 
-
-
   @override
   void initState() {
     super.initState();

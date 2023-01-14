@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/list_cost.dart';
 import 'package:pie_chart/pie_chart.dart';
-
 import '../model/cost_model.dart';
 import 'sidebar_navigation.dart';
 
@@ -19,13 +18,22 @@ class _CostFinanceState extends State<CostFinance> {
 
   late List<CostModel> _cost = [];
 
+  List<Color> colorList = [
+    Color.fromRGBO(0, 0, 0, 0),
+    Color.fromRGBO(82, 98, 255, 1),
+    Color.fromRGBO(46, 198, 255, 1),
+    Color.fromRGBO(123, 201, 82, 1),
+    Color.fromRGBO(255, 171, 67, 1),
+    Color.fromRGBO(252, 91, 57, 1),
+    Color.fromRGBO(139, 135, 130, 1),
+  ];
+
   Map<String, double> getCategoryData() {
     Map<String, double> catMap = {"":0,};
     if (_cost==null) {
 
       catMap.update("", (value) => 0);
     } else {
-      // test[item.category] = test[item.category]! + 1;
 
     for (var item in _cost) {
       if (catMap.containsKey(item.category) == false) {
@@ -33,9 +41,7 @@ class _CostFinanceState extends State<CostFinance> {
       } else {
         double a =double.parse(item.amount!);
         catMap.update(item.category!, (double) => catMap[item.category]!+ a);
-        // test[item.category] = test[item.category]! + 1;
       }
-      //print(catMap);
     }}
     total=catMap.toString();
     print(total);
@@ -58,20 +64,8 @@ class _CostFinanceState extends State<CostFinance> {
         ]))
             .toList(),
       );
-
-
     return a!;
   }
-
-  List<Color> colorList = [
-    Color.fromRGBO(0, 0, 0, 0),
-    Color.fromRGBO(82, 98, 255, 1),
-    Color.fromRGBO(46, 198, 255, 1),
-    Color.fromRGBO(123, 201, 82, 1),
-    Color.fromRGBO(255, 171, 67, 1),
-    Color.fromRGBO(252, 91, 57, 1),
-    Color.fromRGBO(139, 135, 130, 1),
-  ];
 
   Widget pieChartExampleOne() {
     return PieChart(
@@ -106,7 +100,6 @@ class _CostFinanceState extends State<CostFinance> {
 
   @override
   Widget build(BuildContext context) {
-    //.where('date', isEqualTo: "2022-12-28 00:00:00.000")
     DateTime date = new DateTime.now();
     DateTime newDateThisMonth = new DateTime(date.year, date.month, 1);
     DateTime newDateThisYear = new DateTime(date.year, 1, 1);
@@ -126,7 +119,6 @@ class _CostFinanceState extends State<CostFinance> {
               .day)
       ).snapshots();
       print(selectedValue);
-      //["All","Today","This Month","This Year","30 Days", "365 Days"];
     } else if (selectedValue == "This Month") {
       expStream =
           FirebaseFirestore.instance.collection('Cost').where(
@@ -171,14 +163,11 @@ class _CostFinanceState extends State<CostFinance> {
         _cost = [];
         for (int i = 0; i < snapshot.docs.length; i++) {
           var a = snapshot.docs[i];
-          // print(a.data());
           CostModel exp = CostModel().fromJson(a.data());
           _cost.add(exp);
-          // print(exp);
         }
       }
     }
-
 
     return Scaffold(
       drawer: NavigationDrawer(),

@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
-
 import 'sidebar_navigation.dart';
 import 'supplier/add_supplier.dart';
 import 'supplier/edit_supplier.dart';
@@ -29,6 +27,43 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
 
   }
 
+  _showDeleteDialog({required Map supplier}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Delete ${supplier['companyname']}'),
+            content: Text('Are you sure you want to delete?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+              TextButton(
+                  onPressed: () async {
+
+                    await FirebaseStorage.instance.ref('doimages/${supplier['key']}').listAll().then((value) {
+                      value.items.forEach((element) {
+                        FirebaseStorage.instance.ref(element.fullPath).delete();
+                      });});
+
+                    await FirebaseFirestore.instance.collection('details').where('supplierkey', isEqualTo: supplier['key']).get()
+                        .then((snapshot) async {
+                      for(DocumentSnapshot ds in snapshot.docs) {
+                        await ds.reference.delete();
+                        print(ds.reference);
+                      }
+                    });
+                    reference
+                        .doc(supplier['key']).delete()
+                        .whenComplete(() => Navigator.pop(context));
+                  },
+                  child: Text('Delete'))
+            ],
+          );
+        });
+  }
 
   Widget _buildSupplierItem({required Map supplier}) {
     return GestureDetector(
@@ -265,36 +300,6 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
     );
   }
 
-  _showDeleteDialog({required Map supplier}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Delete ${supplier['companyname']}'),
-            content: Text('Are you sure you want to delete?'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              TextButton(
-                  onPressed: () async {
-
-          await FirebaseStorage.instance.ref('doimages/${supplier['key']}').listAll().then((value) {
-          value.items.forEach((element) {
-          FirebaseStorage.instance.ref(element.fullPath).delete();
-          });});
-                    reference
-                        .doc(supplier['key']).delete()
-                        .whenComplete(() => Navigator.pop(context));
-                  },
-                  child: Text('Delete'))
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -307,7 +312,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
           SizedBox(height: 10,),
           SizedBox(
               height: 50,
-              width: 200,
+              width: 250,
               child: TextField(
                 onChanged: (text){
                   setState(() {
@@ -325,7 +330,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: Colors.teal)
                     ),
-                    hintText: 'Search',
+                    hintText: 'Search Company Name',
                     hintStyle: TextStyle(
                         color: Colors.grey,
                         fontSize: 18
@@ -363,6 +368,4 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
       ),
     );
   }
-
-
 }

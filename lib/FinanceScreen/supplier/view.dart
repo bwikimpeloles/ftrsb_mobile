@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'photo_page.dart';
-
 import 'database.dart';
 
 class View extends StatefulWidget {
@@ -9,6 +8,7 @@ class View extends StatefulWidget {
   View({Key? key, required this.detail, required this.db, required this.supplierKey}) : super(key: key);
   Map detail;
   Database db;
+
   @override
   _ViewState createState() => _ViewState();
 }
@@ -23,6 +23,21 @@ class _ViewState extends State<View> {
     print(widget.detail);
     descController.text = widget.detail['description'];
     datentimeController.text = widget.detail['datentime'];
+  }
+
+  InputDecoration inputDecoration(String labelText) {
+    return InputDecoration(
+      labelText: labelText,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25.0),
+        borderSide: BorderSide(
+          width: 2.0,
+        ),
+      ),
+    );
   }
 
   @override
@@ -69,21 +84,6 @@ class _ViewState extends State<View> {
                 "Save",
                 style: TextStyle(color: Colors.green),
               )),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration inputDecoration(String labelText) {
-    return InputDecoration(
-      labelText: labelText,
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(25.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(25.0),
-        borderSide: BorderSide(
-          width: 2.0,
         ),
       ),
     );

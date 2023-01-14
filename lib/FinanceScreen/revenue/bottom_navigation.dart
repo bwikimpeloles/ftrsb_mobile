@@ -4,9 +4,7 @@ import 'revenue.dart';
 import 'revenue2.dart';
 
 class FinanceCurvedNavBar extends StatelessWidget {
-
   int indexnum = 0;
-
   FinanceCurvedNavBar({required this.indexnum});
 
   @override

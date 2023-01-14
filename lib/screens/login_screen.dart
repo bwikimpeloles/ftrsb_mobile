@@ -130,41 +130,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 35),
                     loginButton,
                     SizedBox(height: 15),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                            Text("Don't have an account?"),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            RegistrationScreen()));
-                              },
-                              child: Text(
-                                " Sign Up",
-                                style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15),
-                              ),
-                            ),
-                          ],),
-                          TextButton(
-                            child: Text("Forgot Password?",
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),),
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => ResetScreen()),
-                            ),
-                          )
-                        ])
+                    Center(
+                      child: TextButton(
+                        child: Text("Forgot Password?",
+                          style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),),
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ResetScreen()),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),

@@ -5,17 +5,14 @@ import 'package:flutter/material.dart';
 
 import 'package:ftrsb_mobile/FinanceScreen/consignment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
-import 'package:ftrsb_mobile/FinanceScreen/cost/list_cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/payment_verification.dart';
 import 'package:ftrsb_mobile/FinanceScreen/revenue/revenue.dart';
-import 'package:ftrsb_mobile/FinanceScreen/supplier/photo_page.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
 import '../AdminScreen/home_admin.dart';
 import '../model/user_model.dart';
 import '../screens/login_screen.dart';
-import 'LowStock/low_stock.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -38,8 +35,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         setState(() {});
       });
     }
-
-    setState(() {});
   }
 
   @override
@@ -77,6 +72,7 @@ Widget buildHeader(BuildContext context) => Container(
         ],
       ),
     );
+
 Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
     Container(
       padding: const EdgeInsets.all(18),
@@ -186,16 +182,7 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
           ListTile(
             leading: const Icon(Icons.add_alert),
             title: const Text('Stock Alert'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) => LowStock(),
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero,
-                ),
-              );
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.airport_shuttle),

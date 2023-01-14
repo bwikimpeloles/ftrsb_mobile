@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'view_payment.dart';
 
 class EditPayment extends StatefulWidget {
@@ -16,6 +15,8 @@ class EditPayment extends StatefulWidget {
 class _EditPaymentState extends State<EditPayment> {
   late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
   final _formKey = GlobalKey<FormState>();
+  String? selectedValue = null;
+  late CollectionReference _ref;
   DateTime? pickedDate;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   List<DropdownMenuItem<String>> get dropdownItems{
@@ -26,8 +27,7 @@ class _EditPaymentState extends State<EditPayment> {
     ];
     return menuItems;
   }
-  String? selectedValue = null;
-  late CollectionReference _ref;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -50,6 +50,56 @@ class _EditPaymentState extends State<EditPayment> {
     selectedValue = payment['status'];
     dateselect = DateFormat('dd/MM/yyyy').parse(payment['effectivedate']);
     setState(() {});
+  }
+
+  getPaymentDetail() async {
+    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
+
+    Map payment = snapshot.data() as Map;
+
+    _titleController.text = payment['title'];
+
+    _accountholderController.text = payment['accountholder'];
+
+    _amountController.text = payment['amount'];
+
+    _effectivedateController.text = payment['effectivedate'];
+
+    _ponumberController.text = payment['ponumber'];
+
+    _bankreferencenoController.text = payment['bankreferenceno'];
+
+    _statusController.text = payment['status'];
+
+  }
+
+  void savePayment() {
+    String title = _titleController.text;
+    String accountholder = _accountholderController.text;
+    String amount = _amountController.text;
+    String effectivedate = _effectivedateController.text;
+    String ponumber = _ponumberController.text;
+    String bankreferenceno = _bankreferencenoController.text;
+    String status = selectedValue!;
+
+    Map<String,String> payment = {
+      'title':title,
+      'accountholder':accountholder,
+      'amount': amount,
+      'effectivedate': effectivedate,
+      'ponumber':ponumber,
+      'bankreferenceno': bankreferenceno,
+      'status':status,
+    };
+
+    _ref.doc(widget.paymentKey).update(payment).then((value) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (_) => ViewPayment(
+                paymentKey: widget.paymentKey,
+              )));
+    });
   }
 
   @override
@@ -177,7 +227,7 @@ class _EditPaymentState extends State<EditPayment> {
                         String? formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate!);
                         setState(() {
                           _effectivedateController.text =
-                              formattedDate; //set output date to TextField value.
+                              formattedDate;
                         });
                       } else {
                         return null;
@@ -224,10 +274,8 @@ class _EditPaymentState extends State<EditPayment> {
                         fillColor: Colors.white,
                         filled: true,
                         contentPadding: EdgeInsets.all(15),
-                        //fillColor: Colors.blueAccent,
                       ),
                       validator: (value) => value == null ? "Select status" : null,
-                      //dropdownColor: Colors.blueAccent,
                       value: selectedValue,
                       onChanged: (String? newValue) {
                         setState(() {
@@ -268,53 +316,5 @@ class _EditPaymentState extends State<EditPayment> {
     );
   }
 
-  getPaymentDetail() async {
-    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
 
-    Map payment = snapshot.data() as Map;
-
-    _titleController.text = payment['title'];
-
-    _accountholderController.text = payment['accountholder'];
-
-    _amountController.text = payment['amount'];
-
-    _effectivedateController.text = payment['effectivedate'];
-
-    _ponumberController.text = payment['ponumber'];
-
-    _bankreferencenoController.text = payment['bankreferenceno'];
-
-    _statusController.text = payment['status'];
-
-  }
-
-  void savePayment() {
-    String title = _titleController.text;
-    String accountholder = _accountholderController.text;
-    String amount = _amountController.text;
-    String effectivedate = _effectivedateController.text;
-    String ponumber = _ponumberController.text;
-    String bankreferenceno = _bankreferencenoController.text;
-    String status = selectedValue!;
-
-    Map<String,String> payment = {
-      'title':title,
-      'accountholder':accountholder,
-      'amount': amount,
-      'effectivedate': effectivedate,
-      'ponumber':ponumber,
-      'bankreferenceno': bankreferenceno,
-      'status':status,
-    };
-
-    _ref.doc(widget.paymentKey).update(payment).then((value) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ViewPayment(
-                paymentKey: widget.paymentKey,
-              )));
-    });
-  }
 }

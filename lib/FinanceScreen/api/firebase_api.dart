@@ -10,7 +10,6 @@ class FirebaseApi {
   static Future<List<FirebaseFile>> listAll(String path) async {
     final ref = FirebaseStorage.instance.ref(path);
     final result = await ref.listAll();
-
     final urls = await _getDownloadLinks(result.items);
 
     return urls

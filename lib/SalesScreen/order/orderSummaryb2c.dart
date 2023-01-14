@@ -4,19 +4,15 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
-import 'package:ftrsb_mobile/model/customer_model.dart';
-import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:intl/intl.dart';
 
 class OrderSummaryB2C extends StatefulWidget {
@@ -42,7 +38,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
 
   getProductlist() {
     List<String> list = [];
-    print(list.toString());
     for (int i = 0; i < selectedProduct.length ; i++) {
       list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
     }
@@ -183,37 +178,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       orderid = getRandomString(10);                      
                     });
 
-                    Map<String, dynamic> customer = {
-                      'name': cust.name,
-                      'phone': cust.phone,
-                      'address': cust.address,
-                      'email': cust.email,
-                      'channel': cust.channel,
-                      'salesStaff': user?.uid,
-                    };
-
-                    if (cust.phone != null) {
-                      FirebaseFirestore.instance.collection('Customer').add(customer);
-                    } 
-
-                    /*Map<String, dynamic> paymentb2c = {
-                      'paymentMethod': payc.paymentMethod.toString().substring(
-                          payc.paymentMethod.toString().indexOf('.') + 1),
-                      'amount': payc.amount,
-                      'paymentDate': payc.paymentDate,
-                      'bankName': payc.bankName,
-                      'paymentVerify': payc.paymentVerify,
-                      'custname': cust.name,
-                      'custphone': cust.phone,
-                      'salesStaff': user?.uid,
-                      'orderid': dateStr + orderid.toString()
-                    };
-
-                    if (payc.paymentMethod != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2C').doc(dateStr + orderid.toString()).set(paymentb2c);
-                      //dbRefPayment.push().set(paymentb2c);
-                    }*/
-
                     Future<int> getOrderCount(String? phone) async {
                       var docs = await FirebaseFirestore.instance
                           .collection('OrderB2C')
@@ -225,6 +189,20 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
 
                     int _count = await getOrderCount(cust.phone) + 1;
 
+                    Map<String, dynamic> customer = {
+                      'name': cust.name,
+                      'phone': cust.phone,
+                      'address': cust.address,
+                      'email': cust.email,
+                      'channel': cust.channel,
+                      'salesStaff': user?.uid,
+                      'count': _count
+                    };
+
+                    if (cust.phone != null) {
+                      FirebaseFirestore.instance.collection('Customer').add(customer);
+                    } 
+
                     Map<String, dynamic> orderb2c = {
                       'custName': cust.name,
                       'custPhone': cust.phone,
@@ -235,11 +213,10 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'amount': payc.amount,
                       'paymentDate': payc.paymentDate,
                       'bankName': payc.bankName,
-                      //'paymentVerify': payc.paymentVerify,
+                      'paymentVerify': payc.paymentVerify,
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
-                      'count': _count
                     };
 
                     Future uploadFile() async{
@@ -261,12 +238,12 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                           gravity: ToastGravity.CENTER,
                           fontSize: 16.0);
                       setState(
-                        () {
-                        },
+                        () {},
                       );
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreenSales(),
-                      ));
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreenSales()),
+                          (Route<dynamic> route) => false);
                     } else {
                       Fluttertoast.showToast(
                         msg: 'Order submission failed!',

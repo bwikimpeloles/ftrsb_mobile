@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
 import 'add_photo.dart';
-import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../api/firebase_api.dart';
 import '/model/firebase_storage.dart';
@@ -23,98 +22,21 @@ class _PhotoPageState extends State<PhotoPage> {
   late Database db;
   List docs = [];
 
-
   @override
   void initState() {
     super.initState();
-
     futureFiles = FirebaseApi.listAll('doimages/${widget.supplierKey}');
   }
-
 
   initialise(String url) async {
     db = Database();
     await db.initiliase();
     await db.read2(url).then((value) => {
-      setState(() {
-        docs = value;
-      })
-    });
+          setState(() {
+            docs = value;
+          })
+        });
     print(url);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () { // this is the block you need
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SupplierInformationFinance()), (route) => false);
-        return Future.value(false);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Delivery Order Images'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => AddPhoto(supplierKey: widget.supplierKey,),
-                transitionDuration: Duration.zero,
-                reverseTransitionDuration: Duration.zero,
-              ),
-            );
-          },
-        ),
-        body: FutureBuilder<List<FirebaseFile>>(
-          future: futureFiles,
-          builder: (context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator());
-              default:
-                if (snapshot.hasError) {
-                  return Center(child: Text('Some error occurred!'));
-                } else {
-                  final files = snapshot.data!;
-
-                  return Container(
-                    child: SafeArea(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 30,
-                              ),
-                              child: GridView.builder(
-                                itemCount: files.length,
-                                itemBuilder: (context, index) {
-                                  final file = files[index];
-                                  return buildFile(context, file);
-                                },
-                                gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-            }
-          },
-        ),
-      ),
-    );
   }
 
   Widget buildFile(BuildContext context, FirebaseFile file) {
@@ -189,30 +111,42 @@ class _PhotoPageState extends State<PhotoPage> {
                                                             .FirebaseStorage
                                                             .instance
                                                             .refFromURL(
-                                                            file.url)
+                                                                file.url)
                                                             .delete();
 
-                                                        await FirebaseFirestore.instance.collection('imageURLs').where('url', isEqualTo: file.url).get()
-                                                          .then((snapshot) async {
-                                                        for(DocumentSnapshot ds in snapshot.docs) {
-                                                        await ds.reference.delete();
-                                                        print(ds.reference);
-                                                        }
-                                                        });
-
-                                                        await FirebaseFirestore.instance.collection('details').where('url', isEqualTo: file.url).get()
-                                                            .then((snapshot) async {
-                                                          for(DocumentSnapshot ds in snapshot.docs) {
-                                                            await ds.reference.delete();
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'details')
+                                                            .where('url',
+                                                                isEqualTo:
+                                                                    file.url)
+                                                            .get()
+                                                            .then(
+                                                                (snapshot) async {
+                                                          for (DocumentSnapshot ds
+                                                              in snapshot
+                                                                  .docs) {
+                                                            await ds.reference
+                                                                .delete();
                                                             print(ds.reference);
                                                           }
                                                         });
-                                                        Navigator.pushReplacement(
+                                                        Navigator
+                                                            .pushReplacement(
                                                           context,
                                                           PageRouteBuilder(
-                                                            pageBuilder: (context, animation1, animation2) => PhotoPage(supplierKey: widget.supplierKey,),
-                                                            transitionDuration: Duration.zero,
-                                                            reverseTransitionDuration: Duration.zero,
+                                                            pageBuilder: (context,
+                                                                    animation1,
+                                                                    animation2) =>
+                                                                PhotoPage(
+                                                              supplierKey: widget
+                                                                  .supplierKey,
+                                                            ),
+                                                            transitionDuration:
+                                                                Duration.zero,
+                                                            reverseTransitionDuration:
+                                                                Duration.zero,
                                                           ),
                                                         );
                                                       },
@@ -235,23 +169,25 @@ class _PhotoPageState extends State<PhotoPage> {
                                       margin: EdgeInsets.all(10),
                                       child: ListTile(
                                         onTap: () {
-                                            Navigator.pushReplacement(
+                                          Navigator.pushReplacement(
                                             context,
                                             PageRouteBuilder(
-                                              pageBuilder: (context, animation1, animation2) => View(
+                                              pageBuilder: (context, animation1,
+                                                      animation2) =>
+                                                  View(
                                                 detail: docs[index],
                                                 db: db,
                                                 key: null,
                                                 supplierKey: widget.supplierKey,
                                               ),
                                               transitionDuration: Duration.zero,
-                                              reverseTransitionDuration: Duration.zero,
+                                              reverseTransitionDuration:
+                                                  Duration.zero,
                                             ),
-                                          )
-                                              .then((value) => {
-                                            if (value != null)
-                                              {initialise(file.url)}
-                                          });
+                                          ).then((value) => {
+                                                if (value != null)
+                                                  {initialise(file.url)}
+                                              });
                                         },
                                         contentPadding: EdgeInsets.only(
                                             right: 30, left: 36),
@@ -279,6 +215,86 @@ class _PhotoPageState extends State<PhotoPage> {
                   );
                 }));
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SupplierInformationFinance()),
+            (route) => false);
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Delivery Order Images'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation1, animation2) => AddPhoto(
+                  supplierKey: widget.supplierKey,
+                ),
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
+              ),
+            );
+          },
+        ),
+        body: FutureBuilder<List<FirebaseFile>>(
+          future: futureFiles,
+          builder: (context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: CircularProgressIndicator());
+              default:
+                if (snapshot.hasError) {
+                  return Center(child: Text('Some error occurred!'));
+                } else {
+                  final files = snapshot.data!;
+
+                  return Container(
+                    child: SafeArea(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 30,
+                              ),
+                              child: GridView.builder(
+                                itemCount: files.length,
+                                itemBuilder: (context, index) {
+                                  final file = files[index];
+                                  return buildFile(context, file);
+                                },
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+            }
+          },
+        ),
+      ),
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -16,9 +15,11 @@ class AddPayment extends StatefulWidget {
 
 class _AddPaymentState extends State<AddPayment> {
   User? user = FirebaseAuth.instance.currentUser;
-  late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
+  late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController;
   final _formKey = GlobalKey<FormState>();
   String? mtoken = "";
+  String? selectedValue = null;
+  late CollectionReference _ref;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   DateTime? pickedDate;
@@ -30,10 +31,7 @@ class _AddPaymentState extends State<AddPayment> {
     ];
     return menuItems;
   }
-  String? selectedValue = null;
 
-
-  late CollectionReference _ref;
   @override
   void initState() {
     // TODO: implement initState
@@ -47,7 +45,6 @@ class _AddPaymentState extends State<AddPayment> {
     _effectivedateController = TextEditingController();
     _ponumberController = TextEditingController();
     _bankreferencenoController = TextEditingController();
-    _statusController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('MakePayments');
   }
 
@@ -80,6 +77,46 @@ class _AddPaymentState extends State<AddPayment> {
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title, message.notification?.body, platformChannelSpecifics,
           //navigate second page - payload
           payload: message.data['title']);
+    });
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    }
+    else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      saveToken(token!);
+    });
+  }
+
+  void saveToken(String token) async {
+    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
+      'token' : token,
     });
   }
 
@@ -118,46 +155,31 @@ class _AddPaymentState extends State<AddPayment> {
 
   }
 
-  void getToken() async {
-    await FirebaseMessaging.instance.getToken().then((token) {
-      setState(() {
-        mtoken = token;
-        print("My token is $mtoken");
-      });
-      saveToken(token!);
+  void savePayment(){
+    String title = _titleController.text;
+    String accountholder = _accountholderController.text;
+    String amount = _amountController.text;
+    String effectivedate = _effectivedateController.text;
+    String ponumber = _ponumberController.text;
+    String bankreferenceno = _bankreferencenoController.text;
+    String status = selectedValue!;
+
+
+    Map<String,String> payment = {
+      'title':title,
+      'accountholder':accountholder,
+      'amount': amount,
+      'effectivedate': effectivedate,
+      'ponumber':ponumber,
+      'bankreferenceno': bankreferenceno,
+      'status':status,
+    };
+
+    _ref.doc().set(payment).then((value) {
+      Navigator.pop(context);
     });
-  }
-
-  void saveToken(String token) async {
-    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
-      'token' : token,
-    });
-  }
 
 
-
-  void requestPermission() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    }
-    else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
-    } else {
-      print('User declined or has not accepted permission');
-    }
   }
 
   @override
@@ -276,7 +298,7 @@ class _AddPaymentState extends State<AddPayment> {
                     String? formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate!);
                     setState(() {
                       _effectivedateController.text =
-                          formattedDate; //set output date to TextField value.
+                          formattedDate;
                     });
                   } else {
                     return null;
@@ -323,10 +345,8 @@ class _AddPaymentState extends State<AddPayment> {
                       fillColor: Colors.white,
                       filled: true,
                       contentPadding: EdgeInsets.all(15),
-                      //fillColor: Colors.blueAccent,
                     ),
                     validator: (value) => value == null ? "Select status" : null,
-                    //dropdownColor: Colors.blueAccent,
                     value: selectedValue,
                     onChanged: (String? newValue) {
                       setState(() {
@@ -377,31 +397,5 @@ class _AddPaymentState extends State<AddPayment> {
       ),
     );
   }
-  void savePayment(){
 
-    String title = _titleController.text;
-    String accountholder = _accountholderController.text;
-    String amount = _amountController.text;
-    String effectivedate = _effectivedateController.text;
-    String ponumber = _ponumberController.text;
-    String bankreferenceno = _bankreferencenoController.text;
-    String status = selectedValue!;
-
-
-    Map<String,String> payment = {
-      'title':title,
-      'accountholder':accountholder,
-      'amount': amount,
-      'effectivedate': effectivedate,
-      'ponumber':ponumber,
-      'bankreferenceno': bankreferenceno,
-      'status':status,
-    };
-
-    _ref.doc().set(payment).then((value) {
-      Navigator.pop(context);
-    });
-
-
-  }
 }

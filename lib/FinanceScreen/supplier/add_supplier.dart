@@ -8,10 +8,9 @@ class AddSupplier extends StatefulWidget {
 
 class _AddSupplierState extends State<AddSupplier> {
   late TextEditingController _companynameController, _phonenumberController, _shippingaddressController, _emailController, _picController;
-  // form key
   final _formKey = GlobalKey<FormState>();
-
   late CollectionReference _ref;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -22,6 +21,29 @@ class _AddSupplierState extends State<AddSupplier> {
     _emailController = TextEditingController();
     _picController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('Suppliers');
+  }
+
+  void saveSupplier(){
+
+    String companyname = _companynameController.text;
+    String phonenumber = _phonenumberController.text;
+    String shippingaddress = _shippingaddressController.text;
+    String email = _emailController.text;
+    String pic = _picController.text;
+
+    Map<String,String> supplier = {
+      'companyname':companyname,
+      'phonenumber': phonenumber,
+      'shippingaddress':shippingaddress,
+      'email': email,
+      'pic':pic,
+    };
+
+    _ref.doc().set(supplier).then((value) {
+      Navigator.pop(context);
+    });
+
+
   }
 
   @override
@@ -174,26 +196,5 @@ class _AddSupplierState extends State<AddSupplier> {
       ),
     );
   }
-  void saveSupplier(){
 
-    String companyname = _companynameController.text;
-    String phonenumber = _phonenumberController.text;
-    String shippingaddress = _shippingaddressController.text;
-    String email = _emailController.text;
-    String pic = _picController.text;
-
-    Map<String,String> supplier = {
-      'companyname':companyname,
-      'phonenumber': phonenumber,
-      'shippingaddress':shippingaddress,
-      'email': email,
-      'pic':pic,
-    };
-
-    _ref.doc().set(supplier).then((value) {
-      Navigator.pop(context);
-    });
-
-
-  }
 }

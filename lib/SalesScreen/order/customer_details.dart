@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
@@ -139,12 +138,9 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         controller: emailEditingController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please Enter Your Email");
-          }
           // reg expression for email validation
           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
+              .hasMatch(value!)) {
             return ("Please Enter a valid email");
           }
           return null;

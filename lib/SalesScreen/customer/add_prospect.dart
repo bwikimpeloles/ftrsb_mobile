@@ -104,12 +104,9 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
         controller: emailEditingController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please Enter Your Email");
-          }
           // reg expression for email validation
           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
+              .hasMatch(value!)) {
             return ("Please Enter a valid email");
           }
           return null;

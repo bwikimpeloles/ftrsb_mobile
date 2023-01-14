@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/AdminScreen/paymentapproval.dart';
-
 import 'edit_paymentapproval.dart';
 
 class ViewPaymentApproval extends StatefulWidget {
@@ -33,6 +32,26 @@ class _ViewPaymentApprovalState extends State<ViewPaymentApproval> {
     setState(() {
 
     });
+  }
+
+  getPaymentDetail() async {
+    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
+    Map payment = snapshot.data() as Map;
+
+    _titleController.text = payment['title'];
+
+    _accountholderController.text = payment['accountholder'];
+
+    _amountController.text = payment['amount'];
+
+    _effectivedateController.text = payment['effectivedate'];
+
+    _ponumberController.text = payment['ponumber'];
+
+    _bankreferencenoController.text = payment['bankreferenceno'];
+
+    _statusController.text = payment['status'];
+
   }
 
   @override
@@ -170,23 +189,5 @@ class _ViewPaymentApprovalState extends State<ViewPaymentApproval> {
     );
   }
 
-  getPaymentDetail() async {
-    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
-    Map payment = snapshot.data() as Map;
 
-    _titleController.text = payment['title'];
-
-    _accountholderController.text = payment['accountholder'];
-
-    _amountController.text = payment['amount'];
-
-    _effectivedateController.text = payment['effectivedate'];
-
-    _ponumberController.text = payment['ponumber'];
-
-    _bankreferencenoController.text = payment['bankreferenceno'];
-
-    _statusController.text = payment['status'];
-
-  }
 }

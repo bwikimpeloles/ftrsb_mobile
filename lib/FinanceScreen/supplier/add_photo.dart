@@ -20,12 +20,65 @@ class _AddPhotoState extends State<AddPhoto> {
   DateTime now = DateTime.now();
   bool uploading = false;
   double val = 0;
-  late CollectionReference imgRef;
   late CollectionReference imgRef2;
   late firebase_storage.Reference ref;
-
   final List<File> _image = [];
   final picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    imgRef2 = FirebaseFirestore.instance.collection('details');
+  }
+
+  chooseImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+    setState(() {
+      _image.add(File(pickedFile!.path));
+    });
+    if (pickedFile!.path == null) retrieveLostData();
+  }
+
+  Future<void> retrieveLostData() async {
+    final LostData response = await picker.getLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    if (response.file != null) {
+      setState(() {
+        _image.add(File(response.file!.path));
+      });
+    } else {
+      print(response.file);
+    }
+  }
+
+  Future uploadFile() async {
+    int i = 1;
+
+    for (var img in _image) {
+      setState(() {
+        val = i / _image.length;
+      });
+      ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('doimages/${widget.supplierKey}/${Path.basename(img.path)}');
+      await ref.putFile(img).whenComplete(() async {
+        print(widget.supplierKey);
+        await ref.getDownloadURL().then((value) {
+          imgRef2.add({
+            'url': value,
+            'datetime': FieldValue.serverTimestamp(),
+            'description': "${Path.basename(img.path)}",
+            'datentime': DateFormat('dd/MM/yyyy').format(now),
+            'supplierkey': '${widget.supplierKey}',
+          });
+          i++;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,59 +177,5 @@ class _AddPhotoState extends State<AddPhoto> {
         ));
   }
 
-  chooseImage(ImageSource source) async {
-    final pickedFile = await picker.getImage(source: source);
-    setState(() {
-      _image.add(File(pickedFile!.path));
-    });
-    if (pickedFile!.path == null) retrieveLostData();
-  }
 
-  Future<void> retrieveLostData() async {
-    final LostData response = await picker.getLostData();
-    if (response.isEmpty) {
-      return;
-    }
-    if (response.file != null) {
-      setState(() {
-        _image.add(File(response.file!.path));
-      });
-    } else {
-      print(response.file);
-    }
-  }
-
-
-
-  Future uploadFile() async {
-    int i = 1;
-
-    for (var img in _image) {
-      setState(() {
-        val = i / _image.length;
-      });
-      ref = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child('doimages/${widget.supplierKey}/${Path.basename(img.path)}');
-      await ref.putFile(img).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          imgRef.add({'url': value});
-          imgRef2.add({
-            'url': value,
-            'datetime': FieldValue.serverTimestamp(),
-            'description': "${Path.basename(img.path)}",
-            'datentime': DateFormat('dd/MM/yyyy').format(now)
-          });
-          i++;
-        });
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    imgRef = FirebaseFirestore.instance.collection('imageURLs');
-    imgRef2 = FirebaseFirestore.instance.collection('details');
-  }
 }

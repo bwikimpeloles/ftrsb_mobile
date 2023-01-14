@@ -27,8 +27,6 @@ class OrderSummaryB2B extends StatefulWidget {
 User? user = FirebaseAuth.instance.currentUser;
 
 class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
-
-
   String? orderid = 'TEST12345';
 
   PlatformFile? pickedFile;
@@ -43,12 +41,15 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
   getProductlist() {
     List<String> list = [];
     print(list.toString());
-    for (int i = 0; i < selectedProduct.length ; i++) {
-      list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
+    for (int i = 0; i < selectedProduct.length; i++) {
+      list.add(selectedProduct[i].name.toString() +
+          ":" +
+          selectedProduct[i].quantity.toString());
     }
 
     return list;
   }
+
   @override
   Widget build(BuildContext context) {
 //select file button
@@ -124,7 +125,11 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
           )),
       child: Column(
         children: [
-          SizedBox(child: Text('Selected Product:',style: TextStyle(color: Colors.grey),)),
+          SizedBox(
+              child: Text(
+            'Selected Product:',
+            style: TextStyle(color: Colors.grey),
+          )),
           ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -151,8 +156,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                               selectedProduct.removeAt(index);
                             });
                           },
-                        ))
-                    ),
+                        ))),
               );
             },
           ),
@@ -174,38 +178,37 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
               child: MaterialButton(
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       orderid = getRandomString(10);
                     });
+
+                    Future<int> getOrderCount(String? phone) async {
+                      var docs = await FirebaseFirestore.instance
+                          .collection('OrderB2C')
+                          .where('custPhone', isEqualTo: phone)
+                          .get();
+                      int count = docs.size;
+                      return count;
+                    }
+
+                    int _count = await getOrderCount(cust.phone) + 1;
+
                     Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
                       'address': cust.address,
                       'email': cust.email,
                       'channel': cust.channel,
-                      'salesStaff': user?.uid
+                      'salesStaff': user?.uid,
+                      'count': _count
                     };
 
                     if (cust.name != null) {
-                      FirebaseFirestore.instance.collection('Customer').add(customer);
+                      FirebaseFirestore.instance
+                          .collection('Customer')
+                          .add(customer);
                     }
-
-                   /* Map<String,dynamic> paymentb2b = {
-                      'orderdate': payb.orderDate,
-                      'amount': payb.amount,
-                      'collectionDate': payb.collectionDate,
-                      'pic': payb.pic,
-                      //'paymentStatus': payb.status,
-                      'custname': cust.name,
-                      'custphone': cust.phone,
-                      'salesStaff': user?.uid,
-                      'orderid': dateStr + orderid.toString()
-                    };
-
-                    if (payb.pic != null) {
-                      FirebaseFirestore.instance.collection('PaymentB2B').doc(dateStr + orderid.toString()).set(paymentb2b);
-                    }*/
 
                     Map<String, dynamic> orderb2b = {
                       'custName': cust.name,
@@ -214,7 +217,9 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'orderDate': payb.orderDate,
                       'orderID': dateStr + orderid.toString(),
                       'amount': payb.amount,
-                      'collectionDate': payb.collectionDate,
+                      'collectionDate': Timestamp.fromDate(
+                          DateFormat('dd-MM-yyyy h:mm:ssa', 'en_US').parseLoose(
+                              '${DateFormat('dd-MM-yyyy').format((payb.collectionDate as Timestamp).toDate()).toString()} 10:00:00AM')),
                       'pic': payb.pic,
                       'paymentStatus': payb.status,
                       'salesStaff': user?.uid,
@@ -247,9 +252,10 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       setState(
                         () {},
                       );
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreenSales(),
-                      ));
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreenSales()),
+                          (Route<dynamic> route) => false);
                     } else {
                       Fluttertoast.showToast(
                         msg: 'Order submission failed!',
@@ -276,7 +282,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
       backgroundColor: Colors.white,
       drawer: NavigationDrawer(),
       //bottomNavigationBar: CurvedNavBar(
-       // indexnum: 1,
+      // indexnum: 1,
       //),
       appBar: PreferredSize(
         child: CustomAppBar(bartitle: 'Order Summary'),

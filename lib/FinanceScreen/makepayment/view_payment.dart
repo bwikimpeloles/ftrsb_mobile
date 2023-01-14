@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
-
 import 'edit_payment.dart';
 
 class ViewPayment extends StatefulWidget {
   String paymentKey;
-
   ViewPayment({required this.paymentKey});
 
   @override
@@ -15,8 +13,8 @@ class ViewPayment extends StatefulWidget {
 
 class _ViewPaymentState extends State<ViewPayment> {
   late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
-
   late CollectionReference _ref;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,6 +31,27 @@ class _ViewPaymentState extends State<ViewPayment> {
     setState(() {
 
     });
+  }
+
+  getPaymentDetail() async {
+    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
+
+    Map payment = snapshot.data() as Map;
+
+    _titleController.text = payment['title'];
+
+    _accountholderController.text = payment['accountholder'];
+
+    _amountController.text = payment['amount'];
+
+    _effectivedateController.text = payment['effectivedate'];
+
+    _ponumberController.text = payment['ponumber'];
+
+    _bankreferencenoController.text = payment['bankreferenceno'];
+
+    _statusController.text = payment['status'];
+
   }
 
   @override
@@ -170,24 +189,4 @@ class _ViewPaymentState extends State<ViewPayment> {
     );
   }
 
-  getPaymentDetail() async {
-    DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
-
-    Map payment = snapshot.data() as Map;
-
-    _titleController.text = payment['title'];
-
-    _accountholderController.text = payment['accountholder'];
-
-    _amountController.text = payment['amount'];
-
-    _effectivedateController.text = payment['effectivedate'];
-
-    _ponumberController.text = payment['ponumber'];
-
-    _bankreferencenoController.text = payment['bankreferenceno'];
-
-    _statusController.text = payment['status'];
-
-  }
 }

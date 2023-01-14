@@ -64,6 +64,47 @@ class _EditCostState extends State<EditCost> {
     setState(() {});
   }
 
+  void saveCost() {
+    String name = _nameController.text;
+    String? category = selectedValue;
+    String amount = _amountController.text;
+    String supplier = _supplierController.text;
+    DateTime? date2 = dateselect;
+    String referenceno = _referencenoController.text;
+
+    Map<String,Object?> cost2 = {
+      'name':name,
+      'category': category!,
+      'amount':amount,
+      'supplier': supplier,
+      'date':date2,
+      'referenceno': referenceno,
+    };
+
+    if(double.tryParse(_amountController.text) != null){
+      FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).update(cost2).then((value) {
+        Navigator.pop(context);
+      } );
+    } else{
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Enter valid amount!"),
+            actions: <Widget>[
+              new ElevatedButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +149,8 @@ class _EditCostState extends State<EditCost> {
                       fillColor: Colors.white,
                       filled: true,
                       contentPadding: EdgeInsets.all(15),
-                      //fillColor: Colors.blueAccent,
                     ),
                     validator: (value) => value == null ? "Select a category" : null,
-                    //dropdownColor: Colors.blueAccent,
                     value: selectedValue,
                     onChanged: (String? newValue) {
                       setState(() {
@@ -235,60 +274,6 @@ class _EditCostState extends State<EditCost> {
     _dateController.text = cost['date'];
 
     _referencenoController.text = cost['referenceno'];
-
-  }
-
-  void saveCost() {
-    //var formatter = new DateFormat('yyyy-MM-dd');
-    //String formattedDate = formatter.format(dateselect);
-
-    String name = _nameController.text;
-    String? category = selectedValue;
-    String amount = _amountController.text;
-    String supplier = _supplierController.text;
-    String date = DateFormat('dd/MM/yyyy').format(dateselect!).toString();//formattedDate;
-    DateTime? date2 = dateselect;//formattedDate;
-    String referenceno = _referencenoController.text;
-
-    Map<String,String> cost = {
-      'name':name,
-      'category': category!,
-      'amount':amount,
-      'supplier': supplier,
-      'date':date,
-      'referenceno': referenceno,
-    };
-    Map<String,Object?> cost2 = {
-      'name':name,
-      'category': category!,
-      'amount':amount,
-      'supplier': supplier,
-      'date':date2,
-      'referenceno': referenceno,
-    };
-
-    if(double.tryParse(_amountController.text) != null){
-      FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).update(cost2).then((value) {
-        Navigator.pop(context);
-      } );
-    } else{
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: new Text("Enter valid amount!"),
-            actions: <Widget>[
-              new ElevatedButton(
-                child: new Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-          }
 
   }
 }
