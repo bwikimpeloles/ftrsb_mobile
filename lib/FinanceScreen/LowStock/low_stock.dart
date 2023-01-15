@@ -27,7 +27,7 @@ class LowStock extends StatefulWidget {
 }
 
 class _LowStockState extends State<LowStock> {
-  int lowStock = 10;
+  int lowStock = 20;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +38,7 @@ class _LowStockState extends State<LowStock> {
         ),
         body: (StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
             stream: FirebaseFirestore.instance
-                .collection('product')
+                .collection('Product')
                 .where('quantity', isLessThanOrEqualTo: lowStock)
                 .snapshots(),
             builder: (_, snapshot) {
@@ -98,7 +98,7 @@ class _LowStockState extends State<LowStock> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
-                                        data['name'],
+                                        data['name'].toString(),
                                         style: TextStyle(
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold),
