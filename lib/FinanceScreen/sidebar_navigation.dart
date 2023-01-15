@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/FinanceScreen/LowStock/low_stock.dart';
 
 import 'package:ftrsb_mobile/FinanceScreen/consignment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
@@ -182,7 +183,16 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
           ListTile(
             leading: const Icon(Icons.add_alert),
             title: const Text('Stock Alert'),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) => LowStock(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.airport_shuttle),
