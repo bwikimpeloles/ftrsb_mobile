@@ -21,6 +21,10 @@ class _PhotoPageState extends State<PhotoPage> {
   late Future<List<FirebaseFile>> futureFiles;
   late Database db;
   List docs = [];
+  final _transformationController = TransformationController();
+  late TapDownDetails _doubleTapDetails;
+
+
 
   @override
   void initState() {
@@ -37,6 +41,21 @@ class _PhotoPageState extends State<PhotoPage> {
           })
         });
     print(url);
+  }
+
+  void _handleDoubleTapDown(TapDownDetails details) {
+    _doubleTapDetails = details;
+  }
+
+  void _handleDoubleTap() {
+    if (_transformationController.value != Matrix4.identity()) {
+      _transformationController.value = Matrix4.identity();
+    } else {
+      final position = _doubleTapDetails.localPosition;
+      _transformationController.value = Matrix4.identity()
+        ..translate(-position.dx * 2, -position.dy * 2)
+        ..scale(3.0);
+    }
   }
 
   Widget buildFile(BuildContext context, FirebaseFile file) {
@@ -76,9 +95,12 @@ class _PhotoPageState extends State<PhotoPage> {
                               SizedBox(
                                 height: 60,
                               ),
-                              Image.network(
-                                file.url,
-                                height: 500,
+                              InteractiveViewer(
+                                transformationController: _transformationController,
+                                child: Image.network(
+                                  file.url,
+                                  height: 500,
+                                ),
                               ),
                               Text('Tap to minimize.'),
                               Row(
@@ -211,6 +233,8 @@ class _PhotoPageState extends State<PhotoPage> {
                       onTap: () {
                         Navigator.pop(context);
                       },
+                      onDoubleTapDown: _handleDoubleTapDown,
+                      onDoubleTap: _handleDoubleTap,
                     ),
                   );
                 }));

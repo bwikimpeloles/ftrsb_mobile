@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:ftrsb_mobile/FinanceScreen/consignment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/payment_verification.dart';
 import 'package:ftrsb_mobile/FinanceScreen/revenue/revenue.dart';
 import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
 import 'package:ftrsb_mobile/screens/verify_email.dart';
@@ -101,28 +102,30 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                       child: Image.asset("assets/logo.png", fit: BoxFit.contain),
                     ),
                     SizedBox(width: 15,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Flexible(
-                          child: Text(
-                            "Hi ${loggedInUser.name}!",
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
+                          Flexible(
+                            child: Text(
+                              "Hi ${loggedInUser.name}!",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
 
-                        Flexible(
-                          child: Text("${loggedInUser.email}",
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w500,
-                              )),
-                        ),
-                      ],
+                          Flexible(
+                            child: Text("${loggedInUser.email}",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -175,7 +178,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   "Check Revenue",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
@@ -211,7 +214,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
@@ -247,7 +250,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
@@ -265,7 +268,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => VerifyScreen(),
+                                builder: (context) => PaymentVerificationFinance(),
                               ));
                         },
                         splashColor: Colors.green,
@@ -283,7 +286,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
@@ -320,7 +323,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
@@ -351,7 +354,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
@@ -389,7 +392,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       color: Color.fromARGB(255, 27, 73, 29)),
                                 ),
                               ],
