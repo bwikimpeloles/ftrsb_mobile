@@ -42,10 +42,6 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    //super.initState();
-    // ignore: deprecated_member_use
-    //dbref = FirebaseDatabase.instance.reference().child('Customer');
     getCustomerDetail();
   }
 
@@ -76,7 +72,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
             color: Colors.green,
           ),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Name",
+          hintText: "Customer/Company Name",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

@@ -134,7 +134,7 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                           children: [
                             Icon(
                               Icons.warehouse_rounded,
-                              size: 60,
+                              size: 55,
                               color: Colors.green,
                             ),
                             Text(
@@ -166,7 +166,7 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                           children: [
                             Icon(
                               Icons.sell_rounded,
-                              size: 60,
+                              size: 55,
                               color: Colors.green,
                             ),
                             Text(
@@ -199,7 +199,7 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                           children: [
                             Icon(
                               Icons.monetization_on,
-                              size: 60,
+                              size: 55,
                               color: Colors.green,
                             ),
                             Text(
@@ -231,7 +231,7 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                           children: [
                             Icon(
                               Icons.people_rounded,
-                              size: 60,
+                              size: 55,
                               color: Colors.green,
                             ),
                             Text(
@@ -265,7 +265,7 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
                           children: [
                             Icon(
                               Icons.check_box_rounded,
-                              size: 60,
+                              size: 55,
                               color: Colors.green,
                             ),
                             Text(
