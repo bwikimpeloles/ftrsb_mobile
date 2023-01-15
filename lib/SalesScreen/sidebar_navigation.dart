@@ -12,10 +12,11 @@ import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
 //import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
-import 'package:ftrsb_mobile/SalesScreen/order_history.dart';
+
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../screens/login_screen.dart';
 import '../model/user_model.dart';
+import 'order/order_history.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
