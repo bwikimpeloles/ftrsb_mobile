@@ -130,11 +130,16 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    DateTime date = new DateTime.now();
-    DateTime newDateThisMonth = new DateTime(date.year, date.month, 1);
-    DateTime newDateThisWeek = new DateTime(date.weekday, 1, 1);
+  void initState() {
+    super.initState();
+    setState(() {
+      _order = [];
+      total = '';
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final Stream<QuerySnapshot> expStream;
     if (widget.selectedValue == "Today") {
       expStream = FirebaseFirestore.instance
@@ -143,18 +148,30 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
               isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
           .snapshots();
+      print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
-          .where('paymentDate', isGreaterThanOrEqualTo: newDateThisMonth)
+          .where('paymentDate',
+              isGreaterThanOrEqualTo:
+                  DateTime(DateTime.now().year, DateTime.now().month, 1))
+          .where('paymentDate',
+              isLessThan:
+                  DateTime(DateTime.now().year, DateTime.now().month, 31))
           .snapshots();
-    } else { 
+      print(widget.selectedValue);
+    } else {
+      //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
-          .where('paymentDate', isGreaterThanOrEqualTo: newDateThisWeek)
+          .where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day))
+          .where('paymentDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 6))
           .snapshots();
     }
-      
 
     void getExpfromSnapshot(snapshot) {
       if (snapshot.docs.isNotEmpty) {
@@ -184,7 +201,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   const Text(
-                    'Channel',
+                    'Top Selling Channel',
                     style: TextStyle(
                       color: Color(0xff0f4a3c),
                       fontSize: 24,

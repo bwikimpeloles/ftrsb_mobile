@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/linechartday.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/linechartmonth.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/linechartweek.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/total_sales.dart';
 import 'sidebar_navigation.dart';
 import '../model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -59,7 +57,7 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
                 fixedSize: const Size(110, 20),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
-            child: Text('This Week'),
+            child: Text('Last 7 Days'),
             onPressed: () {
               setState(() {
                 selectedValue = 'This Week';
@@ -132,7 +130,11 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
                 ],
               ),
               buttons,
-              SizedBox(height: 20),
+              SizedBox(height: 14),
+              TotalSales(
+                  selectedValue: selectedValue,
+                ), 
+              /*SizedBox(height: 20),
               Column(
                 children: [
                   if (selectedValue == 'Today') ...[
@@ -145,7 +147,7 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
                     LineChartMonth(),
                   ],
                 ],
-              ),
+              ),*/
               SizedBox(height: 20),
               TopChannelB2C(
                 selectedValue: selectedValue,

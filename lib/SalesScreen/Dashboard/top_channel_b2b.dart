@@ -12,6 +12,7 @@ class TopChannelB2B extends StatefulWidget {
 }
 
 class _TopChannelB2BState extends State<TopChannelB2B> {
+
   int key = 0;
   String total = '';
 
@@ -41,6 +42,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
     print(total);
     return catMap;
   }
+
 
   String getChannel(String c) {
     if (c == 'b2b_retail') {
@@ -123,13 +125,15 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
   }
 
   @override
-  Widget build(BuildContext context) {
-//.where('date', isEqualTo: "2022-12-28 00:00:00.000")
-    DateTime date = new DateTime.now();
-    DateTime newDateThisMonth = new DateTime(date.year, date.month, 1);
-    DateTime newDateThisYear = new DateTime(date.year, 1, 1);
+  void initState() {
+    setState(() {
+      _order = [];
+    });
+  }
 
-    final Stream<QuerySnapshot> expStream;
+  @override
+  Widget build(BuildContext context) {
+ final Stream<QuerySnapshot> expStream;
     if (widget.selectedValue == "Today") {
       expStream = FirebaseFirestore.instance
           .collection('OrderB2B')
@@ -138,18 +142,27 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
                   DateTime.now().day))
           .snapshots();
       print(widget.selectedValue);
-      //["All","Today","This Month","This Year","30 Days", "365 Days"];
     } else if (widget.selectedValue == "This Month") {
       expStream = FirebaseFirestore.instance
           .collection('OrderB2B')
-          .where('orderDate', isGreaterThanOrEqualTo: newDateThisMonth)
+          .where('orderDate',
+              isGreaterThanOrEqualTo:
+                  DateTime(DateTime.now().year, DateTime.now().month, 1))
+          .where('orderDate',
+              isLessThan:
+                  DateTime(DateTime.now().year, DateTime.now().month, 31))
           .snapshots();
       print(widget.selectedValue);
     } else {
-      //THIS WEEK EDIT NANTI
+      //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2B')
-          .where('orderDate', isGreaterThanOrEqualTo: newDateThisYear)
+          .where('orderDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day))
+          .where('orderDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 6))
           .snapshots();
     }
 
@@ -183,7 +196,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   const Text(
-                    'Channel',
+                    'Top Selling Channel',
                     style: TextStyle(
                       color: Color(0xff0f4a3c),
                       fontSize: 24,
