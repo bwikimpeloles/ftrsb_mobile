@@ -29,7 +29,7 @@ class _PhotoPageState extends State<PhotoPage> {
   @override
   void initState() {
     super.initState();
-    futureFiles = FirebaseApi.listAll('doimages/${widget.supplierKey}');
+    futureFiles = FirebaseApi.listAll('poimages/${widget.supplierKey}');
   }
 
   initialise(String url) async {
@@ -104,10 +104,12 @@ class _PhotoPageState extends State<PhotoPage> {
                               ),
                               Text('Tap to minimize.'),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: 150,
-                                  ),
+                                  // SizedBox(
+                                  //   width: 150,
+                                  // ),
                                   IconButton(
                                       icon: Icon(Icons.delete),
                                       onPressed: () {
@@ -255,7 +257,7 @@ class _PhotoPageState extends State<PhotoPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Delivery Order Images'),
+          title: Text('Purchase Order Images'),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

@@ -43,7 +43,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
               TextButton(
                   onPressed: () async {
 
-                    await FirebaseStorage.instance.ref('doimages/${supplier['key']}').listAll().then((value) {
+                    await FirebaseStorage.instance.ref('poimages/${supplier['key']}').listAll().then((value) {
                       value.items.forEach((element) {
                         FirebaseStorage.instance.ref(element.fullPath).delete();
                       });});
@@ -228,7 +228,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                           SizedBox(
                             width: 6,
                           ),
-                          Text('DO',
+                          Text('PO',
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.teal,
