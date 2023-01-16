@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ftrsb_mobile/FinanceScreen/LowStock/low_stock.dart';
 import 'package:ftrsb_mobile/FinanceScreen/consignment.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
@@ -338,6 +339,12 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                       margin: const EdgeInsets.all(8),
                       child: InkWell(
                         onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LowStock(),
+                              ));
                         },
                         splashColor: Colors.green,
                         child: Center(

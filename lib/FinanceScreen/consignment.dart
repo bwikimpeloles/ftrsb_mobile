@@ -644,7 +644,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.teal)
                         ),
-                        hintText: 'Search Order ID',
+                        hintText: 'Order ID',
                         hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 18

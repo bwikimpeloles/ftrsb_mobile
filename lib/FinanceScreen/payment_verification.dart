@@ -327,10 +327,10 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: Colors.teal)
                     ),
-                    hintText: 'Search',
+                    hintText: 'Customer Name',
                     hintStyle: TextStyle(
                         color: Colors.grey,
-                        fontSize: 18
+                        fontSize: 16
                     ),
                     prefixIcon: Icon(Icons.search)
                 ),

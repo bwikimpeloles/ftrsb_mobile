@@ -15,6 +15,7 @@ class _CostFinanceState extends State<CostFinance> {
   List<String> period = ["All","Today","This Month","This Year","30 Days", "365 Days"];
   String? selectedValue="All";
   String total ='';
+  double total2=0;
 
   late List<CostModel> _cost = [];
 
@@ -44,7 +45,10 @@ class _CostFinanceState extends State<CostFinance> {
       }
     }}
     total=catMap.toString();
-    print(total);
+    Iterable<double> values = catMap.values;
+    total2 = values.reduce((sum, value) => sum + value);
+    print(total2);
+    print("this is ${total}");
     return catMap;
   }
 
@@ -60,11 +64,25 @@ class _CostFinanceState extends State<CostFinance> {
         rows: catMap2.entries
             .map((e) => DataRow(cells: [
           DataCell(Text(e.key.toString())),
-          DataCell(Text(e.value.toString())),
+          DataCell(Text(e.value.toStringAsFixed(2))),
         ]))
             .toList(),
       );
     return a!;
+  }
+
+  printTotal(){
+    return
+      Container(
+        height: 29,
+        color: Colors.yellow.shade700,
+        child: Text('Overall Total: RM${total2.toStringAsFixed(2)}', style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+          fontSize: 20,
+          fontStyle: FontStyle.italic,
+        ),),
+      );
   }
 
   Widget pieChartExampleOne() {
@@ -75,25 +93,26 @@ class _CostFinanceState extends State<CostFinance> {
       animationDuration: Duration(milliseconds: 2000),
       chartType: ChartType.ring,
       chartRadius: MediaQuery.of(context).size.width / 3.2,
-      ringStrokeWidth: 32,
+      ringStrokeWidth: 40,
       colorList: colorList,
-      chartLegendSpacing: 32,
+      chartLegendSpacing: 40,
       chartValuesOptions: ChartValuesOptions(
           showChartValuesOutside: true,
           showChartValuesInPercentage: true,
           showChartValueBackground: true,
           showChartValues: true,
           chartValueStyle:
-              TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontStyle: FontStyle.italic)),
       centerText: 'Cost',
       legendOptions: LegendOptions(
           showLegendsInRow: false,
           showLegends: true,
-          legendShape: BoxShape.rectangle,
+          legendShape: BoxShape.circle,
           legendPosition: LegendPosition.right,
           legendTextStyle: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
+            fontStyle: FontStyle.italic
           )),
     );
   }
@@ -166,6 +185,8 @@ class _CostFinanceState extends State<CostFinance> {
           CostModel exp = CostModel().fromJson(a.data());
           _cost.add(exp);
         }
+      } else{
+        _cost = [];
       }
     }
 
@@ -232,6 +253,21 @@ class _CostFinanceState extends State<CostFinance> {
                   print("Data: $data");
                   getExpfromSnapshot(data);
                   return Container(child: printCostData(), width: 300,);
+                },
+              ),
+              SizedBox(height: 30,),
+              StreamBuilder<Object>(
+                stream: expStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("something went wrong");
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  final data = snapshot.requireData;
+                  getExpfromSnapshot(data);
+                  return printTotal();
                 },
               ),
 

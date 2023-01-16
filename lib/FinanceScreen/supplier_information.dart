@@ -330,7 +330,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: Colors.teal)
                     ),
-                    hintText: 'Search Company Name',
+                    hintText: 'Company Name',
                     hintStyle: TextStyle(
                         color: Colors.grey,
                         fontSize: 18
