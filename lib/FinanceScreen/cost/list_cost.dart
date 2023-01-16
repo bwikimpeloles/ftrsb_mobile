@@ -307,7 +307,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.teal)
                   ),
-                  hintText: 'Search',
+                  hintText: 'Cost Name',
                   hintStyle: TextStyle(
                       color: Colors.grey,
                       fontSize: 18
