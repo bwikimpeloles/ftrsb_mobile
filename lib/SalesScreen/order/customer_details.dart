@@ -64,7 +64,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
             color: Colors.green,
           ),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Name",
+          hintText: "Customer/Company Name",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

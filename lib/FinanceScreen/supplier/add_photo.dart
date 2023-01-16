@@ -62,7 +62,7 @@ class _AddPhotoState extends State<AddPhoto> {
       });
       ref = firebase_storage.FirebaseStorage.instance
           .ref()
-          .child('doimages/${widget.supplierKey}/${Path.basename(img.path)}');
+          .child('poimages/${widget.supplierKey}/${Path.basename(img.path)}');
       await ref.putFile(img).whenComplete(() async {
         print(widget.supplierKey);
         await ref.getDownloadURL().then((value) {
@@ -121,11 +121,11 @@ class _AddPhotoState extends State<AddPhoto> {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundColor: Colors.pink,
+                          backgroundColor: Colors.green,
                           child: IconButton(
                               icon: Icon(
                                 Icons.drive_folder_upload_rounded,
-                                color: Colors.yellow,
+                                color: Colors.white,
                               ),
                               onPressed: () => !uploading
                                   ? chooseImage(ImageSource.gallery)
@@ -133,10 +133,10 @@ class _AddPhotoState extends State<AddPhoto> {
                         ),
                         CircleAvatar(
                           radius: 30,
-                          backgroundColor: Colors.purple,
+                          backgroundColor: Colors.green,
                           child: IconButton(
                               icon: Icon(Icons.camera_alt),
-                              color: Colors.lightGreenAccent,
+                              color: Colors.white,
                               onPressed: () => !uploading
                                   ? chooseImage(ImageSource.camera)
                                   : null),

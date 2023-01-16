@@ -180,7 +180,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async {
                     setState(() {
-                      orderid = getRandomString(10);
+                      orderid = getRandomString(14);
                     });
 
                     Future<int> getOrderCount(String? phone) async {

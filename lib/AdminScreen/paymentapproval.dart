@@ -273,6 +273,35 @@ class _PaymentApprovalAdminState extends State<PaymentApprovalAdmin> {
 
                   ],
                 ),
+
+                SizedBox(
+                  height: 10,
+                ),
+
+                Row(
+                  children: [
+                    Text('by: ',
+                      style: TextStyle(
+                          fontStyle:
+                          FontStyle.italic,
+                          fontSize: 15,
+                          color:
+                          Colors.grey[600]),),
+                    Flexible(
+                      child: Text(
+                        payment['makeby'],
+                        style: TextStyle(
+                            fontStyle:
+                            FontStyle.italic,
+                            fontSize: 15,
+                            color:
+                            Colors.grey[600]),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
                 SizedBox(
                   height: 8,
                 ),

@@ -175,7 +175,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async {
                     setState(() {
-                      orderid = getRandomString(10);                      
+                      orderid = getRandomString(14);                      
                     });
 
                     Future<int> getOrderCount(String? phone) async {

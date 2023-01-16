@@ -1,52 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
-import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:intl/intl.dart';
 
-class OrderHistory extends StatefulWidget {
-  const OrderHistory({Key? key}) : super(key: key);
+class OrderHistoryB2B extends StatefulWidget {
+  const OrderHistoryB2B({Key? key}) : super(key: key);
 
   @override
-  State<OrderHistory> createState() => _OrderHistoryState();
+  State<OrderHistoryB2B> createState() => _OrderHistoryB2BState();
 }
 
-class _OrderHistoryState extends State<OrderHistory> {
+class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
   List<int> lists = [];
   late Query _ref;
   TextEditingController _searchController = TextEditingController();
-  UserModel staff = UserModel();
 
   @override
   void initState() {
     // TODO: implement initState
     _ref = FirebaseFirestore.instance
-        .collection('OrderB2C')
-        .orderBy('paymentDate', descending: true)
+        .collection('OrderB2B')
+        .orderBy('orderDate', descending: true)
         .limit(100);
   }
 
   String getChannel(String c) {
-    if (c == 'shopee') {
-      return 'Shopee';
-    } else if (c == 'tiktok') {
-      return 'TikTok';
-    } else if (c == 'grabmart') {
-      return 'GrabMart';
-    } else if (c == 'whatsapp') {
-      return 'WhatsApp';
-    } else if (c == 'other') {
-      return 'Other';
-    } else if (c == 'website') {
-      return 'Website';
-    } else
+    if (c == 'b2b_retail') {
+      return 'B2B Retail';
+    } else if (c == 'b2b_hypermarket') {
+      return 'B2B Hypermarket';
+    } else {
       return '';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //bottomNavigationBar: CurvedNavBar(indexnum: 3,),
+        bottomNavigationBar: CurvedNavBar(
+          indexnum: 1,
+        ),
         backgroundColor: Colors.white,
         appBar: PreferredSize(
           child: CustomAppBar(bartitle: 'Order History'),
@@ -63,7 +57,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                   onChanged: (text) {
                     setState(() {
                       _ref = FirebaseFirestore.instance
-                          .collection('OrderB2C')
+                          .collection('OrderB2B')
                           .orderBy('orderID')
                           .startAt([text]).endAt([text + '\uf8ff']);
                     });
@@ -96,16 +90,6 @@ class _OrderHistoryState extends State<OrderHistory> {
                           itemCount: snap.data!.docs.length,
                           itemBuilder: (context, index) {
                             DocumentSnapshot data = snap.data!.docs[index];
-
-                            FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(data['salesStaff'])
-                                .get()
-                                .then((value) {
-                              this.staff = UserModel.fromMap(value.data());
-                              
-                            });
-
                             return Column(
                               children: [
                                 Material(
@@ -113,7 +97,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(10),
                                       color: Colors.white,
                                     ),
                                     child: Padding(
@@ -149,7 +133,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           Row(
                                             children: [
                                               Text(
-                                                'Name: ',
+                                                'Company Name: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: Color.fromARGB(
@@ -161,7 +145,34 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               Expanded(
                                                 child: Text(data['custName'],
                                                     overflow: TextOverflow.fade,
-                                                    maxLines: 2,
+                                                    maxLines: 3,
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Colors.grey[600])),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'PIC: ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 3),
+                                              Expanded(
+                                                child: Text(data['pic'],
+                                                    overflow: TextOverflow.fade,
+                                                    maxLines: 3,
                                                     softWrap: true,
                                                     style: TextStyle(
                                                         fontSize: 15,
@@ -224,7 +235,33 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           Row(
                                             children: [
                                               Text(
-                                                'Payment Date: ',
+                                                'Order Date: ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 3),
+                                              Text(
+                                                  DateFormat.yMEd()
+                                                      .format((data['orderDate']
+                                                              as Timestamp)
+                                                          .toDate())
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey[600])),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Order Collection Date: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: Color.fromARGB(
@@ -236,7 +273,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               Text(
                                                   DateFormat.yMEd()
                                                       .format(
-                                                          (data['paymentDate']
+                                                          (data['collectionDate']
                                                                   as Timestamp)
                                                               .toDate())
                                                       .toString(),
@@ -251,7 +288,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           Row(
                                             children: [
                                               Text(
-                                                'Payment Verification: ',
+                                                'Payment Status: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: Color.fromARGB(
@@ -261,7 +298,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               ),
                                               SizedBox(width: 3),
                                               Text(
-                                                  data['paymentVerify']
+                                                  data['paymentStatus']
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: 15,
@@ -292,29 +329,50 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           SizedBox(
                                             height: 3,
                                           ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Submitted by ',
-                                                style: TextStyle(
-                                                    fontStyle: FontStyle.italic,
-                                                    fontSize: 15,
-                                                    color: Colors.grey[600]),
-                                              ),
-                                              Expanded(
-                                                child: Text('${staff.name}', 
-                                                    overflow: TextOverflow.fade,
-                                                    maxLines: 2,
-                                                    softWrap: true,
-                                                    style: TextStyle(
-                                                        fontStyle:
-                                                            FontStyle.italic,
-                                                        fontSize: 15,
-                                                        color:
-                                                            Colors.grey[600])),
-                                              ),
-                                            ],
-                                          ),
+                                          StreamBuilder<DocumentSnapshot>(
+                                              stream: FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(data['salesStaff'])
+                                                  .snapshots(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  DocumentSnapshot? sn =
+                                                      snapshot.data;
+
+                                                  return Row(
+                                                    children: [
+                                                      Text(
+                                                        'Submitted by ',
+                                                        style: TextStyle(
+                                                            fontStyle: FontStyle
+                                                                .italic,
+                                                            fontSize: 15,
+                                                            color: Colors
+                                                                .grey[600]),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                            sn!['name']
+                                                                .toString(),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .fade,
+                                                            maxLines: 2,
+                                                            softWrap: true,
+                                                            style: TextStyle(
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .italic,
+                                                                fontSize: 15,
+                                                                color:
+                                                                    Colors.grey[
+                                                                        600])),
+                                                      ),
+                                                    ],
+                                                  );
+                                                } else
+                                                  return CircularProgressIndicator();
+                                              }),
                                         ],
                                       ),
                                     ),

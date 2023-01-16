@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import '../FinanceScreen/makepayment/view_payment.dart';
 import 'view_paymentapproval.dart';
 
 class EditPaymentApproval extends StatefulWidget {
@@ -110,8 +111,18 @@ class _EditPaymentApprovalState extends State<EditPaymentApproval> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async{
       try{
         if(payload !=null && payload.isNotEmpty){
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => ViewPayment(
+              paymentKey: widget.paymentKey,
+            ),
+          ));
 
         } else{
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => ViewPayment(
+              paymentKey: widget.paymentKey,
+            ),
+          ));
 
         }
       } catch(e){
@@ -127,7 +138,7 @@ class _EditPaymentApprovalState extends State<EditPaymentApproval> {
         contentTitle: message.notification!.title.toString(), htmlFormatContentTitle: true,);
 
       AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails('dbfood', 'dbfood', importance: Importance.high,
-          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, groupKey: 'com.example.ftrsb_mobile');
+          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, setAsGroupSummary:true,groupKey: 'com.example.ftrsb_mobile');
 
       NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title, message.notification?.body, platformChannelSpecifics,

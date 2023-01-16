@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ftrsb_mobile/AdminScreen/paymentapproval.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+
+import '../../model/user_model.dart';
 
 class AddPayment extends StatefulWidget {
   @override
@@ -23,6 +26,7 @@ class _AddPaymentState extends State<AddPayment> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   DateTime? pickedDate;
+  UserModel loggedInUser = UserModel();
   List<DropdownMenuItem<String>> get dropdownItems{
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("Pending"),value: "Pending"),
@@ -46,6 +50,15 @@ class _AddPaymentState extends State<AddPayment> {
     _ponumberController = TextEditingController();
     _bankreferencenoController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('MakePayments');
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
   }
 
   initInfo(){
@@ -54,6 +67,9 @@ class _AddPaymentState extends State<AddPayment> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async{
       try{
         if(payload !=null && payload.isNotEmpty){
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => PaymentApprovalAdmin(),
+          ));
 
         } else{
 
@@ -71,7 +87,7 @@ class _AddPaymentState extends State<AddPayment> {
         contentTitle: message.notification!.title.toString(), htmlFormatContentTitle: true,);
 
       AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails('dbfood', 'dbfood', importance: Importance.high,
-          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, groupKey: 'com.example.ftrsb_mobile');
+          styleInformation: bigTextStyleInformation, priority: Priority.high, playSound: true, setAsGroupSummary:true, groupKey: 'com.example.ftrsb_mobile');
 
       NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title, message.notification?.body, platformChannelSpecifics,
@@ -163,6 +179,7 @@ class _AddPaymentState extends State<AddPayment> {
     String ponumber = _ponumberController.text;
     String bankreferenceno = _bankreferencenoController.text;
     String status = selectedValue!;
+    String? username = loggedInUser.name.toString();
 
 
     Map<String,String> payment = {
@@ -173,6 +190,7 @@ class _AddPaymentState extends State<AddPayment> {
       'ponumber':ponumber,
       'bankreferenceno': bankreferenceno,
       'status':status,
+      'makeby' : username,
     };
 
     _ref.doc().set(payment).then((value) {

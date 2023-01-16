@@ -47,10 +47,9 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
 
   void saveToken(String token) async {
     await FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
-      'token' : token,
+      'token': token,
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,153 +57,233 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
       appBar: AppBar(
         title: const Text("Welcome - Admin"),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                logout(context);
+              },
+              icon: Icon(Icons.logout_outlined, size: 25))
+        ],
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 90,
-                  child: Image.asset("assets/logo.png", fit: BoxFit.contain),
+          padding: EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 154, 255, 157).withOpacity(0.5),borderRadius: BorderRadius.circular(15),
                 ),
-                Text(
-                  "Welcome Back",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text("${loggedInUser.name}",
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                    )),
-                Text("${loggedInUser.email}",
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                    )),
-                SizedBox(
-                  height: 15,
-                ),
-                Column(
+                child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        //warehouse button
-                        SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              textStyle: const TextStyle(fontSize: 16),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => const WarehouseNav(),));
-                            },
-                            child: const Text('WAREHOUSE', style: TextStyle(color: Colors.white),),
-                          ),
-                        ),
-                        SizedBox(width: 20,),
-
-                        //sales & marketing button button
-                        SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              textStyle: const TextStyle(fontSize: 16),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => const HomeScreenSales(),));
-                            },
-                            child: const Text('SALES \n&\nMARKETING', style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,),
-                          ),
-                        ),
-
-                      ],),
-
-                    SizedBox(height: 20,),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        //finance button
-                      SizedBox(
-                        height: 100,
-                        width: 150,
-                        child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.amber[700],
-                          textStyle: const TextStyle(fontSize: 16),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => const HomeScreenFinance(),));
-                        },
-                        child: const Text('FINANCE', style: TextStyle(color: Colors.white),),
-                    ),
-                      ),
-                        SizedBox(width: 20,),
-
-                        //employee accounts button
-                        SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.purple,
-                              textStyle: const TextStyle(fontSize: 16),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => const UserList(),));
-                            },
-                            child: const Text('EMPLOYEE \nACCOUNTS', style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,),
-                          ),
-                        ),
-
-                    ],),
-                    SizedBox(height: 20,),
                     SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.brown,
-                          textStyle: const TextStyle(fontSize: 16),
-                        ),
-                        onPressed: () {
+                      height: 90,
+                      child:
+                          Image.asset("assets/logo.png", fit: BoxFit.contain),
+                    ),
+                    Text(
+                      "Welcome Back",
+                      style:
+                          TextStyle(color: Colors.green[800],fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text("${loggedInUser.name}",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 27, 73, 29),
+                          fontWeight: FontWeight.w500,
+                        )),
+                    Text("${loggedInUser.email}",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 27, 73, 29),
+                          fontWeight: FontWeight.w500,
+                        )),
+                        SizedBox(
+                height: 10,
+              ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,),
+              Expanded(
+                child: GridView.count(
+                  padding: EdgeInsets.all(5),
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  children: [
+                    Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(8),
+                      child: InkWell(
+                        onTap: () {
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => const PaymentApprovalAdmin(),));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const WarehouseNav(),
+                              ));
                         },
-                        child: const Text('TRANSACTION \n APPROVAL', style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,),
+                        splashColor: Colors.green,
+                        child: Center(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.warehouse_rounded,
+                              size: 55,
+                              color: Colors.green,
+                            ),
+                            Text(
+                              "WAREHOUSE",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 27, 73, 29)),
+                            ),
+                          ],
+                        )),
+                      ),
+                    ),
+                    Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(8),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreenSales(),
+                              ));
+                        },
+                        splashColor: Colors.green,
+                        child: Center(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.sell_rounded,
+                              size: 55,
+                              color: Colors.green,
+                            ),
+                            Text(
+                              "SALES AND MARKETING",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 27, 73, 29)),
+                            ),
+                          ],
+                        )),
+                      ),
+                    ),
+                    Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(8),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreenFinance(),
+                              ));
+                        },
+                        splashColor: Colors.green,
+                        child: Center(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.monetization_on,
+                              size: 55,
+                              color: Colors.green,
+                            ),
+                            Text(
+                              "FINANCE",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 27, 73, 29)),
+                            ),
+                          ],
+                        )),
+                      ),
+                    ),
+                    Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(8),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const UserList(),
+                              ));
+                        },
+                        splashColor: Colors.green,
+                        child: Center(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.people_rounded,
+                              size: 55,
+                              color: Colors.green,
+                            ),
+                            Text(
+                              "HR MANAGEMENT",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 27, 73, 29)),
+                            ),
+                          ],
+                        )),
+                      ),
+                    ),
+                    Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(8),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const PaymentApprovalAdmin(),
+                              ));
+                        },
+                        splashColor: Colors.green,
+                        child: Center(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.check_box_rounded,
+                              size: 55,
+                              color: Colors.green,
+                            ),
+                            Text(
+                              "TRANSACTION APPROVAL",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 27, 73, 29)),
+                            ),
+                          ],
+                        )),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20,),
-                ActionChip(
-                    label: Text("Logout"),
-                    onPressed: () {
-                      logout(context);
-                    }),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -215,6 +294,6 @@ class _HomeScreenAdminState extends State<HomeScreenAdmin> {
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
+        MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 }
