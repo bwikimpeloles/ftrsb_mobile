@@ -357,7 +357,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   color: Colors.green.shade400,
                                 ),
                                 Text(
-                                  "Stock Alert",
+                                  "Check Low Stock Alert",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
