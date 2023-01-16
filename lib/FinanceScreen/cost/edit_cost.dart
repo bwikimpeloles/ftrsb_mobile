@@ -12,7 +12,7 @@ class EditCost extends StatefulWidget {
 }
 
 class _EditCostState extends State<EditCost> {
-  late TextEditingController _nameController, _categoryController, _amountController, _supplierController, _dateController, _referencenoController;
+  late TextEditingController _nameController, _amountController, _supplierController, _dateController, _referencenoController;
   late CollectionReference _ref;
   final _formKey = GlobalKey<FormState>();
   late String sentence;
@@ -20,17 +20,7 @@ class _EditCostState extends State<EditCost> {
   int month1=1;
   int day1=1;
   DateTime? dateselect = new DateTime.now();
-  String? selectedValue;
-
-  List<DropdownMenuItem<String>> get dropdownItems{
-    List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("Frozen Food"),value: "Frozen Food"),
-      DropdownMenuItem(child: Text("Raw Material"),value: "Raw Material"),
-      DropdownMenuItem(child: Text("Cookies"),value: "Cookies"),
-      DropdownMenuItem(child: Text("Others"),value: "Others"),
-    ];
-    return menuItems;
-  }
+  var selectedCategory;
 
   Future<DateTime> getDate() async {
     DocumentSnapshot snapshot = (await _ref.doc(widget.costKey).get());
@@ -45,7 +35,6 @@ class _EditCostState extends State<EditCost> {
     // TODO: implement initState
     super.initState();
     _nameController = TextEditingController();
-    _categoryController = TextEditingController();
     _amountController = TextEditingController();
     _supplierController = TextEditingController();
     _dateController = TextEditingController();
@@ -59,14 +48,14 @@ class _EditCostState extends State<EditCost> {
 
   void initialize() async{
     var document = await FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).get();
-    selectedValue = document['category'];
+    selectedCategory = document['category'];
     dateselect = (document['date'] as Timestamp).toDate();
     setState(() {});
   }
 
   void saveCost() {
     String name = _nameController.text;
-    String? category = selectedValue;
+    String? category = selectedCategory;
     String amount = _amountController.text;
     String supplier = _supplierController.text;
     DateTime? date2 = dateselect;
@@ -143,21 +132,52 @@ class _EditCostState extends State<EditCost> {
                   ),
                 ),
                 SizedBox(height: 15),
-                DropdownButtonFormField(
-                    hint: Text("Choose an category"),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: EdgeInsets.all(15),
-                    ),
-                    validator: (value) => value == null ? "Select a category" : null,
-                    value: selectedValue,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedValue = newValue!;
-                      });
-                    },
-                    items: dropdownItems),
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection("Category").snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return const Text("Loading.....");
+                      else {
+                        List<DropdownMenuItem> categoryItems = [];
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          DocumentSnapshot snap = snapshot.data!.docs[i];
+                          categoryItems.add(
+                            DropdownMenuItem(
+                              child: Text(
+                                snap['category'],
+                              ),
+                              value: "${snap['category']}",
+                            ),
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: DropdownButtonFormField<dynamic>(
+                                validator: (value) => value == null ? "Select a category" : null,
+                                items: categoryItems,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(15),
+                                ),
+                                onChanged: (categoryValue) {
+                                  setState(() {
+                                    selectedCategory = categoryValue;
+                                  });
+                                },
+                                value: selectedCategory,
+                                isExpanded: false,
+                                hint: new Text(
+                                  "Choose Category",
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
                 SizedBox(height: 15),
                 TextFormField(
                   keyboardType: TextInputType.number,
@@ -265,7 +285,7 @@ class _EditCostState extends State<EditCost> {
 
     _nameController.text = cost['name'];
 
-    _categoryController.text = cost['category'];
+    selectedCategory = cost['category'];
 
     _amountController.text = cost['amount'];
 

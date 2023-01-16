@@ -13,19 +13,9 @@ class _AddCostState extends State<AddCost> {
   late TextEditingController _nameController, _amountController,  _referencenoController;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   var selectedSupplier;
-  String? selectedValue = null;
+  var selectedCategory;
   var uuid = Uuid();
   final _formKey = GlobalKey<FormState>();
-
-  List<DropdownMenuItem<String>> get dropdownItems{
-    List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("Frozen Food"),value: "Frozen Food"),
-      DropdownMenuItem(child: Text("Raw Material"),value: "Raw Material"),
-      DropdownMenuItem(child: Text("Cookies"),value: "Cookies"),
-      DropdownMenuItem(child: Text("Others"),value: "Others"),
-    ];
-    return menuItems;
-  }
   @override
   void initState() {
     // TODO: implement initState
@@ -39,7 +29,7 @@ class _AddCostState extends State<AddCost> {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     CostModel costModel = CostModel();
     costModel.name = _nameController.text;
-    costModel.category = selectedValue;
+    costModel.category = selectedCategory;
     costModel.amount = _amountController.text;
     costModel.supplier = selectedSupplier;
     costModel.date = dateselect; //formattedDate;
@@ -91,21 +81,52 @@ class _AddCostState extends State<AddCost> {
                   ),
                 ),
                 SizedBox(height: 15),
-                DropdownButtonFormField(
-                    hint: Text("Choose an category"),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: EdgeInsets.all(15),
-                    ),
-                    validator: (value) => value == null ? "Select a category" : null,
-                    value: selectedValue,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedValue = newValue!;
-                      });
-                    },
-                    items: dropdownItems),
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection("Category").snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return const Text("Loading.....");
+                      else {
+                        List<DropdownMenuItem> categoryItems = [];
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          DocumentSnapshot snap = snapshot.data!.docs[i];
+                          categoryItems.add(
+                            DropdownMenuItem(
+                              child: Text(
+                                snap['category'],
+                              ),
+                              value: "${snap['category']}",
+                            ),
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: DropdownButtonFormField<dynamic>(
+                                validator: (value) => value == null ? "Select a category" : null,
+                                items: categoryItems,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(15),
+                                ),
+                                onChanged: (categoryValue) {
+                                  setState(() {
+                                    selectedCategory = categoryValue;
+                                  });
+                                },
+                                value: selectedCategory,
+                                isExpanded: false,
+                                hint: new Text(
+                                  "Choose Category",
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
                 SizedBox(height: 15),
                 TextFormField(
                   keyboardType: TextInputType.number,

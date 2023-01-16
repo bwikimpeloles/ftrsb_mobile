@@ -270,6 +270,7 @@ class _CostFinanceState extends State<CostFinance> {
                   return printTotal();
                 },
               ),
+              SizedBox(height: 90,),
 
 
             ],

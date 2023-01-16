@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/add_cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/edit_cost.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost/list_category.dart';
 import 'package:intl/intl.dart';
 
 class ListCostFinance extends StatefulWidget {
@@ -284,12 +285,39 @@ class _ListCostFinanceState extends State<ListCostFinance> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cost Information'),
+        actions: [
+          PopupMenuButton(
+            // add icon, by default "3 dot" icon
+            // icon: Icon(Icons.book)
+              itemBuilder: (context){
+                return [
+                  PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("Manage Category"),
+                  ),
+
+                ];
+              },
+              onSelected:(value) async{
+                if(value == 0){
+                  print("Popup menu");
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) {
+                      return ListCategory();
+                    }),
+                  ).then((value) => setState(() {}));
+
+                }
+              }
+          ),
+          ],
       ),
       body: Column(
         children: [
           SizedBox(height: 10,),
           SizedBox(
-            height: 50,
+            height: 40,
             width: 200,
             child: TextField(
               onChanged: (text){
@@ -308,6 +336,35 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                       borderSide: BorderSide(color: Colors.teal)
                   ),
                   hintText: 'Cost Name',
+                  hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18
+                  ),
+                  prefixIcon: Icon(Icons.search)
+              ),
+            ),
+          ),
+          SizedBox(height: 10,),
+          SizedBox(
+            height: 40,
+            width: 200,
+            child: TextField(
+              onChanged: (text){
+                setState(() {
+                  _ref = FirebaseFirestore.instance.collection('Cost').orderBy('category').startAt([text])
+                      .endAt([text + '\uf8ff']);
+                });
+
+              },
+              cursorColor: Colors.teal,
+              decoration: InputDecoration(
+                  fillColor: Colors.white30,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.teal)
+                  ),
+                  hintText: 'Cost Category',
                   hintStyle: TextStyle(
                       color: Colors.grey,
                       fontSize: 18

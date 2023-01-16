@@ -283,6 +283,7 @@ class _Revenue2FinanceState extends State<Revenue2Finance> {
                 return printTotal();
               },
             ),
+            SizedBox(height: 90,),
           ],
         ),
       ),
