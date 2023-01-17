@@ -138,8 +138,11 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
       expStream = FirebaseFirestore.instance
           .collection('OrderB2B')
           .where('orderDate',
-              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
+          .where('orderDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
@@ -152,17 +155,17 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
               isLessThan:
                   DateTime(DateTime.now().year, DateTime.now().month, 31))
           .snapshots();
-      print(widget.selectedValue);
+      print('Current Datetime: ' + DateTime.now().toString());
     } else {
       //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2B')
-          .where('orderDate',
+         .where('orderDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+                  DateTime.now().month, DateTime.now().day - 6))
           .where('orderDate',
               isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 6))
+                  DateTime.now().day + 1))
           .snapshots();
     }
 
@@ -175,7 +178,9 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
           OrderB2BModel exp = OrderB2BModel().fromJson(a.data());
           _order.add(exp);
           //print('_order: ' + _order.toString());
-        }
+        } 
+      } else {
+        _order = [];
       }
     }
 

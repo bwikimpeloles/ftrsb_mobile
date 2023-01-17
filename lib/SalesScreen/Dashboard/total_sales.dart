@@ -15,11 +15,14 @@ class _TotalSalesState extends State<TotalSales> {
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> expStream;
     if (widget.selectedValue == "Today") {
-      expStream = FirebaseFirestore.instance
+       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
-          .where('orderDate',
-              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+          .where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
+          .where('paymentDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
@@ -30,29 +33,35 @@ class _TotalSalesState extends State<TotalSales> {
                   DateTime(DateTime.now().year, DateTime.now().month, 1))
           .where('paymentDate',
               isLessThan:
-                  DateTime(DateTime.now().year, DateTime.now().month, 31))
+                  DateTime(DateTime.now().year, DateTime.now().month, 32))
           .snapshots();
       print(widget.selectedValue);
-    } else {
+    } else if (widget.selectedValue == "This Week"){
       //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
           .where('paymentDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+                  DateTime.now().month, DateTime.now().day - 6))
           .where('paymentDate',
-              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 6))
+              isLessThan: DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day + 1))
           .snapshots();
+    } else {
+      expStream = FirebaseFirestore.instance
+          .collection('OrderB2C').snapshots();
     }
 
     final Stream<QuerySnapshot> expStream1;
     if (widget.selectedValue == "Today") {
       expStream1 = FirebaseFirestore.instance
           .collection('OrderB2B')
-          .where('paymentDate',
-              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+         .where('orderDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
+          .where('orderDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
@@ -63,20 +72,23 @@ class _TotalSalesState extends State<TotalSales> {
                   DateTime(DateTime.now().year, DateTime.now().month, 1))
           .where('orderDate',
               isLessThan:
-                  DateTime(DateTime.now().year, DateTime.now().month, 31))
+                  DateTime(DateTime.now().year, DateTime.now().month, 32))
           .snapshots();
       print(widget.selectedValue);
-    } else {
+    } else if (widget.selectedValue == "This Week") {
       //Last 7 days
       expStream1 = FirebaseFirestore.instance
           .collection('OrderB2B')
           .where('orderDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+                  DateTime.now().month, DateTime.now().day - 6))
           .where('orderDate',
               isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 6))
+                  DateTime.now().day + 1))
           .snapshots();
+    } else {
+      expStream1 = FirebaseFirestore.instance
+          .collection('OrderB2B').snapshots();
     }
 
     return Container(
