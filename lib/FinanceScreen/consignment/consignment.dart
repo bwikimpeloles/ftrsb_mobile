@@ -345,11 +345,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['amount'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['amount'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -391,11 +393,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['custAddress'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['custAddress'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -413,11 +417,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['custPhone'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['custPhone'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -435,11 +441,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['pic'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['pic'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -457,11 +465,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString(),
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString(),
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -479,11 +489,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['orderID'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['orderID'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -501,11 +513,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['paymentStatus'] ,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['paymentStatus'] ,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
