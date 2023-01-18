@@ -38,16 +38,24 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
 
   getProductlist() {
     List<String> list = [];
-    List<int?> qty = [];
     for (int i = 0; i < selectedProduct.length; i++) {
-      list.add(selectedProduct[i].name.toString());
-      qty.add(selectedProduct[i].quantity);    
+      list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString()); 
     }
     return list;
   }
 
-String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+  Future<int> getCount(String? i) {
+    Stream<QuerySnapshot> snap = FirebaseFirestore.instance
+        .collection('OrderB2C')
+        .where('custPhone', isEqualTo: i.toString())
+        .snapshots();
+    Future<int> count = snap.length;
+    return count;
+  }
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   Widget build(BuildContext context) {
@@ -183,16 +191,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       orderid = getRandomString(14);
                     });
 
-                    Future<int> getOrderCount(String? phone) async {
-                      var docs = await FirebaseFirestore.instance
-                          .collection('OrderB2C')
-                          .where('custPhone', isEqualTo: phone)
-                          .get();
-                      int count = docs.size;
-                      return count;
-                    }
-
-                    int _count = await getOrderCount(cust.phone) + 1;
                     int _count = await getCount(cust.phone.toString()) + 1;
 
                     Map<String, dynamic> customer = {
@@ -202,7 +200,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'email': cust.email ?? '',
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
-                      'count': _count
+                      'count': _count,
                     };
 
                     Map<String, dynamic> orderb2c = {
