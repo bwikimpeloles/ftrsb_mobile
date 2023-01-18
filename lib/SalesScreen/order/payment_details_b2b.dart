@@ -299,7 +299,6 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                               setState(() {
                                 payb.amount = amountTextCtrl.text;
                                 payb.orderDateDisplay = orderdateInput.text;
-                                payb.collectionDateDisplay = collectdateInput.text;
                                 payb.collectionDate = _toTimeStamp(pdatec);
                                 payb.orderDate = _toTimeStamp(pdateo);
                                 payb.pic = picCtrl.text;

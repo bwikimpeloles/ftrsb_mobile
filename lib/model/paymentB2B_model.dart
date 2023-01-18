@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PaymentB2B {
   String? amount;
   String? orderDateDisplay;
-  String? collectionDateDisplay;
   Timestamp? orderDate;
   Timestamp? collectionDate;
   String? pic;

@@ -4,7 +4,6 @@ class PaymentB2C {
   String? paymentMethod;
   String? amount;
   Timestamp? paymentDate;
-  String? tempDate;
   String? bankName;
   String? paymentVerify;
   String? action;

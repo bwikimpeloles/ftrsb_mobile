@@ -273,7 +273,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                         1);
                                 payc.paymentDate = _toTimeStamp(pdate);
                                 payc.bankName = banknameCtrl.text;
-                                payc.tempDate = dateInput.text;
 
                                 if (cust.channel == 'whatsapp') {
                                   payc.paymentVerify = 'No';
