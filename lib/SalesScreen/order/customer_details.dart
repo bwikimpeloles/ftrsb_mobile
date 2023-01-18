@@ -38,6 +38,12 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
   final emailEditingController = TextEditingController();
 
   @override
+  initState(){
+    super.initState();
+    _channel = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     //name field
     final nameField = TextFormField(
@@ -140,7 +146,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         validator: (value) {
           // reg expression for email validation
           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value!)) {
+              .hasMatch(value!) && value.isNotEmpty) {
             return ("Please Enter a valid email");
           }
           return null;

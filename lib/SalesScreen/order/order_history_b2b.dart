@@ -287,7 +287,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'Payment Status: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -310,7 +310,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'Channel: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -387,7 +387,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                         );
                       } else
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: LinearProgressIndicator(),
                         );
                     },
                   ),

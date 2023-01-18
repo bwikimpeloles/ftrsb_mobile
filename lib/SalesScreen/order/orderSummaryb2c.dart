@@ -25,21 +25,23 @@ class OrderSummaryB2C extends StatefulWidget {
 User? user = FirebaseAuth.instance.currentUser;
 
 class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
-  
   String? orderid = 'TEST12345';
 
   int counter = 0;
 
   PlatformFile? pickedFile;
 
-  static const _chars ='AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  static const _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random.secure();
   final now = DateTime.now();
 
   getProductlist() {
     List<String> list = [];
-    for (int i = 0; i < selectedProduct.length ; i++) {
-      list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString());
+    List<int?> qty = [];
+    for (int i = 0; i < selectedProduct.length; i++) {
+      list.add(selectedProduct[i].name.toString());
+      qty.add(selectedProduct[i].quantity);    
     }
     return list;
   }
@@ -50,7 +52,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
   @override
   Widget build(BuildContext context) {
 //select file button
-  String dateStr = DateFormat('yy-MM-dd').format(now).replaceAll('-', '');
+    String dateStr = DateFormat('yy-MM-dd').format(now).replaceAll('-', '');
     final selectFileButton = Material(
         elevation: 5,
         borderRadius: BorderRadius.circular(15),
@@ -123,7 +125,11 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
           )),
       child: Column(
         children: [
-          SizedBox(child: Text('Selected Product:',style: TextStyle(color: Colors.grey),)),
+          SizedBox(
+              child: Text(
+            'Selected Product:',
+            style: TextStyle(color: Colors.grey),
+          )),
           ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -150,8 +156,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                               selectedProduct.removeAt(index);
                             });
                           },
-                        ))
-                    ),
+                        ))),
               );
             },
           ),
@@ -175,7 +180,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async {
                     setState(() {
-                      orderid = getRandomString(14);                      
+                      orderid = getRandomString(14);
                     });
 
                     Future<int> getOrderCount(String? phone) async {
@@ -188,20 +193,17 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                     }
 
                     int _count = await getOrderCount(cust.phone) + 1;
+                    int _count = await getCount(cust.phone.toString()) + 1;
 
                     Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
                       'address': cust.address,
-                      'email': cust.email,
+                      'email': cust.email ?? '',
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
                       'count': _count
                     };
-
-                    if (cust.phone != null) {
-                      FirebaseFirestore.instance.collection('Customer').add(customer);
-                    } 
 
                     Map<String, dynamic> orderb2c = {
                       'custName': cust.name,
@@ -217,22 +219,34 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
+                      'action': payc.action,
                     };
 
-                    Future uploadFile() async{
-                        final path = dateStr + orderid.toString()+'/${pickedFile!.name}';
-                        final file = File(pickedFile!.path!);
+                    Future uploadFile() async {
+                      final path =
+                          dateStr + orderid.toString() + '/${pickedFile!.name}';
+                      final file = File(pickedFile!.path!);
 
-                        Reference ref = FirebaseStorage.instance.ref().child(path);
-                        ref.putFile(file);
-
+                      Reference ref =
+                          FirebaseStorage.instance.ref().child(path);
+                      ref.putFile(file);
                     }
-                     
-                    if (cust.phone != null && payc.paymentMethod != null) {
-                      //dbRefOrder.push().set(orderb2c);
-                      FirebaseFirestore.instance.collection('OrderB2C').doc(dateStr + orderid.toString()).set(orderb2c);
-                      if(pickedFile != null){uploadFile();}
-                      
+
+                    if (cust.phone != null &&
+                        payc.paymentMethod != null &&
+                        counter >= 0) {
+                      FirebaseFirestore.instance
+                          .collection('Customer')
+                          .add(customer);
+
+                      FirebaseFirestore.instance
+                          .collection('OrderB2C')
+                          .doc(dateStr + orderid.toString())
+                          .set(orderb2c);
+                      if (pickedFile != null) {
+                        uploadFile();
+                      }
+
                       Fluttertoast.showToast(
                           msg: 'Order submitted',
                           gravity: ToastGravity.CENTER,
@@ -303,7 +317,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
                   style: TextStyle(fontSize: 16)),
               SizedBox(height: 20),
               //Text('Order ID : ' + date + orderid.toString(),
-               //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               Text('Order Date : ' + payc.tempDate.toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),

@@ -2,17 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/AdminScreen/home_admin.dart';
-//import 'package:ftrsb_mobile/SalesScreen/Dashboard/salestrend_b2c_month.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2b.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/orderSummaryb2c.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2c.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/product_details.dart';
-//import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
-
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../screens/login_screen.dart';
 import '../model/user_model.dart';
@@ -103,7 +95,7 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
             title: const Text('Prospect'),
             onTap: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const ProspectDetailsForm(),
+                builder: (context) => ProspectDetailsForm(),
               ));
             },
           ),

@@ -13,7 +13,22 @@ class _TotalSalesState extends State<TotalSales> {
 
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> expStream;
+    Stream<QuerySnapshot> expStream;
+
+    getStream(int i){
+      expStream = FirebaseFirestore.instance
+          .collection('OrderB2C')
+          .where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,i,
+                  1))
+          .where('paymentDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year, i,
+                  31))
+          .snapshots();
+
+      return expStream;
+    }
+
     if (widget.selectedValue == "Today") {
        expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
@@ -49,7 +64,12 @@ class _TotalSalesState extends State<TotalSales> {
           .snapshots();
     } else {
       expStream = FirebaseFirestore.instance
-          .collection('OrderB2C').snapshots();
+          .collection('OrderB2C').where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('paymentDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year,
+                  12, 31)).snapshots();
     }
 
     final Stream<QuerySnapshot> expStream1;
@@ -88,7 +108,12 @@ class _TotalSalesState extends State<TotalSales> {
           .snapshots();
     } else {
       expStream1 = FirebaseFirestore.instance
-          .collection('OrderB2B').snapshots();
+          .collection('OrderB2B').where('orderDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('orderDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year, 12,
+                  31)).snapshots();
     }
 
     return Container(
@@ -101,13 +126,15 @@ class _TotalSalesState extends State<TotalSales> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 int count = snapshot.data!.docs.length;
-                int sum = 0;
+                double sum = 0;
                 for (int i = 0; i < count; i++) {
                   final data = snapshot.data!.docs[i];
-                  sum = sum + int.parse(data['amount']);
+                  sum = sum + double.parse(data['amount']);
                 }
           
                 return Container(
+                  height: 135,
+                  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -119,11 +146,13 @@ class _TotalSalesState extends State<TotalSales> {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          Text('B2C Order Count:', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),),
                           Text(count.toString(), style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
-                          SizedBox(height: 10,),     
-                          Text('Total Sales (RM): ', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),) ,
-                          Text(sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
+                          Text('B2C Orders', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),),
+                          
+                          SizedBox(height: 10,),   
+                          Text('RM' +sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),  
+                          Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
+
                         ],
                       ),
                     ));
@@ -137,13 +166,15 @@ class _TotalSalesState extends State<TotalSales> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 int count = snapshot.data!.docs.length;
-                int sum = 0;
+                double sum = 0;
                 for (int i = 0; i < count; i++) {
                   final data = snapshot.data!.docs[i];
-                  sum = sum + int.parse(data['amount']);
+                  sum = sum + double.parse(data['amount']);
                 }
       
                 return Container(
+                  height: 135,
+                  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -155,11 +186,13 @@ class _TotalSalesState extends State<TotalSales> {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          Text('B2B Order Count:', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),),
                           Text(count.toString(), style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
-                          SizedBox(height: 10,),     
-                          Text('Total Sales (RM): ', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),) ,
-                          Text(sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
+                          Text('B2B Orders', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),),
+                          
+                          SizedBox(height: 10,),  
+                          Text('RM' +sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),   
+                          Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
+                          
                         ],
                       ),
                     ));

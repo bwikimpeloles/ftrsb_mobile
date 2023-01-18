@@ -20,7 +20,7 @@ class ProductDetails extends StatefulWidget {
 late ProductModel product = ProductModel();
 List<ProductModel> selectedProduct = [];
 
-String? _selectedValue = 'HALIA KISAR FROZEN 250g';
+late String? _selectedValue;
 
 class _ProductDetailsState extends State<ProductDetails> {
   final nameEditingController = TextEditingController();
@@ -35,9 +35,27 @@ class _ProductDetailsState extends State<ProductDetails> {
     });
   }
 
+  void incrementhundred() {
+    setState(() {
+      _count = _count + 100;
+    });
+  }
+
   void decrementCount() {
     setState(() {
       _count--;
+    });
+  }
+
+    void decrementhundred() {
+    setState(() {
+      _count = _count - 100;
+    });
+  }
+
+  void resetCount() {
+    setState(() {
+      _count = 0;
     });
   }
 
@@ -51,6 +69,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     _collectionRef = FirebaseFirestore.instance.collection('Product');
     setState(() {
       selectedProduct = [];
+      _selectedValue = null;
     });
   }
 
@@ -69,40 +88,42 @@ class _ProductDetailsState extends State<ProductDetails> {
           stream: _collectionRef.snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const CircularProgressIndicator();
+              return LinearProgressIndicator();
             } else {
-              return DropdownButtonFormField(
-                isExpanded: true,
-                icon: Icon(Icons.arrow_drop_down_circle_rounded,
-                    color: Colors.green),
-                dropdownColor: Colors.green.shade50,
-                decoration: InputDecoration(
-                  labelText: 'Product Name',
-                  prefixIcon: Icon(
-                    Icons.library_add,
+              return DropdownButtonHideUnderline(
+                child: DropdownButtonFormField(
+                  isExpanded: true,
+                  icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                      color: Colors.green),
+                  dropdownColor: Colors.green.shade50,
+                  decoration: InputDecoration(
+                    labelText: 'Product Name',
+                   // prefixIcon: Icon(
+                   //   Icons.library_add,
+                   // ),
                   ),
+                  itemHeight: kMinInteractiveDimension,
+                  items: snapshot.data!.docs
+                      .map(
+                        (map) => DropdownMenuItem(  
+                          child: Text(map.id, overflow: TextOverflow.fade,),
+                          value: map.id,
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (String? val) {
+                    for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                      DocumentSnapshot snap = snapshot.data!.docs[i];
+                      setState(() {
+                        _selectedValue = val!;
+                        if (_selectedValue == snap.reference.id) {
+                          skuEditingController.text = snap.get('sku');
+                          barcodeEditingController.text = snap.get('barcode');
+                        }
+                      });
+                    }
+                  },
                 ),
-                itemHeight: kMinInteractiveDimension,
-                items: snapshot.data!.docs
-                    .map(
-                      (map) => DropdownMenuItem(  
-                        child: Text(map.id, overflow: TextOverflow.fade,),
-                        value: map.id,
-                      ),
-                    )
-                    .toList(),
-                onChanged: (String? val) {
-                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                    DocumentSnapshot snap = snapshot.data!.docs[i];
-                    setState(() {
-                      _selectedValue = val!;
-                      if (_selectedValue == snap.reference.id) {
-                        skuEditingController.text = snap.get('sku');
-                        barcodeEditingController.text = snap.get('barcode');
-                      }
-                    });
-                  }
-                },
               );
             }
           }),
@@ -142,7 +163,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 skuEditingController.clear();
                 barcodeEditingController.clear();
                 _count = 1;
-                _selectedValue = null;
+                _selectedValue = '';
               }
             });
             //print(_selectedProduct.length);
@@ -151,7 +172,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             "Add To List",
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           )),
     );
 
@@ -241,7 +262,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             "Next",
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           )),
     );
 
@@ -266,10 +287,10 @@ class _ProductDetailsState extends State<ProductDetails> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: const Icon(
-            Icons.numbers,
-            color: Colors.green,
-          ),
+          //prefixIcon: const Icon(
+          //  Icons.numbers,
+          //  color: Colors.green,
+          //),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Product SKU",
           border: OutlineInputBorder(
@@ -298,10 +319,10 @@ class _ProductDetailsState extends State<ProductDetails> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: const Icon(
-            Icons.abc,
-            color: Colors.green,
-          ),
+          //prefixIcon: const Icon(
+           // Icons.abc,
+           // color: Colors.green,
+          //),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Product Barcode",
           border: OutlineInputBorder(
@@ -347,6 +368,49 @@ class _ProductDetailsState extends State<ProductDetails> {
                   incrementCount();
                 },
               ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(child: Text('+100', style: TextStyle(color: Colors.green),),
+              style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.all(3),
+                    side: const BorderSide(color: Colors.green),
+                  ),
+              onPressed:() {
+                incrementhundred();
+                  }),
+              SizedBox(
+                width: 15,
+              ),
+              ElevatedButton(
+                  child: Text('-100', style: TextStyle(color: Colors.green),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.all(3),
+                    side: const BorderSide(color: Colors.green),
+                  ),
+                  onPressed: () {
+                    decrementhundred();
+                  }),
+              SizedBox(
+                width: 15,
+              ),
+              ElevatedButton(
+                  child: Text(
+                    'Reset',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.all(3),
+                    side: const BorderSide(color: Colors.green),
+                  ),
+                  onPressed: () {
+                    resetCount();
+                  }),
             ],
           ),
         ],

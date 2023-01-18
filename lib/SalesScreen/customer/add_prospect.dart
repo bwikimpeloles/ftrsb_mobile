@@ -106,7 +106,7 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
         validator: (value) {
           // reg expression for email validation
           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value!)) {
+              .hasMatch(value!) && value.isNotEmpty) {
             return ("Please Enter a valid email");
           }
           return null;

@@ -37,9 +37,6 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
 
   late DistrChannel? _channel = DistrChannel.shopee;
 
-  
-  late DatabaseReference dbref;
-
   @override
   void initState() {
     getCustomerDetail();
@@ -146,12 +143,9 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
         controller: emailEditingController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please Enter Your Email");
-          }
           // reg expression for email validation
           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
+              .hasMatch(value!) && value.isNotEmpty) {
             return ("Please Enter a valid email");
           }
           return null;
@@ -423,7 +417,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
                   child: Text('Cancel')),
               TextButton(
                   onPressed: () {
-                    dbref.child(widget.customerKey).remove().whenComplete(() =>
+                    FirebaseFirestore.instance.collection('Customer').doc(widget.customerKey).delete().whenComplete(() =>
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => DistrChannelList())));
                   },

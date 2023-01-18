@@ -65,6 +65,7 @@ dependencies:
   flutter_native_timezone:
   notification_permissions: ^0.6.1
   fl_chart: 
+  nil: ^1.1.1
 
 dev_dependencies:
   flutter_test:

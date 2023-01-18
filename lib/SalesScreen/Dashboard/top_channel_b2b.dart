@@ -156,19 +156,26 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
                   DateTime(DateTime.now().year, DateTime.now().month, 31))
           .snapshots();
       print('Current Datetime: ' + DateTime.now().toString());
-    } else {
+    } else if (widget.selectedValue == "This Week") {
       //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2B')
-         .where('orderDate',
+          .where('orderDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
                   DateTime.now().month, DateTime.now().day - 6))
           .where('orderDate',
               isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day + 1))
           .snapshots();
+    } else { //This year
+      expStream = FirebaseFirestore.instance
+          .collection('OrderB2B').where('orderDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('orderDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year, 12,
+                  31)).snapshots();
     }
-
     void getExpfromSnapshot(snapshot) {
       if (snapshot.docs.isNotEmpty) {
         _order = [];
@@ -194,7 +201,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
               .white //const Color(0xff72d8bf),//Color.fromARGB(255, 234, 255, 226),
           ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(30.0,16,30,16),
         child: Column(
           children: [
             Column(
@@ -204,7 +211,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
                     'Top Selling Channel',
                     style: TextStyle(
                       color: Color(0xff0f4a3c),
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

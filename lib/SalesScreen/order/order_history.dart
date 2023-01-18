@@ -185,6 +185,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           SizedBox(
                                             height: 3,
                                           ),
+                                          
                                           Row(
                                             children: [
                                               Text(
@@ -259,9 +260,33 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                       color: Colors.grey[600])),
                                             ],
                                           ),
+                                           SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Order Status: ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 3),
+                                              Text(
+                                                  data['action']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey[600])),
+                                            ],
+                                          ),
                                           SizedBox(
                                             height: 3,
                                           ),
+                                          
                                           Row(
                                             children: [
                                               Text(
@@ -341,7 +366,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                         );
                       } else
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: LinearProgressIndicator(),
                         );
                     },
                   ),

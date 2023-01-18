@@ -20,8 +20,6 @@ PaymentStatus? _paymentStatus;
 late PaymentB2B payb = PaymentB2B();
 
 class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
-  late DatabaseReference dbRef =
-      FirebaseDatabase.instance.ref().child('PaymentB2B');
 
   final _formKey = GlobalKey<FormState>();
   //text field controller

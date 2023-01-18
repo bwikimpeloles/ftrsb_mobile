@@ -19,7 +19,7 @@ class PaymentDetails extends StatefulWidget {
 enum PaymentMethod { banktransfer, creditDebit, cash }
 
 PaymentMethod? _paymentMethod;
-  late PaymentB2C payc = PaymentB2C();
+late PaymentB2C payc = PaymentB2C();
 
 class _PaymentDetailsState extends State<PaymentDetails> {
   //late DatabaseReference dbRef =
@@ -32,6 +32,12 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   final dateInput = TextEditingController();
 
   late DateTime? pdate;
+
+  @override
+  initState() {
+    super.initState();
+    _paymentMethod = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,11 +113,10 @@ class _PaymentDetailsState extends State<PaymentDetails> {
         if (pickedDate != null) {
           String? formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate!);
           setState(() {
-            dateInput.text =
-                formattedDate;
-             pdate = pickedDate;    //set output date to TextField value.
+            dateInput.text = formattedDate;
+            pdate = pickedDate; //set output date to TextField value.
           });
-        } 
+        }
         print(pickedDate);
       },
     );
@@ -208,7 +213,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       return Timestamp.fromMillisecondsSinceEpoch(date!.millisecondsSinceEpoch);
     }
 
-
     return Scaffold(
       //bottomNavigationBar: CurvedNavBar(indexnum: 1,),
       backgroundColor: Colors.white,
@@ -259,23 +263,29 @@ class _PaymentDetailsState extends State<PaymentDetails> {
 
                               print(_toTimeStamp(pdate));
 
-                              
                               setState(() {
                                 payc.amount = amountTextCtrl.text;
-                                payc.paymentMethod = _paymentMethod.toString().substring(payc.paymentMethod.toString().indexOf('.') + 1);
+                                payc.paymentMethod = _paymentMethod
+                                    .toString()
+                                    .substring(payc.paymentMethod
+                                            .toString()
+                                            .indexOf('.') +
+                                        1);
                                 payc.paymentDate = _toTimeStamp(pdate);
                                 payc.bankName = banknameCtrl.text;
                                 payc.tempDate = dateInput.text;
 
                                 if (cust.channel == 'whatsapp') {
                                   payc.paymentVerify = 'No';
+                                  payc.action = 'Processing';
+
                                 } else {
-                                  payc.paymentVerify = 'Yes';
+                                  payc.paymentVerify = 'Received';
+                                  payc.action = 'Approved/Confirmed';
                                 }
                               });
 
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
+                              Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const ProductDetails(),
                               ));
                             }

@@ -163,17 +163,25 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                   DateTime(DateTime.now().year, DateTime.now().month, 31))
           .snapshots();
       print(widget.selectedValue);
-    } else {
+    } else if (widget.selectedValue == "This Week"){
       //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
-           .where('paymentDate',
+          .where('paymentDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
                   DateTime.now().month, DateTime.now().day - 6))
           .where('paymentDate',
               isLessThan: DateTime(DateTime.now().year,
                   DateTime.now().month, DateTime.now().day + 1))
           .snapshots();
+    } else { //This Year
+      expStream = FirebaseFirestore.instance
+          .collection('OrderB2C').where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('paymentDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year,
+                  12, 31)).snapshots();
     }
 
     void getExpfromSnapshot(snapshot) {
@@ -199,7 +207,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
               .white //const Color(0xff72d8bf),//Color.fromARGB(255, 234, 255, 226),
           ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(30.0,16,30,16),
         child: Column(
           children: [
             Column(
@@ -209,7 +217,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                     'Top Selling Channel',
                     style: TextStyle(
                       color: Color(0xff0f4a3c),
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

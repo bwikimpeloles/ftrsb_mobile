@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:ftrsb_mobile/screens/registration_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserList extends StatefulWidget {
   const UserList({Key? key}) : super(key: key);
@@ -142,7 +143,7 @@ class _UserListState extends State<UserList> {
                                                 fontStyle: FontStyle.italic,
                                                 fontSize: 16,
                                                 color: Colors.grey[600])),
-                                        GestureDetector(
+                                       /* GestureDetector(
                                           child: Container(
                                             alignment: Alignment.bottomRight,
                                             child: Text(
@@ -155,7 +156,7 @@ class _UserListState extends State<UserList> {
                                           onTap: () {
                                             _showDeleteDialog(data['uid']);
                                           },
-                                        ),
+                                        ),*/
                                       ],
                                     ),
                                   ),

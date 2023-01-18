@@ -7,6 +7,7 @@ class PaymentB2C {
   String? tempDate;
   String? bankName;
   String? paymentVerify;
+  String? action;
 
   //constructor
   PaymentB2C(
@@ -14,7 +15,8 @@ class PaymentB2C {
       this.amount,
       this.paymentDate,
       this.bankName,
-      this.paymentVerify});
+      this.paymentVerify,
+      this.action});
 
   // receive data from server
   factory PaymentB2C.fromMap(map) {
@@ -24,6 +26,7 @@ class PaymentB2C {
       paymentDate: map["paymentDate"],
       bankName: map["bankName"],
       paymentVerify: map["paymentVerify"],
+      action: map["action"],
     );
   }
 
@@ -35,6 +38,7 @@ class PaymentB2C {
       'paymentDate': paymentDate,
       'bankName': bankName,
       'paymentVerify': paymentVerify,
+      'action': action,
     };
   }
 }
