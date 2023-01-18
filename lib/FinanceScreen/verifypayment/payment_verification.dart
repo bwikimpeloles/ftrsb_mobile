@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'sidebar_navigation.dart';
+import '../sidebar_navigation.dart';
 
 class PaymentVerificationFinance extends StatefulWidget {
   @override

@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/cost/list_cost.dart';
 import 'package:pie_chart/pie_chart.dart';
-import '../model/cost_model.dart';
-import 'sidebar_navigation.dart';
+import '../../model/cost_model.dart';
+import '../sidebar_navigation.dart';
 
 class CostFinance extends StatefulWidget {
   @override

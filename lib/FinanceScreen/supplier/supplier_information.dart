@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
-import 'sidebar_navigation.dart';
-import 'supplier/add_supplier.dart';
-import 'supplier/edit_supplier.dart';
-import 'supplier/photo_page.dart';
+import '../sidebar_navigation.dart';
+import 'add_supplier.dart';
+import 'edit_supplier.dart';
+import 'photo_page.dart';
 
 class SupplierInformationFinance extends StatefulWidget {
   @override
@@ -69,7 +69,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
     return GestureDetector(
 
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+        padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10),
           padding: EdgeInsets.all(10),
@@ -116,28 +116,6 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Phone No: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      supplier['phonenumber'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 15),
-
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
                     Text('Address: ',
                       style: TextStyle(
                           fontSize: 16,
@@ -157,53 +135,75 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
 
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Text('Email: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      supplier['email'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 15),
-
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Text('PIC: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      supplier['pic'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 15),
-
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // Row(
+                //   children: [
+                //     Text('Phone No: ',
+                //       style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w800),),
+                //     SizedBox(
+                //       width: 6,
+                //     ),
+                //     Text(
+                //       supplier['phonenumber'],
+                //       style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w600),
+                //     ),
+                //     SizedBox(width: 15),
+                //
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // Row(
+                //   children: [
+                //     Text('Email: ',
+                //       style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w800),),
+                //     SizedBox(
+                //       width: 6,
+                //     ),
+                //     Text(
+                //       supplier['email'],
+                //       style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w600),
+                //     ),
+                //     SizedBox(width: 15),
+                //
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // Row(
+                //   children: [
+                //     Text('PIC: ',
+                //       style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w800),),
+                //     SizedBox(
+                //       width: 6,
+                //     ),
+                //     Text(
+                //       supplier['pic'],
+                //       style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w600),
+                //     ),
+                //     SizedBox(width: 15),
+                //
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 15,
+                // ),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -8,7 +8,7 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'sidebar_navigation.dart';
+import '../sidebar_navigation.dart';
 
 class ConsignmentFinance extends StatefulWidget {
   @override

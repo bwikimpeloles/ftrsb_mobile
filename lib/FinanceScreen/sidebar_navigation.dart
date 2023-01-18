@@ -4,13 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/FinanceScreen/LowStock/low_stock.dart';
 
-import 'package:ftrsb_mobile/FinanceScreen/consignment.dart';
-import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
+import 'package:ftrsb_mobile/FinanceScreen/consignment/consignment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost/cost.dart';
 import 'package:ftrsb_mobile/FinanceScreen/home_finance.dart';
-import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
-import 'package:ftrsb_mobile/FinanceScreen/payment_verification.dart';
+import 'package:ftrsb_mobile/FinanceScreen/makepayment/make_payment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/verifypayment/payment_verification.dart';
 import 'package:ftrsb_mobile/FinanceScreen/revenue/revenue.dart';
-import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
+import 'package:ftrsb_mobile/FinanceScreen/supplier/supplier_information.dart';
 import '../AdminScreen/home_admin.dart';
 import '../model/user_model.dart';
 import '../screens/login_screen.dart';

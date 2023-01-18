@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/makepayment/make_payment.dart';
 import 'edit_payment.dart';
 
 class ViewPayment extends StatefulWidget {

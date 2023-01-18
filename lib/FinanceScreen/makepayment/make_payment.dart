@@ -4,9 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'makepayment/view_payment.dart';
-import 'sidebar_navigation.dart';
-import 'makepayment/add_payment.dart';
+import 'view_payment.dart';
+import '../sidebar_navigation.dart';
+import 'add_payment.dart';
 
 class MakePaymentFinance extends StatefulWidget {
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
+import 'package:ftrsb_mobile/FinanceScreen/supplier/supplier_information.dart';
 import 'add_photo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../api/firebase_api.dart';
