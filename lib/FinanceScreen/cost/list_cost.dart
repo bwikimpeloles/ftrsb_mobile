@@ -151,7 +151,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                     ),
                     Flexible(
                       child: Text(
-                        cost['supplier'],
+                        cost['supplier']??"-",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600),
