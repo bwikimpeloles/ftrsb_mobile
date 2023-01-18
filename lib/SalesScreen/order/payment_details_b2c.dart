@@ -281,7 +281,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
 
                                 } else {
                                   payc.paymentVerify = 'Received';
-                                  payc.action = 'Approved/Confirmed';
+                                  payc.action = 'Approved';
                                 }
                               });
 

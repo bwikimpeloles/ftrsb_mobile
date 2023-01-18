@@ -43,7 +43,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     await reference
                         .doc(verify['key']).update({
                       'action' : 'Rejected',
-                      'paymentVerify' : 'Yes',
+                      'paymentVerify' : 'Received',
                     }).whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Reject', style: TextStyle(color: Colors.red),)),
@@ -52,7 +52,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     await reference
                         .doc(verify['key']).update({
                       'action' : 'Approved',
-                      'paymentVerify' : 'Yes',
+                      'paymentVerify' : 'Received',
                     }).whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Approve', style: TextStyle(color: Colors.green),)),
@@ -284,11 +284,11 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
   @override
   Widget build(BuildContext context) {
     if (selectedValue == "Approved") {
-      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('action', isEqualTo: "Approved").orderBy("custName").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('channel', isEqualTo: "whatsapp").where('action', isEqualTo: "Approved").orderBy("custName").startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     } else if (selectedValue == "Rejected") {
-      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('action', isEqualTo: "Rejected").orderBy("custName").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('channel', isEqualTo: "whatsapp").where('action', isEqualTo: "Rejected").orderBy("custName").startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
