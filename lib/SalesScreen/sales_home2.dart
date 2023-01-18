@@ -1,7 +1,7 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/insightmonthb2c.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/insightmonthb2b.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/total_sales.dart';
 import 'package:ftrsb_mobile/SalesScreen/nav_bar_home.dart';
 import 'sidebar_navigation.dart';
@@ -10,14 +10,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../screens/login_screen.dart';
 
-class HomeScreenSales extends StatefulWidget {
-  const HomeScreenSales({Key? key}) : super(key: key);
+class HomeScreenSales2 extends StatefulWidget {
+  const HomeScreenSales2({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenSalesState createState() => _HomeScreenSalesState();
+  _HomeScreenSales2State createState() => _HomeScreenSales2State();
 }
 
-class _HomeScreenSalesState extends State<HomeScreenSales> {
+class _HomeScreenSales2State extends State<HomeScreenSales2> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
 
@@ -84,7 +84,7 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
     return Scaffold(
       //backgroundColor: Colors.transparent,
       drawer: NavigationDrawer(),
-      bottomNavigationBar: CurvedNavBar2(indexnum: 0),
+      bottomNavigationBar: CurvedNavBar2(indexnum: 1),
       appBar: PreferredSize(
           child: AppBar(
             actions: [
@@ -142,28 +142,14 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
               Column(
                 children: [                
                   if (selectedValue == 'This Year') ...[
-                    InsightMonth(),
+                    InsightMonthB2B(),
                     SizedBox(height: 20),
                   ],
                 ],
               ),
               
-              /*SizedBox(height: 20),
-              Column(
-                children: [
-                  if (selectedValue == 'Today') ...[
-                    LineChartDay(),
-                  ],
-                  if (selectedValue == 'This Week') ...[
-                    LineChartWeek(),
-                  ],
-                  if (selectedValue == 'This Month') ...[
-                    LineChartMonth(),
-                  ],
-                ],
-              ),*/
-              
-              TopChannelB2C(
+
+              TopChannelB2B(
                 selectedValue: selectedValue,
               ),
             ],

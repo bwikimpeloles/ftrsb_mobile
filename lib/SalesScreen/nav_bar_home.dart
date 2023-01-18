@@ -1,13 +1,12 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/order_history_b2b.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/order_history.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
+import 'package:ftrsb_mobile/SalesScreen/sales_home2.dart';
 
-class CurvedNavBar extends StatelessWidget {
+class CurvedNavBar2 extends StatelessWidget {
   int indexnum = 0;
 
-  CurvedNavBar({required this.indexnum});
+  CurvedNavBar2({required this.indexnum});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +29,10 @@ class CurvedNavBar extends StatelessWidget {
       onTap: (index) {
         if (index == 0) {
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => OrderHistory()));
+              MaterialPageRoute(builder: (context) => HomeScreenSales()));
         } else {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => OrderHistoryB2B()));
+              builder: (context) => HomeScreenSales2()));
         }
       },
     );
