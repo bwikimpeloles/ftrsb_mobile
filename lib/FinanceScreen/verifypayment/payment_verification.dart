@@ -201,7 +201,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Verified: ',
+                    Text('Payment Verification: ',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800),),
@@ -223,7 +223,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Action: ',
+                    Text('Order Status: ',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800),),
