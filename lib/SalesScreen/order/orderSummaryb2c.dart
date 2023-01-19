@@ -44,16 +44,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
     return list;
   }
 
-
-  Future<int> getCount(String? i) {
-    Stream<QuerySnapshot> snap = FirebaseFirestore.instance
-        .collection('OrderB2C')
-        .where('custPhone', isEqualTo: i.toString())
-        .snapshots();
-    Future<int> count = snap.length;
-    return count;
-  }
-
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
@@ -191,8 +181,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
                       orderid = getRandomString(14);
                     });
 
-                    int _count = await getCount(cust.phone.toString()) + 1;
-
                     Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
@@ -200,7 +188,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
                       'email': cust.email ?? '',
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
-                      'count': _count,
                     };
 
                     Map<String, dynamic> orderb2c = {

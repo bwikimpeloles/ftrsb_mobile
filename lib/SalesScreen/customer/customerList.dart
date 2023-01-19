@@ -118,12 +118,27 @@ class _CustomerListState extends State<CustomerList> {
                                     ),
                                     title: Text(data['name']),
                                     subtitle: Text(data['phone']),
-                                    trailing: Text(
-                                      data['count'].toString(),
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green),
+                                    trailing: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('Customer')
+                                            .where('phone',
+                                                isEqualTo: data['phone'].toString())
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData){
+                                            final int count = snapshot.data!.docs.length;
+                                            return Text(
+                                            count.toString(),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green),
+                                          );
+                                          }else{
+                                            return Text('');
+                                          }
+                                          
+                                        }
                                     ),
                                   ),
                                 ),

@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
@@ -182,17 +181,6 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       orderid = getRandomString(14);
                     });
 
-                    Future<int> getOrderCount(String? phone) async {
-                      var docs = await FirebaseFirestore.instance
-                          .collection('OrderB2C')
-                          .where('custPhone', isEqualTo: phone)
-                          .get();
-                      int count = docs.size;
-                      return count;
-                    }
-
-                    int _count = await getOrderCount(cust.phone) + 1;
-
                     Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
@@ -200,7 +188,6 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'email': cust.email,
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
-                      'count': _count
                     };
 
                     if (cust.name != null) {
