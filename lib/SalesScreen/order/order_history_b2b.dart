@@ -335,9 +335,13 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                                   .doc(data['salesStaff'])
                                                   .snapshots(),
                                               builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
+                                                if (snapshot.hasData &&
+                                                    snapshot.data != null) {
                                                   DocumentSnapshot? sn =
                                                       snapshot.data;
+
+                                                  String staffname =
+                                                      sn!['name'].toString();
 
                                                   return Row(
                                                     children: [
@@ -351,9 +355,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                                                 .grey[600]),
                                                       ),
                                                       Expanded(
-                                                        child: Text(
-                                                            sn!['name']
-                                                                .toString(),
+                                                        child: Text(staffname,
                                                             overflow:
                                                                 TextOverflow
                                                                     .fade,
@@ -372,6 +374,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                                   );
                                                 } else
                                                   return CircularProgressIndicator();
+                                                  return Text('');
                                               }),
                                         ],
                                       ),
