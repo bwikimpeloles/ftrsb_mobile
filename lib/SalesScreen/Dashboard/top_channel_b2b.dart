@@ -39,7 +39,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
       }
     }
     total = catMap.toString();
-    print(total);
+    //print('_order:' + _order.toString());
     return catMap;
   }
 
@@ -176,6 +176,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
               isLessThanOrEqualTo: DateTime(DateTime.now().year, 12,
                   31)).snapshots();
     }
+    
     void getExpfromSnapshot(snapshot) {
       if (snapshot.docs.isNotEmpty) {
         _order = [];
@@ -270,7 +271,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
                 getExpfromSnapshot(data);
                 return Container(
                   child: printChannelData(),
-                  width: 300,
+                  width: double.infinity,
                 );
               },
             ),

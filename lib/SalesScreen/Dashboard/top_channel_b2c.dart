@@ -273,8 +273,8 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                 print("Data: $data");
                 getExpfromSnapshot(data);
                 return Container(
+                  width: double.infinity,
                   child: printChannelData(),
-                  width: 300,
                 );
               },
             ),

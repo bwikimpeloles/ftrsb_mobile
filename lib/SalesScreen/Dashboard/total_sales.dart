@@ -116,8 +116,8 @@ class _TotalSalesState extends State<TotalSales> {
                   31)).snapshots();
     }
 
-    return Container(
-      width: MediaQuery.of(context).size.width,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -133,8 +133,6 @@ class _TotalSalesState extends State<TotalSales> {
                 }
           
                 return Container(
-                  height: 135,
-                  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -143,7 +141,7 @@ class _TotalSalesState extends State<TotalSales> {
                         color: Colors.white
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.fromLTRB(30,20,30,20),
                       child: Column(
                         children: [
                           Text(count.toString(), style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
@@ -152,7 +150,7 @@ class _TotalSalesState extends State<TotalSales> {
                           SizedBox(height: 10,),   
                           Text('RM' +sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),  
                           Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
-
+        
                         ],
                       ),
                     ));
@@ -160,7 +158,7 @@ class _TotalSalesState extends State<TotalSales> {
               return CircularProgressIndicator();
             },
           ),
-          SizedBox(width: 5,),
+          SizedBox(width: 15,),
           StreamBuilder<QuerySnapshot>(
             stream: expStream1,
             builder: (context, snapshot) {
@@ -173,8 +171,6 @@ class _TotalSalesState extends State<TotalSales> {
                 }
       
                 return Container(
-                  height: 135,
-                  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -183,7 +179,7 @@ class _TotalSalesState extends State<TotalSales> {
                         color: Colors.white
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.fromLTRB(30,20,30,20),
                       child: Column(
                         children: [
                           Text(count.toString(), style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),

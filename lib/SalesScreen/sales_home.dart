@@ -1,10 +1,10 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/insightmonthb2c.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown2.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown3.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown4.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdownb2c1.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdown2.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdown3.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdown4.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdownb2c1.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/total_sales.dart';
 import 'package:ftrsb_mobile/SalesScreen/nav_bar_home.dart';

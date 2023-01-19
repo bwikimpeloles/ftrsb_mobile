@@ -39,7 +39,9 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
   getProductlist() {
     List<String> list = [];
     for (int i = 0; i < selectedProduct.length; i++) {
-      list.add(selectedProduct[i].name.toString()+":" +selectedProduct[i].quantity.toString()); 
+      list.add(selectedProduct[i].name.toString() +
+          ":" +
+          selectedProduct[i].quantity.toString());
     }
     return list;
   }
@@ -220,6 +222,10 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
                     if (cust.phone != null &&
                         payc.paymentMethod != null &&
                         counter >= 0) {
+                      if (pickedFile != null) {
+                        uploadFile();
+                      } 
+                      
                       FirebaseFirestore.instance
                           .collection('Customer')
                           .add(customer);
@@ -228,9 +234,6 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
                           .collection('OrderB2C')
                           .doc(dateStr + orderid.toString())
                           .set(orderb2c);
-                      if (pickedFile != null) {
-                        uploadFile();
-                      }
 
                       Fluttertoast.showToast(
                           msg: 'Order submitted',
@@ -303,10 +306,18 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
               SizedBox(height: 20),
               //Text('Order ID : ' + date + orderid.toString(),
               //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              Text('Order Date : ' + DateFormat.yMMMd().format(payc.paymentDate!.toDate()).toString(),
+              Text(
+                  'Order Date : ' +
+                      DateFormat.yMMMd()
+                          .format(payc.paymentDate!.toDate())
+                          .toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              Text('Payment Date : ' + DateFormat.yMMMd().format(payc.paymentDate!.toDate()).toString(),
+              Text(
+                  'Payment Date : ' +
+                      DateFormat.yMMMd()
+                          .format(payc.paymentDate!.toDate())
+                          .toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               SizedBox(height: 20),
