@@ -1,6 +1,5 @@
 // ignore_for_file: unused_import
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
