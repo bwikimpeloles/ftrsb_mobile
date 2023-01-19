@@ -27,14 +27,24 @@ class DatabaseService {
     }
   }
 
+  Future<void> update(String name, int quantity) async {
+    try {
+      await _db.collection("Product").doc(name).update({
+        "quantity": quantity,
+      });
+    } catch (e) {}
+  }
+
   //update product
   Future<bool> scanProduct(ProductModel a) async {
     try {
-      await _db.collection("product").doc(a.barcode).set({
+      await _db.collection("Product").doc(a.name).set({
         "name": a.name,
+        "barcode": a.barcode,
         "category": a.category,
         "sku": a.sku,
         "quantity": a.quantity,
+        "imageUrl": a.imageUrl
       });
       return true;
     } catch (e) {

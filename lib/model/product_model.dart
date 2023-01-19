@@ -6,7 +6,7 @@ class ProductModel {
   String? sku;
   String? barcode;
   int? quantity;
-  String? docUrl;
+  String? imageUrl;
 
   ProductModel(
       {this.name,
@@ -14,16 +14,16 @@ class ProductModel {
       this.sku,
       this.barcode,
       this.quantity,
-      this.docUrl});
+      this.imageUrl});
 
   factory ProductModel.fromMap(map) {
     return ProductModel(
-      name: map["name"],
-      category: map["category"],
-      sku: map["sku"],
-      barcode: map["barcode"],
-      quantity: map["quantity"],
-    );
+        name: map["name"],
+        category: map["category"],
+        sku: map["sku"],
+        barcode: map["barcode"],
+        quantity: map["quantity"],
+        imageUrl: map["imageUrl"]);
   }
 
   Map<String, dynamic> toMap() {
@@ -33,6 +33,7 @@ class ProductModel {
       'sku': sku,
       'barcode': barcode,
       'quantity': quantity,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -40,6 +41,7 @@ class ProductModel {
       : name = doc.data()!["name"],
         category = doc.data()!["category"],
         sku = doc.data()!["sku"],
-        barcode = doc.id,
-        quantity = doc.data()!["quantity"];
+        barcode = doc.data()!["barcode"],
+        quantity = doc.data()!["quantity"],
+        imageUrl = doc.data()!["imageUrl"];
 }

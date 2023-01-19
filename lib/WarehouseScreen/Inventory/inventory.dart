@@ -4,12 +4,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
+import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Barcode/barcode_scanner.dart';
 import 'package:flutter/services.dart';
 
+import '../../services/database.dart';
 import 'inventory_detail.dart';
 
 class InventoryScreenWarehouse extends StatefulWidget {
@@ -24,7 +26,10 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('product').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('Product')
+            .orderBy('name')
+            .snapshots(),
         builder: (_, snapshot) {
           if (snapshot.hasError) return Text('Error = ${snapshot.error}');
 
@@ -40,7 +45,15 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
                   final data = docs[index].data();
 
                   return GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InventoryDetailScreen(
+                                    name: data['name'],
+                                    quantity: (data['quantity']).toString(),
+                                  )));
+                    },
                     child: Padding(
                       padding: EdgeInsets.all(2),
                       child: Container(
@@ -51,8 +64,7 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
                           border: Border.all(color: Colors.grey, width: 1),
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                           image: DecorationImage(
-                            image: NetworkImage(
-                                "https://cdn.store-assets.com/s/888158/i/39648906.png?width=480"),
+                            image: NetworkImage(data['imageUrl']),
                             fit: BoxFit.cover,
                           ),
                         ),

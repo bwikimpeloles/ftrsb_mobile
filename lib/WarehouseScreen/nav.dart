@@ -7,12 +7,13 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:ftrsb_mobile/WarehouseScreen/Inspection/inspectionList.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/home_warehouse.dart';
 import 'package:ftrsb_mobile/model/package.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'Inventory/inventory.dart';
-import 'package:ftrsb_mobile/WarehouseScreen/DeliveryTruck/delivery.dart';
+import 'package:ftrsb_mobile/WarehouseScreen/Inspection/delivery.dart';
 import 'Packaging/customer_package.dart';
 import '../screens/login_screen.dart';
 import 'Barcode/barcode_scanner.dart';
@@ -70,7 +71,7 @@ class _WarehouseNavState extends State<WarehouseNav> {
             InventoryScreenWarehouse(),
             BarcodeScanner(),
             PackageScreenWarehouse(),
-            DeliveryListScreen(),
+            inspectionList(),
           ],
         ),
         bottomNavigationBar: Container(
@@ -80,7 +81,6 @@ class _WarehouseNavState extends State<WarehouseNav> {
                   topRight: Radius.circular(30), topLeft: Radius.circular(30)),
             ),
             child: Material(
-              elevation: 0.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
               child: NavigationBar(
@@ -111,8 +111,8 @@ class _WarehouseNavState extends State<WarehouseNav> {
                     label: 'Packaging',
                   ),
                   NavigationDestination(
-                    icon: Icon(Icons.fire_truck),
-                    label: 'Delivery',
+                    icon: Icon(Icons.document_scanner_sharp),
+                    label: 'Inspection',
                   ),
                 ],
               ),

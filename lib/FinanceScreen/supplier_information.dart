@@ -9,22 +9,25 @@ import 'supplier/photo_page.dart';
 
 class SupplierInformationFinance extends StatefulWidget {
   @override
-  _SupplierInformationFinanceState createState() => _SupplierInformationFinanceState();
+  _SupplierInformationFinanceState createState() =>
+      _SupplierInformationFinanceState();
 }
 
-class _SupplierInformationFinanceState extends State<SupplierInformationFinance> {
+class _SupplierInformationFinanceState
+    extends State<SupplierInformationFinance> {
   late Query _ref;
   CollectionReference reference =
-  FirebaseFirestore.instance.collection('Suppliers');
-  TextEditingController _searchController= TextEditingController();
-  String search='';
+      FirebaseFirestore.instance.collection('Suppliers');
+  TextEditingController _searchController = TextEditingController();
+  String search = '';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _ref = FirebaseFirestore.instance.collection('Suppliers').orderBy('companyname');
-
+    _ref = FirebaseFirestore.instance
+        .collection('Suppliers')
+        .orderBy('companyname');
   }
 
   _showDeleteDialog({required Map supplier}) {
@@ -42,21 +45,28 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                   child: Text('Cancel')),
               TextButton(
                   onPressed: () async {
-
-                    await FirebaseStorage.instance.ref('poimages/${supplier['key']}').listAll().then((value) {
+                    await FirebaseStorage.instance
+                        .ref('poimages/${supplier['key']}')
+                        .listAll()
+                        .then((value) {
                       value.items.forEach((element) {
                         FirebaseStorage.instance.ref(element.fullPath).delete();
-                      });});
+                      });
+                    });
 
-                    await FirebaseFirestore.instance.collection('details').where('supplierkey', isEqualTo: supplier['key']).get()
+                    await FirebaseFirestore.instance
+                        .collection('details')
+                        .where('supplierkey', isEqualTo: supplier['key'])
+                        .get()
                         .then((snapshot) async {
-                      for(DocumentSnapshot ds in snapshot.docs) {
+                      for (DocumentSnapshot ds in snapshot.docs) {
                         await ds.reference.delete();
                         print(ds.reference);
                       }
                     });
                     reference
-                        .doc(supplier['key']).delete()
+                        .doc(supplier['key'])
+                        .delete()
                         .whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Delete'))
@@ -67,26 +77,26 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
 
   Widget _buildSupplierItem({required Map supplier}) {
     return GestureDetector(
-
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10),
           padding: EdgeInsets.all(10),
-
-          decoration: new BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ],
+          decoration: new BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 2), // changes position of shadow
+                ),
+              ],
               borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
-              gradient: new LinearGradient(colors: [Colors.white70, Colors.white],
-                  begin: Alignment.centerLeft, end: Alignment.centerRight, tileMode: TileMode.clamp)
-          ),
-
+              gradient: new LinearGradient(
+                  colors: [Colors.white70, Colors.white],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  tileMode: TileMode.clamp)),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -94,10 +104,11 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
               children: [
                 Row(
                   children: [
-                    Text('Company Name: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Company Name: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
@@ -105,8 +116,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                       child: Text(
                         supplier['companyname'],
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
@@ -116,21 +126,20 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Phone No: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Phone No: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
                     Text(
                       supplier['phonenumber'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
@@ -138,10 +147,11 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Address: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Address: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
@@ -149,12 +159,10 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                       child: Text(
                         supplier['shippingaddress'],
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
@@ -162,21 +170,20 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Email: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'Email: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
                     Text(
                       supplier['email'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
@@ -184,27 +191,25 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                 ),
                 Row(
                   children: [
-                    Text('PIC: ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),),
+                    Text(
+                      'PIC: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
                     SizedBox(
                       width: 6,
                     ),
                     Text(
                       supplier['pic'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(width: 15),
-
                   ],
                 ),
                 SizedBox(
                   height: 15,
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -213,7 +218,10 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                         Navigator.push(
                           context,
                           PageRouteBuilder(
-                            pageBuilder: (context, animation1, animation2) => PhotoPage(supplierKey: supplier['key'],),
+                            pageBuilder: (context, animation1, animation2) =>
+                                PhotoPage(
+                              supplierKey: supplier['key'],
+                            ),
                             transitionDuration: Duration.zero,
                             reverseTransitionDuration: Duration.zero,
                           ),
@@ -245,8 +253,8 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                             context,
                             MaterialPageRoute(
                                 builder: (_) => EditSupplier(
-                                  supplierKey: supplier['key'],
-                                )));
+                                      supplierKey: supplier['key'],
+                                    )));
                       },
                       child: Row(
                         children: [
@@ -289,7 +297,6 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
                         ],
                       ),
                     ),
-
                   ],
                 )
               ],
@@ -309,43 +316,42 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
       ),
       body: Column(
         children: [
-          SizedBox(height: 10,),
           SizedBox(
-              height: 50,
-              width: 250,
-              child: TextField(
-                onChanged: (text){
-                  setState(() {
-                    _ref = FirebaseFirestore.instance.collection('Suppliers').orderBy('companyname').startAt([text])
-                        .endAt([text + '\uf8ff']);
-                  });
-
-                },
-                controller: _searchController,
-                cursorColor: Colors.teal,
-                decoration: InputDecoration(
-                    fillColor: Colors.white30,
-                    filled: true,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.teal)
-                    ),
-                    hintText: 'Search Company Name',
-                    hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18
-                    ),
-                    prefixIcon: Icon(Icons.search)
-                ),
-              ),
+            height: 10,
+          ),
+          SizedBox(
+            height: 50,
+            width: 250,
+            child: TextField(
+              onChanged: (text) {
+                setState(() {
+                  _ref = FirebaseFirestore.instance
+                      .collection('Suppliers')
+                      .orderBy('companyname')
+                      .startAt([text]).endAt([text + '\uf8ff']);
+                });
+              },
+              controller: _searchController,
+              cursorColor: Colors.teal,
+              decoration: InputDecoration(
+                  fillColor: Colors.white30,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.teal)),
+                  hintText: 'Search Company Name',
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                  prefixIcon: Icon(Icons.search)),
             ),
+          ),
           Flexible(
             child: SizedBox(
               child: FirestoreAnimatedList(
                 query: _ref,
                 itemBuilder: (BuildContext context, DocumentSnapshot? snapshot,
                     Animation<double> animation, int index) {
-                  Map<String, dynamic> supplier = snapshot?.data() as Map<String, dynamic>;
+                  Map<String, dynamic> supplier =
+                      snapshot?.data() as Map<String, dynamic>;
                   print(snapshot.toString());
                   supplier?['key'] = snapshot?.id;
                   return _buildSupplierItem(supplier: supplier!);

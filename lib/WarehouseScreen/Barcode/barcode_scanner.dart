@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Barcode/manual_input.dart';
+import 'package:ftrsb_mobile/WarehouseScreen/Barcode/scan_detail.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:ftrsb_mobile/services/database.dart';
 import 'package:provider/provider.dart';
@@ -59,18 +62,57 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
           settings: settings,
           builder: (BuildContext context) {
             return Container(
-              alignment: Alignment.center,
-              child: Flex(
-                direction: Axis.vertical,
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: <Widget>[
                   ElevatedButton(
                       onPressed: () => scanBarcodeNormal(),
                       child: Text('Start barcode scan')),
-                  Text('Scan result : $_scanBarcode\n',
-                      style: TextStyle(fontSize: 20)),
-                  Text('Name'),
-                  Text('Quantity'),
+                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Product')
+                        .where('barcode', isEqualTo: _scanBarcode)
+                        .snapshots(),
+                    builder: (_, snapshot) {
+                      //log(snapshot.data.toString());
+                      if (!snapshot.hasData) {
+                        return Container();
+                      } else {
+                        var products = snapshot.data!.docs;
+
+                        return Expanded(
+                          child: ListView.builder(
+                              itemCount: products.length,
+                              itemBuilder: (context, index) {
+                                final data = products[index].data();
+                                return Card(
+                                  child: ListTile(
+                                    title: Text(data['name'].toString()),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(data['quantity'].toString()),
+                                      ],
+                                    ),
+                                    leading: Image.network(data['imageUrl']),
+                                    trailing: Icon(Icons.arrow_forward_rounded),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => scan_detail(
+                                                    name:
+                                                        data['name'].toString(),
+                                                    quantity: data['quantity'],
+                                                  )));
+                                    },
+                                  ),
+                                );
+                              }),
+                        );
+                      }
+                    },
+                  ),
                   ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -78,7 +120,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                             MaterialPageRoute(
                                 builder: (context) => ManualInput()));
                       },
-                      child: Text('Manual Input')),
+                      child: Text('Manual Input'))
                 ],
               ),
             );
