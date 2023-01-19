@@ -1,6 +1,10 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/insightmonthb2c.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown2.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown3.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown4.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdownb2c1.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/total_sales.dart';
 import 'package:ftrsb_mobile/SalesScreen/nav_bar_home.dart';
@@ -162,10 +166,25 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
                   ],
                 ],
               ),*/
-              
               TopChannelB2C(
                 selectedValue: selectedValue,
               ),
+              SizedBox(height: 20,),
+               Column(
+                children: [
+                  if (selectedValue == 'Today') ...[
+                    SalesBreakdownB2C1(),
+                  ],
+                  if (selectedValue == 'This Week') ...[
+                    SalesBreakdownB2C2(),
+                  ],
+                  if (selectedValue == 'This Month') ...[
+                    SalesBreakdownB2C3(),
+                  ],
+                  if (selectedValue == 'This Year') ...[
+                    SalesBreakdownB2C4(),
+                  ],
+                ],),
             ],
           ),
         ),
