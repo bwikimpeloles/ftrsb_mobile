@@ -274,7 +274,12 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
       String bodyText = "Collect from ${verify['custName']} RM ${verify['amount']} \n(Collection Date: ${DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString()})";
       if(userid!=""){
         print(token1);
-        showNotification(int.parse(verify['custPhone']),titleText,bodyText);
+        //print(verify['custPhone'].toString().substring(0,8));
+        if (int.parse(verify['custPhone']) > 2147483647){
+          showNotification(int.parse(verify['custPhone'].toString().substring(0,8)), titleText, bodyText);
+        } else {
+          showNotification(int.parse(verify['custPhone']), titleText, bodyText);
+        }
       }
     }
 
