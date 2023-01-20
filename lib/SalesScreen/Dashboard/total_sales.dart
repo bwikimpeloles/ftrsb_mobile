@@ -133,6 +133,7 @@ class _TotalSalesState extends State<TotalSales> {
                 }
           
                 return Container(
+                  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -171,6 +172,7 @@ class _TotalSalesState extends State<TotalSales> {
                 }
       
                 return Container(
+                  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
