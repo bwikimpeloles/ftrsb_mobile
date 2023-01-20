@@ -191,7 +191,7 @@ class _SalesBreakdownB2B1State extends State<SalesBreakdownB2B1> {
                   ),
                 );
               }
-              return const LinearProgressIndicator();
+              return Container();
             }),
       ],
     ));
