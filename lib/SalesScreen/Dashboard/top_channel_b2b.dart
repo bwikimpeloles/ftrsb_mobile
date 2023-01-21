@@ -43,16 +43,6 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
     return catMap;
   }
 
-
-  String getChannel(String c) {
-    if (c == 'b2b_retail') {
-      return 'B2B Retail';
-    } else if (c == 'b2b_hypermarket') {
-      return 'B2B Hypermarket';
-    } else
-      return '';
-  }
-
   DataTable printChannelData() {
     DataTable? a;
     Map<String, double> catMap2 = getChannelData();
@@ -78,7 +68,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
       ],
       rows: catMap2.entries
           .map((e) => DataRow(cells: [
-                DataCell(Text(getChannel(e.key.toString()))),
+                DataCell(Text(e.key.toString())),
                 DataCell(Text(e.value.toString())),
               ]))
           .toList(),
@@ -89,8 +79,13 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
 
   List<Color> colorList = [
     Color.fromRGBO(0, 0, 0, 0),
-    Color.fromARGB(255, 57, 177, 252),
-    Color.fromARGB(255, 241, 77, 197),
+    Color.fromARGB(255, 251, 138, 18),
+    Color.fromARGB(255, 46, 255, 231),
+    Color.fromARGB(255, 126, 35, 102),
+    Color.fromARGB(255, 78, 44, 138),
+    Color.fromARGB(255, 33, 200, 247),
+    Color.fromARGB(255, 200, 77, 241),
+    Color.fromARGB(255, 241, 77, 77),
   ];
 
   Widget pieChartExampleOne() {

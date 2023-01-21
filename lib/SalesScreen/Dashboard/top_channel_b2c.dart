@@ -37,22 +37,6 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
     return catMap;
   }
 
-  String getChannel(String c) {
-    if (c == 'shopee') {
-      return 'Shopee';
-    } else if (c == 'tiktok') {
-      return 'TikTok';
-    } else if (c == 'grabmart') {
-      return 'GrabMart';
-    } else if (c == 'whatsapp') {
-      return 'WhatsApp';
-    } else if (c == 'other') {
-      return 'Other';
-    } else if (c == 'website') {
-      return 'Website';
-    } else
-      return '';
-  }
 
   DataTable printChannelData() {
     DataTable? a;
@@ -79,7 +63,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
       ],
       rows: catMap2.entries
           .map((e) => DataRow(cells: [
-                DataCell(Text(getChannel(e.key.toString()))),
+                DataCell(Text(e.key.toString(),)),
                 DataCell(Text(e.value.toString())),
               ]))
           .toList(),
@@ -96,6 +80,11 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
     Color.fromARGB(255, 105, 67, 255),
     Color.fromARGB(255, 57, 177, 252),
     Color.fromARGB(255, 241, 77, 197),
+    Color.fromARGB(255, 126, 35, 102),
+    Color.fromARGB(255, 78, 44, 138),
+    Color.fromARGB(255, 33, 200, 247),
+    Color.fromARGB(255, 200, 77, 241),
+    Color.fromARGB(255, 241, 77, 77),
   ];
 
   Widget pieChartExampleOne() {

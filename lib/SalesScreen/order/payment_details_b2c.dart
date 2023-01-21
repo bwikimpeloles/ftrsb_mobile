@@ -10,7 +10,9 @@ import 'package:ftrsb_mobile/model/paymentB2C_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentDetails extends StatefulWidget {
-  const PaymentDetails({Key? key}) : super(key: key);
+  String? verify;
+  String? channeltype;
+  PaymentDetails({Key? key, required this.verify, required this.channeltype}) : super(key: key);
 
   @override
   State<PaymentDetails> createState() => _PaymentDetailsState();
@@ -274,7 +276,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                 payc.paymentDate = _toTimeStamp(pdate);
                                 payc.bankName = banknameCtrl.text;
 
-                                if (cust.channel == 'whatsapp') {
+                                if (widget.verify == 'yes') {
                                   payc.paymentVerify = '-';
                                   payc.action = 'Processing';
                                 } else {
@@ -284,7 +286,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                               });
 
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ProductDetails(),
+                                builder: (context) => ProductDetails(channeltype: widget.channeltype,),
                               ));
                             }
                           },

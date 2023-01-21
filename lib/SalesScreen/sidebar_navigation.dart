@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ftrsb_mobile/AdminScreen/home_admin.dart';
+import 'package:ftrsb_mobile/SalesScreen/channel/list_channel.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
+import 'package:ftrsb_mobile/SalesScreen/channel/add_channel.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';
 import '../screens/login_screen.dart';
 import '../model/user_model.dart';
@@ -105,6 +107,15 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
             onTap: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const DistrChannelList(),
+              ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.outbox_rounded),
+            title: const Text('Channel'),
+            onTap: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const ListChannel(),
               ));
             },
           ),

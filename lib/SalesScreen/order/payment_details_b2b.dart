@@ -7,7 +7,8 @@ import 'package:ftrsb_mobile/model/paymentB2B_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentDetailsB2B extends StatefulWidget {
-  const PaymentDetailsB2B({Key? key}) : super(key: key);
+  String? channeltype;
+ PaymentDetailsB2B({Key? key, required this.channeltype}) : super(key: key);
 
   @override
   State<PaymentDetailsB2B> createState() => _PaymentDetailsB2BState();
@@ -310,7 +311,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
 
                               
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ProductDetails(),
+                                builder: (context) => ProductDetails(channeltype: widget.channeltype,),
                               ));
 
                             }

@@ -11,7 +11,8 @@ import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({Key? key}) : super(key: key);
+  String? channeltype;
+  ProductDetails({Key? key, required this.channeltype}) : super(key: key);
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -246,8 +247,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 selectedProduct = selectedProduct;
               });
 
-              if (cust.channel == 'b2b_retail' ||
-                  cust.channel == 'b2b_hypermarket') {
+              if (widget.channeltype == 'B2B') {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => OrderSummaryB2B(),
                 ));

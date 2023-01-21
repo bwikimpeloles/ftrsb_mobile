@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
@@ -121,7 +120,7 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
             color: Colors.green,
           ),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email Address",
+          hintText: "Email Address   (optional)",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -233,7 +232,7 @@ class _ProspectDetailsFormState extends State<ProspectDetailsForm> {
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
             if (_channel == null){
-              Fluttertoast.showToast(msg: 'Choose a distribution channel!');
+              Fluttertoast.showToast(msg: 'Choose a distribution channel');
             }
 
             else if (_formKey.currentState!.validate()) {

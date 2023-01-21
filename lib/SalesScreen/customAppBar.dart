@@ -19,7 +19,8 @@ class CustomAppBar extends StatelessWidget {
           if (bartitle == 'Add Customer Information' ||
               bartitle == 'Add Prospect' ||
               bartitle == 'Customer' ||
-              bartitle == 'Order History') {
+              bartitle == 'Order History' ||
+              bartitle == 'Channel') {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const HomeScreenSales()));
           } else {
