@@ -211,6 +211,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
+                      'purchaseType': payb.purchaseType
                     };
 
                     Future uploadFile() async {
@@ -244,7 +245,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                           (Route<dynamic> route) => false);
                     } else {
                       Fluttertoast.showToast(
-                        msg: 'Order submission failed!',
+                        msg: 'Order submission failed',
                         gravity: ToastGravity.CENTER,
                         fontSize: 16.0,
                       );
@@ -294,6 +295,10 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               Text('Payment Status : ' + payb.status.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              SizedBox(height: 20),
+              Text('Purchase Type : ' + payb.purchaseType.toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               SizedBox(height: 20),
