@@ -13,7 +13,6 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   List<int> lists = [];
-  late String _channel = '';
   late Query _ref;
   //late CollectionReference customerstream;
   //late CollectionReference orderstream;
@@ -22,31 +21,9 @@ class _CustomerListState extends State<CustomerList> {
   @override
   void initState() {
     // TODO: implement initState
-    _channel = widget.channel;
     _ref = FirebaseFirestore.instance
         .collection('Customer')
-        .where('channel', isEqualTo: _channel).orderBy('name');
-  }
-
-    String getChannel(String c) {
-    if (c == 'shopee') {
-      return 'Shopee';
-    } else if (c == 'tiktok') {
-      return 'TikTok';
-    } else if (c == 'grabmart') {
-      return 'GrabMart';
-    } else if (c == 'whatsapp') {
-      return 'WhatsApp';
-    } else if (c == 'other') {
-      return 'Other';
-    } else if (c == 'website') {
-      return 'Website';
-    } else if (c == 'b2b_retail') {
-      return 'B2B Retail';
-    }else if (c == 'b2b_hypermarket') {
-      return 'B2B Hypermarket';
-    }else
-      return '';
+        .where('channel', isEqualTo: widget.channel).orderBy('name');
   }
 
   @override
@@ -55,7 +32,7 @@ class _CustomerListState extends State<CustomerList> {
         //bottomNavigationBar: CurvedNavBar(indexnum: 3,),
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          child: CustomAppBar(bartitle: getChannel(_channel)),
+          child: CustomAppBar(bartitle: widget.channel),
           preferredSize: Size.fromHeight(65),
         ),
         body: Padding(
@@ -69,7 +46,7 @@ class _CustomerListState extends State<CustomerList> {
                   onChanged: (text) {
                     setState(() {
                       _ref = FirebaseFirestore.instance
-                          .collection('Customer').where('channel', isEqualTo: _channel)
+                          .collection('Customer').where('channel', isEqualTo: widget.channel)
                           .orderBy('name')
                           .startAt([text]).endAt([text + '\uf8ff']);
                     });
@@ -96,61 +73,66 @@ class _CustomerListState extends State<CustomerList> {
                     stream: _ref.snapshots(),
                     builder: (context, snap) {
                       if (snap.hasData) {
-                        return ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: snap.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            final data = snap.data!.docs[index];
-                            var doc_id = snap.data!.docs[index].reference.id;
+                        return Column(
+                          children: [
+                            Text("Total number of customer: " + snap.data!.docs.length.toString(), style: TextStyle(color: Color.fromARGB(255, 55, 122, 57)),),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: snap.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                final data = snap.data!.docs[index];
+                                var doc_id = snap.data!.docs[index].reference.id;
                 
-                            return GestureDetector(
-                                child:Card(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 6),
-                                  elevation: 3,
-                                  child: ListTile(
-                                    dense: false,
-                                    leading: const Icon(
-                                      Icons.account_circle,
-                                      color: Colors.green,
-                                      size: 40,
+                                return GestureDetector(
+                                    child:Card(
+                                      margin:
+                                          const EdgeInsets.symmetric(vertical: 6),
+                                      elevation: 3,
+                                      child: ListTile(
+                                        dense: false,
+                                        leading: const Icon(
+                                          Icons.account_circle,
+                                          color: Colors.green,
+                                          size: 40,
+                                        ),
+                                        title: Text(data['name']),
+                                        subtitle: Text(data['phone']),
+                                        trailing: StreamBuilder<QuerySnapshot>(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('Customer')
+                                                .where('phone',
+                                                    isEqualTo: data['phone'].toString())
+                                                .snapshots(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData){
+                                                final int count = snapshot.data!.docs.length;
+                                                return Text(
+                                                count.toString(),
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.green),
+                                              );
+                                              }else{
+                                                return Text('');
+                                              }
+                                              
+                                            }
+                                        ),
+                                      ),
                                     ),
-                                    title: Text(data['name']),
-                                    subtitle: Text(data['phone']),
-                                    trailing: StreamBuilder<QuerySnapshot>(
-                                        stream: FirebaseFirestore.instance
-                                            .collection('Customer')
-                                            .where('phone',
-                                                isEqualTo: data['phone'].toString())
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData){
-                                            final int count = snapshot.data!.docs.length;
-                                            return Text(
-                                            count.toString(),
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.green),
-                                          );
-                                          }else{
-                                            return Text('');
-                                          }
-                                          
-                                        }
-                                    ),
-                                  ),
-                                ),
-                                onTap: (() {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditCustomerDetailsForm(
-                                                customerKey: doc_id,
-                                              )));
-                                }));
-                          },
+                                    onTap: (() {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditCustomerDetailsForm(
+                                                    customerKey: doc_id,
+                                                  )));
+                                    }));
+                              },
+                            ),
+                          ],
                         );
                       } else
                         return Center(

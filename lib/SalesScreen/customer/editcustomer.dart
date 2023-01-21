@@ -14,16 +14,6 @@ class EditCustomerDetailsForm extends StatefulWidget {
   State<EditCustomerDetailsForm> createState() => _EditCustomerDetailsFormState();
 }
 
-enum DistrChannel {
-  shopee,
-  whatsapp,
-  website,
-  b2b_retail,
-  b2b_hypermarket,
-  grabmart,
-  other,
-  tiktok
-}
 
 class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
 // form key
@@ -34,7 +24,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
   final addressEditingController = TextEditingController();
   final emailEditingController = TextEditingController();
 
-  late DistrChannel? _channel = DistrChannel.shopee;
+  late String? _channel;
 
   @override
   void initState() {
@@ -165,100 +155,51 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
           ),
         ));
 
-    ///radio button
-    //String? distrChannel;
-    final channel = Column(
-      children: <Widget>[
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("Shopee"),
-          value: DistrChannel.shopee,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("WhatsApp"),
-          value: DistrChannel.whatsapp,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("Website"),
-          value: DistrChannel.website,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("GrabMart"),
-          value: DistrChannel.grabmart,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-                RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("TikTok"),
-          value: DistrChannel.tiktok,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("B2B Retail"),
-          value: DistrChannel.b2b_retail,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("B2B Hypermarket"),
-          value: DistrChannel.b2b_hypermarket,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("Other"),
-          value: DistrChannel.other,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-      ],
+    ///dropdown
+    final channel = Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey,
+          )),
+      child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('Channel').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return LinearProgressIndicator();
+            } else {
+              return DropdownButtonHideUnderline(
+                child: DropdownButtonFormField(
+                  isExpanded: true,
+                  icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                      color: Colors.green),
+                  dropdownColor: Colors.green.shade50,
+                  decoration: InputDecoration(
+                    labelText: 'New Distribution Channel',
+                  ),
+                  itemHeight: kMinInteractiveDimension,
+                  items: snapshot.data!.docs
+                      .map(
+                        (map) => DropdownMenuItem(
+                          child: Text(
+                            map.id,
+                            overflow: TextOverflow.fade,
+                          ),
+                          value: map.id,
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (String? val) {
+                    setState(() {
+                      _channel = val!;
+                    });
+                  },
+                ),
+              );
+            }
+          }),
     );
 
   
@@ -316,62 +257,36 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
         child: CustomAppBar(bartitle: 'Edit Customer Information'),
         preferredSize: Size.fromHeight(65),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    nameField,
-                    SizedBox(height: 20),
-                    phoneField,
-                    SizedBox(height: 20),
-                    emailField,
-                    SizedBox(height: 20),
-                    addressField,
-                    SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.grey,
-                          )),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 15),
-                          SizedBox(
-                            height: 20,
-                            width: 300,
-                            child: Text(
-                              'Distribution Channel',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black54,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          channel,
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        updateButton,
-                        deleteButton,
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                  ],
-                ),
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  nameField,
+                  SizedBox(height: 20),
+                  phoneField,
+                  SizedBox(height: 20),
+                  emailField,
+                  SizedBox(height: 20),
+                  addressField,
+                  SizedBox(height: 20),
+                  channel,
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      updateButton,
+                      deleteButton,
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                ],
               ),
             ),
           ),
@@ -393,12 +308,12 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     phoneEditingController.text = customerfromfirestore['phone'];
     addressEditingController.text = customerfromfirestore['address'];
     emailEditingController.text = customerfromfirestore['email'];
+    _channel = customerfromfirestore['channel'];
 
-        // Convert to enum
-    DistrChannel d = DistrChannel.values.firstWhere((e) => e.toString() == 'DistrChannel.' + customerfromfirestore['channel']);
     setState(() {
-      _channel = d; 
+      _channel = customerfromfirestore['channel'];
     });
+    
   }
 
     _showDeleteDialog() {

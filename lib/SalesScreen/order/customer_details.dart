@@ -157,8 +157,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           ),
         ));
 
-    ///radio button
-    //String? distrChannel;
+    ///dropdown
     final channel = Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(10),
