@@ -275,11 +275,10 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                 payc.bankName = banknameCtrl.text;
 
                                 if (cust.channel == 'whatsapp') {
-                                  payc.paymentVerify = 'No';
+                                  payc.paymentVerify = '-';
                                   payc.action = 'Processing';
-
                                 } else {
-                                  payc.paymentVerify = 'Received';
+                                  payc.paymentVerify = 'Auto-verified';
                                   payc.action = 'Approved';
                                 }
                               });

@@ -30,8 +30,7 @@ class _AddPaymentState extends State<AddPayment> {
   List<DropdownMenuItem<String>> get dropdownItems{
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("Pending"),value: "Pending"),
-      DropdownMenuItem(child: Text("Approved"),value: "Approved"),
-      DropdownMenuItem(child: Text("Rejected"),value: "Rejected"),
+
     ];
     return menuItems;
   }
@@ -347,7 +346,7 @@ class _AddPaymentState extends State<AddPayment> {
                 ),
                 SizedBox(height: 15),
                 TextFormField(
-                  enabled: false,
+                  //enabled: false,
                   controller: _bankreferencenoController,
                   decoration: InputDecoration(
                     label: Text('Bank Reference No.'),

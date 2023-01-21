@@ -15,6 +15,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
   late Query _ref;
   CollectionReference reference =
   FirebaseFirestore.instance.collection('Cost');
+  var selectedCategory;
   @override
   void initState() {
     // TODO: implement initState
@@ -74,7 +75,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
               children: [
                 Row(
                   children: [
-                    Text('Cost Name: ',
+                    Text('Expenses Name: ',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800),),
@@ -284,7 +285,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cost Information'),
+        title: Text('Expenses Information'),
         actions: [
           PopupMenuButton(
             // add icon, by default "3 dot" icon
@@ -322,7 +323,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
             child: TextField(
               onChanged: (text){
                 setState(() {
-                  _ref = FirebaseFirestore.instance.collection('Cost').orderBy('name').startAt([text])
+                  _ref = FirebaseFirestore.instance.collection('Cost').where('category', isEqualTo: selectedCategory).orderBy('name').startAt([text])
                       .endAt([text + '\uf8ff']);
                 });
 
@@ -335,7 +336,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.teal)
                   ),
-                  hintText: 'Cost Name',
+                  hintText: 'Name',
                   hintStyle: TextStyle(
                       color: Colors.grey,
                       fontSize: 18
@@ -345,34 +346,55 @@ class _ListCostFinanceState extends State<ListCostFinance> {
             ),
           ),
           SizedBox(height: 10,),
-          SizedBox(
-            height: 40,
-            width: 200,
-            child: TextField(
-              onChanged: (text){
-                setState(() {
-                  _ref = FirebaseFirestore.instance.collection('Cost').orderBy('category').startAt([text])
-                      .endAt([text + '\uf8ff']);
-                });
-
-              },
-              cursorColor: Colors.teal,
-              decoration: InputDecoration(
-                  fillColor: Colors.white30,
-                  filled: true,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.teal)
-                  ),
-                  hintText: 'Cost Category',
-                  hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18
-                  ),
-                  prefixIcon: Icon(Icons.search)
-              ),
-            ),
-          ),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection("Category").snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData)
+                  return const Text("Loading.....");
+                else {
+                  List<DropdownMenuItem> categoryItems = [];
+                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                    DocumentSnapshot snap = snapshot.data!.docs[i];
+                    categoryItems.add(
+                      DropdownMenuItem(
+                        child: Text(
+                          snap['category'],
+                        ),
+                        value: "${snap['category']}",
+                      ),
+                    );
+                  }
+                  return SizedBox(
+                    width: 200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: DropdownButtonFormField<dynamic>(
+                            validator: (value) => value == null ? "Category" : null,
+                            items: categoryItems,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                            onChanged: (categoryValue) {
+                              setState(() {
+                                selectedCategory = categoryValue;
+                                _ref = FirebaseFirestore.instance.collection('Cost').where('category', isEqualTo: selectedCategory).orderBy('name');
+                              });
+                            },
+                            value: selectedCategory,
+                            hint: new Text(
+                              "Category",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }),
           Flexible(
             child: SizedBox(
               height: double.infinity,

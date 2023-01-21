@@ -7,7 +7,7 @@ class AddSupplier extends StatefulWidget {
 }
 
 class _AddSupplierState extends State<AddSupplier> {
-  late TextEditingController _companynameController, _shippingaddressController;//,  _phonenumberController,_emailController, _picController;
+  late TextEditingController _companynameController, _shippingaddressController,  _phonenumberController,_emailController, _picController;
   final _formKey = GlobalKey<FormState>();
   late CollectionReference _ref;
 
@@ -18,9 +18,9 @@ class _AddSupplierState extends State<AddSupplier> {
     _companynameController = TextEditingController();
     _shippingaddressController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('Suppliers');
-    // _phonenumberController = TextEditingController();
-    // _emailController = TextEditingController();
-    // _picController = TextEditingController();
+    _phonenumberController = TextEditingController();
+    _emailController = TextEditingController();
+    _picController = TextEditingController();
 
   }
 
@@ -28,17 +28,16 @@ class _AddSupplierState extends State<AddSupplier> {
 
     String companyname = _companynameController.text;
     String shippingaddress = _shippingaddressController.text;
-    // String phonenumber = _phonenumberController.text;
-    //
-    // String email = _emailController.text;
-    // String pic = _picController.text;
+    String phonenumber = _phonenumberController.text;
+    String email = _emailController.text;
+    String pic = _picController.text;
 
     Map<String,String> supplier = {
       'companyname':companyname,
       'shippingaddress':shippingaddress,
-      // 'phonenumber': phonenumber,
-      // 'email': email,
-      // 'pic':pic,
+      'phonenumber': phonenumber,
+      'email': email,
+      'pic':pic,
     };
 
     _ref.doc().set(supplier).then((value) {
@@ -114,64 +113,64 @@ class _AddSupplierState extends State<AddSupplier> {
                     contentPadding: EdgeInsets.all(15),
                   ),
                 ),
-                // SizedBox(height: 15),
-                // TextFormField(
-                //   controller: _phonenumberController,
-                //   keyboardType: TextInputType.phone,
-                //   validator: (value) {
-                //     RegExp regex = RegExp(r'(\d+)');
-                //     if (value!.isEmpty) {
-                //       return ("Phone number cannot be empty!");
-                //     }
-                //     if (!regex.hasMatch(value)) {
-                //       return ("Enter valid phone number!");
-                //     }
-                //     return null;
-                //   },
-                //   decoration: InputDecoration(
-                //     label: Text('Phone Number'),
-                //     hintText: 'Enter Phone Number',
-                //     prefixIcon: Icon(
-                //       Icons.phone_iphone,
-                //       size: 30,
-                //     ),
-                //     fillColor: Colors.white,
-                //     filled: true,
-                //     contentPadding: EdgeInsets.all(15),
-                //   ),
-                // ),
-                // SizedBox(height: 15),
-                // TextFormField(
-                //   keyboardType: TextInputType.emailAddress,
-                //   controller: _emailController,
-                //   decoration: InputDecoration(
-                //     label: Text('Email'),
-                //     hintText: 'Enter Email',
-                //     prefixIcon: Icon(
-                //       Icons.mail,
-                //       size: 30,
-                //     ),
-                //     fillColor: Colors.white,
-                //     filled: true,
-                //     contentPadding: EdgeInsets.all(15),
-                //   ),
-                // ),
-                // SizedBox(height: 15),
-                // TextFormField(
-                //   keyboardType: TextInputType.name,
-                //   controller: _picController,
-                //   decoration: InputDecoration(
-                //     label: Text('PIC'),
-                //     hintText: 'Enter PIC',
-                //     prefixIcon: Icon(
-                //       Icons.account_box,
-                //       size: 30,
-                //     ),
-                //     fillColor: Colors.white,
-                //     filled: true,
-                //     contentPadding: EdgeInsets.all(15),
-                //   ),
-                // ),
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _phonenumberController,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'(\d+)');
+                    if (value!.isEmpty) {
+                      return ("Phone number cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid phone number!");
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    label: Text('Phone Number'),
+                    hintText: 'Enter Phone Number',
+                    prefixIcon: Icon(
+                      Icons.phone_iphone,
+                      size: 30,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    label: Text('Email'),
+                    hintText: 'Enter Email',
+                    prefixIcon: Icon(
+                      Icons.mail,
+                      size: 30,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  keyboardType: TextInputType.name,
+                  controller: _picController,
+                  decoration: InputDecoration(
+                    label: Text('PIC'),
+                    hintText: 'Enter PIC',
+                    prefixIcon: Icon(
+                      Icons.account_box,
+                      size: 30,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
 
                 SizedBox(height: 25,),
                 Container(

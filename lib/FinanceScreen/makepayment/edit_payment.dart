@@ -15,18 +15,11 @@ class EditPayment extends StatefulWidget {
 class _EditPaymentState extends State<EditPayment> {
   late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
   final _formKey = GlobalKey<FormState>();
-  String? selectedValue = null;
+
   late CollectionReference _ref;
   DateTime? pickedDate;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  List<DropdownMenuItem<String>> get dropdownItems{
-    List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("Pending"),value: "Pending"),
-      DropdownMenuItem(child: Text("Approved"),value: "Approved"),
-      DropdownMenuItem(child: Text("Rejected"),value: "Rejected"),
-    ];
-    return menuItems;
-  }
+
 
   @override
   void initState() {
@@ -47,7 +40,6 @@ class _EditPaymentState extends State<EditPayment> {
   void initialize() async{
     DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
     Map payment = snapshot.data() as Map;
-    selectedValue = payment['status'];
     dateselect = DateFormat('dd/MM/yyyy').parse(payment['effectivedate']);
     setState(() {});
   }
@@ -80,7 +72,7 @@ class _EditPaymentState extends State<EditPayment> {
     String effectivedate = _effectivedateController.text;
     String ponumber = _ponumberController.text;
     String bankreferenceno = _bankreferencenoController.text;
-    String status = selectedValue!;
+    String status = _statusController.text;
 
     Map<String,String> payment = {
       'title':title,
@@ -268,22 +260,16 @@ class _EditPaymentState extends State<EditPayment> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  DropdownButtonFormField(
-                      hint: Text("Status"),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: EdgeInsets.all(15),
-                      ),
-                      validator: (value) => value == null ? "Select status" : null,
-                      value: selectedValue,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedValue = newValue!;
-                        });
-                      },
-                      items: dropdownItems),
-
+                  TextFormField(
+                    enabled: false,
+                    controller: _statusController,
+                    decoration: InputDecoration(
+                      label: Text('Status'),
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(15),
+                    ),
+                  ),
 
                   SizedBox(height: 25,),
                   Container(

@@ -135,75 +135,75 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
 
                   ],
                 ),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                // Row(
-                //   children: [
-                //     Text('Phone No: ',
-                //       style: TextStyle(
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w800),),
-                //     SizedBox(
-                //       width: 6,
-                //     ),
-                //     Text(
-                //       supplier['phonenumber'],
-                //       style: TextStyle(
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w600),
-                //     ),
-                //     SizedBox(width: 15),
-                //
-                //   ],
-                // ),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                // Row(
-                //   children: [
-                //     Text('Email: ',
-                //       style: TextStyle(
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w800),),
-                //     SizedBox(
-                //       width: 6,
-                //     ),
-                //     Text(
-                //       supplier['email'],
-                //       style: TextStyle(
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w600),
-                //     ),
-                //     SizedBox(width: 15),
-                //
-                //   ],
-                // ),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                // Row(
-                //   children: [
-                //     Text('PIC: ',
-                //       style: TextStyle(
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w800),),
-                //     SizedBox(
-                //       width: 6,
-                //     ),
-                //     Text(
-                //       supplier['pic'],
-                //       style: TextStyle(
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w600),
-                //     ),
-                //     SizedBox(width: 15),
-                //
-                //   ],
-                // ),
-                // SizedBox(
-                //   height: 15,
-                // ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Phone No: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      supplier['phonenumber'],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Email: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      supplier['email'],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('PIC: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      supplier['pic'],
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

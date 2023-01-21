@@ -99,7 +99,7 @@ class _EditCostState extends State<EditCost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Cost'),
+        title: Text('Update Expenses'),
       ),
       body: Container(
         margin: EdgeInsets.all(15),
@@ -124,8 +124,8 @@ class _EditCostState extends State<EditCost> {
                   },
                   controller: _nameController,
                   decoration: InputDecoration(
-                    label: Text('Cost Name'),
-                    hintText: 'Enter Cost Name',
+                    label: Text('Expenses Name'),
+                    hintText: 'Enter Expenses Name',
                     fillColor: Colors.white,
                     filled: true,
                     contentPadding: EdgeInsets.all(15),
@@ -256,7 +256,7 @@ class _EditCostState extends State<EditCost> {
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
-                    child: Text('Update Cost',style: TextStyle(
+                    child: Text('Update Expenses',style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

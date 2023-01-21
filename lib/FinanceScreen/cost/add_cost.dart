@@ -31,7 +31,7 @@ class _AddCostState extends State<AddCost> {
     costModel.name = _nameController.text;
     costModel.category = selectedCategory;
     costModel.amount = _amountController.text;
-    costModel.supplier = selectedSupplier;
+    costModel.supplier = selectedSupplier ?? '-';
     costModel.date = dateselect; //formattedDate;
     costModel.referenceno = _referencenoController.text;
 
@@ -49,7 +49,7 @@ class _AddCostState extends State<AddCost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cost Details'),
+        title: Text('Expenses Details'),
       ),
       body: Container(
         margin: EdgeInsets.all(15),
@@ -73,8 +73,8 @@ class _AddCostState extends State<AddCost> {
                   },
                   controller: _nameController,
                   decoration: InputDecoration(
-                    label: Text('Cost Name'),
-                    hintText: 'Enter Cost Name',
+                    label: Text('Expenses Name'),
+                    hintText: 'Enter Expenses Name',
                     fillColor: Colors.white,
                     filled: true,
                     contentPadding: EdgeInsets.all(15),

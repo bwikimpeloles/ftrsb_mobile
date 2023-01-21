@@ -283,7 +283,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   color: Colors.green.shade400,
                                 ),
                                 Text(
-                                  "Verify Customer Payment",
+                                  "Verify Order",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -320,7 +320,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   color: Colors.green.shade400,
                                 ),
                                 Text(
-                                  "Make Payment",
+                                  "Make Transaction",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,

@@ -122,7 +122,7 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
           ),
           ListTile(
             leading: const Icon(Icons.pie_chart),
-            title: const Text('Cost'),
+            title: const Text('Expenses'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -152,7 +152,7 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
           ),
           ListTile(
             leading: const Icon(Icons.domain_verification),
-            title: const Text('Payment Verification'),
+            title: const Text('Order Verification'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -167,7 +167,7 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
           ),
           ListTile(
             leading: const Icon(Icons.monetization_on),
-            title: const Text('Make Payment'),
+            title: const Text('Make Transaction'),
             onTap: () {
               Navigator.pushReplacement(
                 context,

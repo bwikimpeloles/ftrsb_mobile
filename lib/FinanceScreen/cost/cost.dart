@@ -16,6 +16,8 @@ class _CostFinanceState extends State<CostFinance> {
   String? selectedValue="All";
   String total ='';
   double total2=0;
+  String totala ='';
+  double totala2=0;
 
   late List<CostModel> _cost = [];
 
@@ -71,6 +73,48 @@ class _CostFinanceState extends State<CostFinance> {
     return a!;
   }
 
+  Map<String, double> getSupplierData() {
+    Map<String, double> catMap = {"":0,};
+    if (_cost==null) {
+
+      catMap.update("", (value) => 0);
+    } else {
+
+      for (var item in _cost) {
+        if (catMap.containsKey(item.supplier) == false) {
+          catMap[item.supplier!] = double.parse(item.amount!);
+        } else {
+          double a =double.parse(item.amount!);
+          catMap.update(item.supplier!, (double) => catMap[item.supplier]!+ a);
+        }
+      }}
+    totala=catMap.toString();
+    Iterable<double> values = catMap.values;
+    totala2 = values.reduce((sum, value) => sum + value);
+    print(totala2);
+    print("this is ${totala}");
+    return catMap;
+  }
+
+  DataTable printCostDataSupplier() {
+    DataTable? a;
+    Map<String, double> catMap2 = getSupplierData();
+    catMap2.remove('');
+    a= new DataTable(
+      columns: const <DataColumn>[
+        DataColumn(label: Text('Supplier')),
+        DataColumn(label: Text('Total (RM)')),
+      ],
+      rows: catMap2.entries
+          .map((e) => DataRow(cells: [
+        DataCell(Text(e.key.toString())),
+        DataCell(Text(e.value.toStringAsFixed(2))),
+      ]))
+          .toList(),
+    );
+    return a!;
+  }
+
   printTotal(){
     return
       Container(
@@ -103,7 +147,7 @@ class _CostFinanceState extends State<CostFinance> {
           showChartValues: true,
           chartValueStyle:
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontStyle: FontStyle.italic)),
-      centerText: 'Cost',
+      centerText: 'Expenses',
       legendOptions: LegendOptions(
           showLegendsInRow: false,
           showLegends: true,
@@ -193,7 +237,7 @@ class _CostFinanceState extends State<CostFinance> {
     return Scaffold(
       drawer: NavigationDrawer(),
       appBar: AppBar(
-        title: Text('Cost'),
+        title: Text('Expenses'),
       ),
       body:  SingleChildScrollView(
           child: Column(
@@ -270,6 +314,22 @@ class _CostFinanceState extends State<CostFinance> {
                   return printTotal();
                 },
               ),
+              SizedBox(height: 30,),
+              StreamBuilder<Object>(
+                stream: expStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("something went wrong");
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  final data = snapshot.requireData;
+                  print("Data: $data");
+                  getExpfromSnapshot(data);
+                  return Container(child: printCostDataSupplier(), width: 300,);
+                },
+              ),
               SizedBox(height: 90,),
 
 
@@ -286,7 +346,7 @@ class _CostFinanceState extends State<CostFinance> {
             }),
           ).then((value) => setState(() {}));
         },
-        label: const Text('Manage Cost'),
+        label: const Text('Manage Expenses'),
         icon: const Icon(Icons.pie_chart),
       ),
     );
