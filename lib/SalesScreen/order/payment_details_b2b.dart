@@ -376,7 +376,7 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                 payb.purchaseType = _purchaseType
                                     .toString()
                                     .substring(
-                                        _paymentStatus.toString().indexOf('.') +
+                                        _purchaseType.toString().indexOf('.') +
                                             1);
                               });
 
