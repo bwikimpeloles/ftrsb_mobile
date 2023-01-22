@@ -16,6 +16,16 @@ class _AddCostState extends State<AddCost> {
   var selectedCategory;
   var uuid = Uuid();
   final _formKey = GlobalKey<FormState>();
+  String? selectedValue = null;
+  List<DropdownMenuItem<String>> get dropdownItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Online Banking"),value: "Online Banking"),
+      DropdownMenuItem(child: Text("Credit/Debit"),value: "Credit/Debit"),
+      DropdownMenuItem(child: Text("Cash"),value: "Cash"),
+    ];
+    return menuItems;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -34,6 +44,8 @@ class _AddCostState extends State<AddCost> {
     costModel.supplier = selectedSupplier ?? '-';
     costModel.date = dateselect; //formattedDate;
     costModel.referenceno = _referencenoController.text;
+    costModel.paymenttype = selectedValue;
+
 
     await firebaseFirestore
         .collection("Cost")
@@ -195,8 +207,23 @@ class _AddCostState extends State<AddCost> {
                         );
                       }
                     }),
-
                 SizedBox(height: 15),
+                DropdownButtonFormField(
+                    hint: Text("Payment Type"),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(15),
+                    ),
+                    validator: (value) => value == null ? "Select payment type" : null,
+                    value: selectedValue,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedValue = newValue!;
+                      });
+                    },
+                    items: dropdownItems),
+                SizedBox(height: 15,),
                 TextFormField(
                   controller: _referencenoController,
                   decoration: InputDecoration(

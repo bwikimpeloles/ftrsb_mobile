@@ -7,6 +7,7 @@ class CostModel {
   String? name;
   String? supplier;
   String? referenceno;
+  String? paymenttype;
 
   //constructor
   CostModel(
@@ -17,6 +18,7 @@ class CostModel {
         this.name,
         this.supplier,
         this.referenceno,
+        this.paymenttype,
       });
 
   // receive data from server
@@ -28,6 +30,7 @@ class CostModel {
       name: map["name"],
       supplier: map["supplier"],
       referenceno: map["referenceno"],
+      paymenttype: map["paymenttype"],
     );
   }
 
@@ -40,6 +43,7 @@ class CostModel {
       name: json["name"],
       supplier: json["supplier"],
       referenceno: json["referenceno"],
+      paymenttype: json["paymenttype"],
     );
   }
 
@@ -52,6 +56,7 @@ class CostModel {
       'name': name,
       'supplier': supplier,
       'referenceno': referenceno,
+      'paymenttype': paymenttype,
     };
   }
 
@@ -65,6 +70,7 @@ class CostModel {
       'name': name,
       'supplier': supplier,
       'referenceno': referenceno,
+      'paymenttype': paymenttype,
     };
   }
 }

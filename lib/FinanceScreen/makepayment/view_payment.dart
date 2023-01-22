@@ -12,7 +12,7 @@ class ViewPayment extends StatefulWidget {
 }
 
 class _ViewPaymentState extends State<ViewPayment> {
-  late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController;
+  late TextEditingController _titleController, _accountholderController, _amountController, _effectivedateController, _ponumberController, _bankreferencenoController, _statusController,_banknameController,_categoryController,_paymenttypeController;
   late CollectionReference _ref;
 
   @override
@@ -26,6 +26,9 @@ class _ViewPaymentState extends State<ViewPayment> {
     _ponumberController = TextEditingController();
     _bankreferencenoController = TextEditingController();
     _statusController = TextEditingController();
+    _banknameController = TextEditingController();
+    _categoryController = TextEditingController();
+    _paymenttypeController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('MakePayments');
     getPaymentDetail();
     setState(() {
@@ -51,6 +54,12 @@ class _ViewPaymentState extends State<ViewPayment> {
     _bankreferencenoController.text = payment['bankreferenceno'];
 
     _statusController.text = payment['status'];
+
+    _banknameController.text = payment['bankname'];
+
+    _categoryController.text = payment['category'];
+
+    _paymenttypeController.text = payment['paymenttype'];
 
   }
 
@@ -97,7 +106,7 @@ class _ViewPaymentState extends State<ViewPayment> {
                   enabled: false,
                   controller: _accountholderController,
                   decoration: InputDecoration(
-                    label: Text('Account Holder (Recipient)'),
+                    label: Text('Account Holder/Recipient/Supplier'),
                     fillColor: Colors.white,
                     filled: true,
                     contentPadding: EdgeInsets.all(15),
@@ -109,6 +118,17 @@ class _ViewPaymentState extends State<ViewPayment> {
                   controller: _amountController,
                   decoration: InputDecoration(
                     label: Text('Amount (RM)'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  enabled: false,
+                  controller: _categoryController,
+                  decoration: InputDecoration(
+                    label: Text('Category'),
                     fillColor: Colors.white,
                     filled: true,
                     contentPadding: EdgeInsets.all(15),
@@ -131,6 +151,28 @@ class _ViewPaymentState extends State<ViewPayment> {
                   controller: _ponumberController,
                   decoration: InputDecoration(
                     label: Text('Purchase Order No.'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  enabled: false,
+                  controller: _banknameController,
+                  decoration: InputDecoration(
+                    label: Text('Bank Name'),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  enabled: false,
+                  controller: _paymenttypeController,
+                  decoration: InputDecoration(
+                    label: Text('Payment Type'),
                     fillColor: Colors.white,
                     filled: true,
                     contentPadding: EdgeInsets.all(15),

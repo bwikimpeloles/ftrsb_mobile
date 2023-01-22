@@ -191,6 +191,30 @@ class _ListCostFinanceState extends State<ListCostFinance> {
                 ),
                 Row(
                   children: [
+                    Text('Payment Type: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        cost['paymenttype'] ?? '-',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
                     Text('Reference No.: ',
                       style: TextStyle(
                           fontSize: 16,

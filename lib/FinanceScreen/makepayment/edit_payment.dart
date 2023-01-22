@@ -19,6 +19,46 @@ class _EditPaymentState extends State<EditPayment> {
   late CollectionReference _ref;
   DateTime? pickedDate;
   DateTime dateselect = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  var selectedCategory;
+  String? selectedValue2 = null;
+  String? selectedValue3 = null;
+  List<DropdownMenuItem<String>> get dropdownItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Pending"),value: "Pending"),
+
+    ];
+    return menuItems;
+  }
+  List<DropdownMenuItem<String>> get dropdownItems2{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Online Banking"),value: "Online Banking"),
+      DropdownMenuItem(child: Text("Credit/Debit"),value: "Credit/Debit"),
+    ];
+    return menuItems;
+  }
+  List<DropdownMenuItem<String>> get dropdownItems3{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Affin Bank"),value: "Affin Bank"),
+      DropdownMenuItem(child: Text("Agrobank"),value: "Agrobank"),
+      DropdownMenuItem(child: Text("Alliance Bank"),value: "Alliance Bank"),
+      DropdownMenuItem(child: Text("Ambank"),value: "Ambank"),
+      DropdownMenuItem(child: Text("Bank Islam"),value: "Bank Islam"),
+      DropdownMenuItem(child: Text("Bank Muamalat"),value: "Bank Muamalat"),
+      DropdownMenuItem(child: Text("Bank Rakyat"),value: "Bank Rakyat"),
+      DropdownMenuItem(child: Text("BSN"),value: "BSN"),
+      DropdownMenuItem(child: Text("CIMB"),value: "CIMB"),
+      DropdownMenuItem(child: Text("Hong Leong"),value: "Hong Leong"),
+      DropdownMenuItem(child: Text("HSBC"),value: "HSBC"),
+      DropdownMenuItem(child: Text("Kuwait Finance House"),value: "Kuwait Finance House"),
+      DropdownMenuItem(child: Text("Maybank2u"),value: "Maybank2u"),
+      DropdownMenuItem(child: Text("OCBC"),value: "OCBC"),
+      DropdownMenuItem(child: Text("Public Bank"),value: "Public Bank"),
+      DropdownMenuItem(child: Text("RHB"),value: "RHB"),
+      DropdownMenuItem(child: Text("Standard Chartered Bank"),value: "Standard Chartered Bank"),
+      DropdownMenuItem(child: Text("UOB"),value: "UOB"),
+    ];
+    return menuItems;
+  }
 
 
   @override
@@ -35,13 +75,58 @@ class _EditPaymentState extends State<EditPayment> {
     _ref = FirebaseFirestore.instance.collection('MakePayments');
     getPaymentDetail();
     initialize();
+    initialize2();
   }
 
   void initialize() async{
     DocumentSnapshot snapshot = (await _ref.doc(widget.paymentKey).get());
     Map payment = snapshot.data() as Map;
     dateselect = DateFormat('dd/MM/yyyy').parse(payment['effectivedate']);
+
+    CollectionReference checkexist = FirebaseFirestore.instance.collection('Category');
+    QuerySnapshot _query = await checkexist
+        .where('category', isEqualTo: payment['category']).get();
+    if (_query.docs.length > 0) {
+      selectedCategory = payment['category'];
+    } else{
+      selectedCategory = null;
+    }
     setState(() {});
+  }
+
+  void initialize2() async{
+    var document = await FirebaseFirestore.instance.collection('MakePayments').doc(widget.paymentKey).get();
+    var myList = ["Online Banking", "Credit/Debit", "Cash"];
+    if(myList.contains(document['paymenttype'].toString())){
+      selectedValue2= document['paymenttype'];
+    } else{
+      selectedValue2= null;
+    }
+
+    var myList2 = ['Affin Bank',
+      'Agrobank',
+      'Alliance Bank',
+      'Ambank',
+      'Bank Islam',
+      'Bank Muamalat',
+      'Bank Rakyat',
+      'BSN',
+      'CIMB',
+      'Hong Leong',
+      'HSBC',
+      'Kuwait Finance House',
+      'Maybank2u',
+      'OCBC',
+      'Public Bank',
+      'RHB',
+      'Standard Chartered Bank',
+      'UOB',];
+    if(myList2.contains(document['bankname'].toString())){
+      selectedValue3= document['bankname'];
+    } else{
+      selectedValue3= null;
+    }
+
   }
 
   getPaymentDetail() async {
@@ -73,11 +158,17 @@ class _EditPaymentState extends State<EditPayment> {
     String ponumber = _ponumberController.text;
     String bankreferenceno = _bankreferencenoController.text;
     String status = _statusController.text;
+    String paymenttype = selectedValue2!;
+    String bankname = selectedValue3!;
+    String category = selectedCategory;
 
     Map<String,String> payment = {
       'title':title,
       'accountholder':accountholder,
       'amount': amount,
+      'category': category,
+      'paymenttype': paymenttype,
+      'bankname': bankname,
       'effectivedate': effectivedate,
       'ponumber':ponumber,
       'bankreferenceno': bankreferenceno,
@@ -117,6 +208,7 @@ class _EditPaymentState extends State<EditPayment> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 10,),
                   TextFormField(
                     keyboardType: TextInputType.name,
                     validator: (value) {
@@ -131,6 +223,7 @@ class _EditPaymentState extends State<EditPayment> {
                     },
                     controller: _titleController,
                     decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       label: Text('Title'),
                       fillColor: Colors.white,
                       filled: true,
@@ -151,8 +244,8 @@ class _EditPaymentState extends State<EditPayment> {
                       return null;
                     },
                     controller: _accountholderController,
-                    decoration: InputDecoration(
-                      label: Text('Account Holder (Recipient)'),
+                    decoration: InputDecoration(border: OutlineInputBorder(),
+                      label: Text('Account Holder/Recipient/Supplier'),
                       fillColor: Colors.white,
                       filled: true,
                       contentPadding: EdgeInsets.all(15),
@@ -172,13 +265,60 @@ class _EditPaymentState extends State<EditPayment> {
                       return null;
                     },
                     controller: _amountController,
-                    decoration: InputDecoration(
+                    decoration: InputDecoration(border: OutlineInputBorder(),
                       label: Text('Amount (RM)'),
                       fillColor: Colors.white,
                       filled: true,
                       contentPadding: EdgeInsets.all(15),
                     ),
                   ),
+                  SizedBox(height: 15),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance.collection("Category").snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData)
+                          return const Text("Loading.....");
+                        else {
+                          List<DropdownMenuItem> categoryItems = [];
+                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                            DocumentSnapshot snap = snapshot.data!.docs[i];
+                            categoryItems.add(
+                              DropdownMenuItem(
+                                child: Text(
+                                  snap['category'],
+                                ),
+                                value: "${snap['category']}",
+                              ),
+                            );
+                          }
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Flexible(
+                                child: DropdownButtonFormField<dynamic>(
+                                  validator: (value) => value == null ? "Select a category" : null,
+                                  items: categoryItems,
+                                  decoration: InputDecoration(border: OutlineInputBorder(),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    contentPadding: EdgeInsets.all(15),
+                                  ),
+                                  onChanged: (categoryValue) {
+                                    setState(() {
+                                      selectedCategory = categoryValue;
+                                    });
+                                  },
+                                  value: selectedCategory,
+                                  isExpanded: false,
+                                  hint: new Text(
+                                    "Choose Category",
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      }),
                   SizedBox(height: 15),
                   TextFormField(
                     controller: _effectivedateController,
@@ -198,7 +338,7 @@ class _EditPaymentState extends State<EditPayment> {
                       _effectivedateController.text = value!;
                     },
                     textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
+                    decoration: InputDecoration(border: OutlineInputBorder(),
                       prefixIcon: const Icon(
                         Icons.calendar_today,
                         color: Colors.green,
@@ -211,7 +351,7 @@ class _EditPaymentState extends State<EditPayment> {
                     onTap: () async {
                       pickedDate = await showDatePicker(
                           context: context,
-                          initialDate: dateselect!,
+                          initialDate: DateTime.now(),
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2101));
 
@@ -226,7 +366,6 @@ class _EditPaymentState extends State<EditPayment> {
                       }
                     },
                   ),
-
                   SizedBox(height: 15),
                   TextFormField(
                     keyboardType: TextInputType.visiblePassword,
@@ -241,7 +380,7 @@ class _EditPaymentState extends State<EditPayment> {
                       return null;
                     },
                     controller: _ponumberController,
-                    decoration: InputDecoration(
+                    decoration: InputDecoration(border: OutlineInputBorder(),
                       label: Text('Purchase Order No.'),
                       fillColor: Colors.white,
                       filled: true,
@@ -249,10 +388,42 @@ class _EditPaymentState extends State<EditPayment> {
                     ),
                   ),
                   SizedBox(height: 15),
+                  DropdownButtonFormField(
+                      hint: Text("Payment Type"),
+                      decoration: InputDecoration(border: OutlineInputBorder(),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: EdgeInsets.all(15),
+                      ),
+                      validator: (value) => value == null ? "Select payment type" : null,
+                      value: selectedValue2,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedValue2 = newValue!;
+                        });
+                      },
+                      items: dropdownItems2),
+                  SizedBox(height: 15),
+                  DropdownButtonFormField(
+                      hint: Text("Bank Name"),
+                      decoration: InputDecoration(border: OutlineInputBorder(),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: EdgeInsets.all(15),
+                      ),
+                      validator: (value) => value == null ? "Select Bank Name" : null,
+                      value: selectedValue3,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedValue3 = newValue!;
+                        });
+                      },
+                      items: dropdownItems3),
+                  SizedBox(height: 15),
                   TextFormField(
-                    enabled: false,
+                    //enabled: false,
                     controller: _bankreferencenoController,
-                    decoration: InputDecoration(
+                    decoration: InputDecoration(border: OutlineInputBorder(),
                       label: Text('Bank Reference No.'),
                       fillColor: Colors.white,
                       filled: true,
@@ -264,6 +435,7 @@ class _EditPaymentState extends State<EditPayment> {
                     enabled: false,
                     controller: _statusController,
                     decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       label: Text('Status'),
                       fillColor: Colors.white,
                       filled: true,

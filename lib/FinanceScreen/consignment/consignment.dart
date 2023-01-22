@@ -22,7 +22,9 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
   CollectionReference reference =
   FirebaseFirestore.instance.collection('OrderB2B');
   List<String> filter = ["unpaid","paid"];
+  List<String> filter2 = ["Consignment","Outright","COD"];
   String? selectedValue="unpaid";
+  String? selectedValue2="Consignment";
   String search='';
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
@@ -511,6 +513,30 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                 ),
                 Row(
                   children: [
+                    Text('Purchase Type: ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        verify['purchaseType'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
                     Text('Payment Status: ',
                       style: TextStyle(
                           fontSize: 16,
@@ -601,13 +627,31 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
 
   @override
   Widget build(BuildContext context) {
-  if (selectedValue == "paid") {
-      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").orderBy('orderID').startAt([search])
+  if (selectedValue == "paid" && selectedValue2 == "Outright") {
+      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").where('purchaseType', isEqualTo: "Outright").orderBy('orderID').startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
+    } else if (selectedValue == "paid" && selectedValue2 == "COD") {
+    _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").where('purchaseType', isEqualTo: "COD").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
+  } else if (selectedValue == "paid" && selectedValue2 == "Consignment") {
+    _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").where('purchaseType', isEqualTo: "Consignment").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
+  }
+  else if(selectedValue == "unpaid" && selectedValue2 == "Outright"){
+  _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").where('purchaseType', isEqualTo: "Outright").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
+    }
+  else if (selectedValue == "unpaid" && selectedValue2 == "COD"){
+  _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").where('purchaseType', isEqualTo: "COD").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
     }
     else{
-      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").orderBy('orderID').startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").where('purchaseType', isEqualTo: "Consignment").orderBy('orderID').startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
@@ -648,7 +692,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
               Flexible(
                 child: SizedBox(
                   height: 50,
-                  width: 200,
+                  width: 150,
                   child: TextField(
                     onChanged: (text){
                       setState(() {
@@ -675,13 +719,28 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
               ),
               Stack(
                 children: [
-                  Text("Filter: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
+                  Text("Status: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
                   DropdownButton(
                     value: selectedValue,
                     items: filter.map((item) => DropdownMenuItem<String>(value: item,child: Text(item))).toList(),
                     onChanged: (String? newValue){
                       setState(() {
                         selectedValue = newValue!;
+                      });
+                    },
+
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  Text("Type: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
+                  DropdownButton(
+                    value: selectedValue2,
+                    items: filter2.map((item) => DropdownMenuItem<String>(value: item,child: Text(item))).toList(),
+                    onChanged: (String? newValue){
+                      setState(() {
+                        selectedValue2 = newValue!;
                       });
                     },
 
