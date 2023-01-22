@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../FinanceScreen/makepayment/view_payment.dart';
+import '../model/cost_model.dart';
 import 'view_paymentapproval.dart';
 
 class EditPaymentApproval extends StatefulWidget {
@@ -305,6 +306,22 @@ class _EditPaymentApprovalState extends State<EditPaymentApproval> {
       'bankname': bankname,
     };
 
+    CostModel costModel = CostModel();
+    costModel.name = _titleController.text;
+    costModel.category = selectedCategory;
+    costModel.amount = _amountController.text;
+    costModel.supplier = _accountholderController.text;
+    costModel.date = DateFormat('dd/MM/yyyy').parse(_effectivedateController.text); //formattedDate;
+    costModel.referenceno = _bankreferencenoController.text;
+    costModel.paymenttype = selectedValue2!;
+
+    if(selectedValue=="Approved"){
+      FirebaseFirestore.instance
+          .collection("Cost")
+          .doc(widget.paymentKey)
+          .set(costModel.toMap());
+    }
+
     _ref.doc(widget.paymentKey).update(payment).then((value) {
       Navigator.pushReplacement(
           context,
@@ -314,6 +331,8 @@ class _EditPaymentApprovalState extends State<EditPaymentApproval> {
               )));
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -597,6 +616,7 @@ class _EditPaymentApprovalState extends State<EditPaymentApproval> {
                           String titleText = _titleController.text;
                           String bodyText = "Transfer ${selectedValue} RM ${_amountController.text} to ${_accountholderController.text} \n(Reference Number: ${_bankreferencenoController.text})";
                           savePayment();
+
                           if(userid!=""){
                             DocumentSnapshot snap = await FirebaseFirestore.instance.collection("users").doc(userid).get();
                             String token = snap['token'];
