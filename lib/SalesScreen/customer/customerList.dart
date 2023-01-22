@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/editcustomer.dart';
+import 'package:intl/intl.dart';
 
 class CustomerList extends StatefulWidget {
   String channel;
@@ -14,6 +19,7 @@ class CustomerList extends StatefulWidget {
 class _CustomerListState extends State<CustomerList> {
   List<int> lists = [];
   late Query _ref;
+  List<List<String>> listcust = []; 
   //late CollectionReference customerstream;
   //late CollectionReference orderstream;
   TextEditingController _searchController = TextEditingController();
@@ -24,11 +30,17 @@ class _CustomerListState extends State<CustomerList> {
     _ref = FirebaseFirestore.instance
         .collection('Customer')
         .where('channel', isEqualTo: widget.channel).orderBy('name');
+    listcust = [<String>['Name', 'Phone', 'Email', 'Shipping Address', 'Distribution Channel']];
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(onPressed:() {
+        generateCsv();
+        Fluttertoast.showToast(msg: 'Customer list was exported');
+      }, label: Text('Export to CSV'), icon: Icon(Icons.outbound_rounded),),
         //bottomNavigationBar: CurvedNavBar(indexnum: 3,),
         backgroundColor: Colors.white,
         appBar: PreferredSize(
@@ -81,8 +93,10 @@ class _CustomerListState extends State<CustomerList> {
                               shrinkWrap: true,
                               itemCount: snap.data!.docs.length,
                               itemBuilder: (context, index) {
+                                DocumentSnapshot doc= snap.data!.docs[index];
                                 final data = snap.data!.docs[index];
                                 var doc_id = snap.data!.docs[index].reference.id;
+                                listcust.add([doc.get('name'), doc.get('phone'), doc.get('email'),doc.get('address'),doc.get('channel')]);
                 
                                 return GestureDetector(
                                     child:Card(
@@ -146,4 +160,19 @@ class _CustomerListState extends State<CustomerList> {
           ),
         ));
   }
+  generateCsv() async{
+  String csvData = ListToCsvConverter().convert(listcust);
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy-HH-mm-ss').format(now);
+
+  Directory generalDownloadDir = Directory('/storage/emulated/0/Download');
+
+  final File file = await (File('${generalDownloadDir.path}/customerlist_export_$formattedDate.csv').create());
+
+  await file.writeAsString(csvData);
+
+  print(listcust.toString());
 }
+}
+
+
