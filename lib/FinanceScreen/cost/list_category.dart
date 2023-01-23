@@ -198,7 +198,7 @@ class _ListCategoryState extends State<ListCategory> {
           SizedBox(height: 10,),
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Text('Note: Do not create category with same name as current cost items will be mixed together.', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+            child: Text('Note: Do not create category with same name as current cost items will be mixed together and error in dropdown inside Expenses page.', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
           ),
           SizedBox(height: 10,),
           Flexible(

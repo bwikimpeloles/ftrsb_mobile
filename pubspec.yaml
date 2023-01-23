@@ -69,6 +69,7 @@ dependencies:
   graphic: ^1.0.1
   csv: ^5.0.1
   open_file: ^3.2.1
+  url_launcher: ^6.1.8
 
 dev_dependencies:
   flutter_test:
