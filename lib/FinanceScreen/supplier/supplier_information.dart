@@ -74,7 +74,7 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
 
   _pickFile() async {
 
-    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.custom, allowedExtensions: ['csv'],);
 
     // if no file is picked
     if (result == null) return;
@@ -112,64 +112,90 @@ class _SupplierInformationFinanceState extends State<SupplierInformationFinance>
       return double.tryParse(s) != null;
     }
 
-    for(var i = 1; i < _data.length; i++){
-      if(_data[i][0] != null && _data[i][1] != null && _data[i][2] != null && _data[i][3] != null && _data[i][4] != null
-          && _data[i][0].toString().length>=1 && _data[i][1].toString().length>=1 && _data[i][2].toString().length>=1 && isNumeric(_data[i][2].toString())  ){
-        //print('eh jadi');
-        //print(_data[i][4]);
-        //print(DateTime.parse(_data[i][4]));
-      } else{
-        notAllOkay = true;
-        break;
-        print('huhu tak jadi');
-      }
-      //print('(${i}) Name:${_data[i][0]},  Category:${_data[i][1]}, Amount:${_data[i][2]},  Supplier:${_data[i][3]},  Date:${_data[i][4]},  Reference No. (Bank/PO/Invoice/Receipt):${_data[i][5]}, Payment Type:${_data[i][6]}');
-
-    }
-
-    if (notAllOkay) {
-      print("There is item not okay");
+    if (_data[1].length != 5) {
       showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Import Suppliers Failed"),
-          content: const Text("Rule:\n1. Company Name, Address and Phone Number is not empty\n2. Phone Number is a numeric\n3. Use the template given to avoid error"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text("OK"),
+        builder: (ctx) =>
+            AlertDialog(
+              title: const Text("Import Suppliers Failed"),
+              content: const Text('Wrong number of column inside CSV'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text("OK"),
 
+                ),
+              ],
             ),
-          ],
-        ),
       );
-
     } else {
-      print("All item okay");
-      for(var i = 1; i < _data.length; i++){
-        String companyname = _data[i][0].toString();
-        String shippingaddress = _data[i][1].toString();
-        String phonenumber = _data[i][2].toString();
-        String email = _data[i][3].toString();
-        String pic = _data[i][4].toString();
+      for (var i = 1; i < _data.length; i++) {
+        if (_data[i][0] != null && _data[i][1] != null && _data[i][2] != null &&
+            _data[i][3] != null && _data[i][4] != null
+            && _data[i][0]
+                .toString()
+                .length >= 1 && _data[i][1]
+            .toString()
+            .length >= 1 && _data[i][2]
+            .toString()
+            .length >= 1 && isNumeric(_data[i][2].toString())) {
+          //print('eh jadi');
+          //print(_data[i][4]);
+          //print(DateTime.parse(_data[i][4]));
+        } else {
+          notAllOkay = true;
+          break;
+          print('huhu tak jadi');
+        }
+        //print('(${i}) Name:${_data[i][0]},  Category:${_data[i][1]}, Amount:${_data[i][2]},  Supplier:${_data[i][3]},  Date:${_data[i][4]},  Reference No. (Bank/PO/Invoice/Receipt):${_data[i][5]}, Payment Type:${_data[i][6]}');
+
+      }
+
+      if (notAllOkay) {
+        print("There is item not okay");
+        showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: const Text("Import Suppliers Failed"),
+                content: const Text(
+                    "Rule:\n1. Company Name, Address and Phone Number is not empty\n2. Phone Number is a numeric\n3. Use the template given to avoid error"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text("OK"),
+
+                  ),
+                ],
+              ),
+        );
+      } else {
+        print("All item okay");
+        for (var i = 1; i < _data.length; i++) {
+          String companyname = _data[i][0].toString();
+          String shippingaddress = _data[i][1].toString();
+          String phonenumber = _data[i][2].toString();
+          String email = _data[i][3].toString();
+          String pic = _data[i][4].toString();
 
 
+          Map<String, String> supplier = {
+            'companyname': companyname,
+            'shippingaddress': shippingaddress,
+            'phonenumber': phonenumber,
+            'email': email,
+            'pic': pic,
+          };
 
-      Map<String,String> supplier = {
-        'companyname':companyname,
-        'shippingaddress':shippingaddress,
-        'phonenumber':phonenumber,
-        'email':email,
-        'pic':pic,
-      };
-
-        FirebaseFirestore.instance
-            .collection("Suppliers")
-            .doc()
-            .set(supplier);
-
+          FirebaseFirestore.instance
+              .collection("Suppliers")
+              .doc()
+              .set(supplier);
+        }
       }
     }
   }

@@ -73,7 +73,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
 
   _pickFile() async {
 
-    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.custom, allowedExtensions: ['csv'],);
 
     // if no file is picked
     if (result == null) return;
@@ -104,7 +104,7 @@ class _ListCostFinanceState extends State<ListCostFinance> {
     //'Name', 'Category', 'Amount', 'Supplier', 'Date', 'Reference No. (Bank/PO/Invoice/Receipt)', 'Payment Type'
     //DateFormat format = DateFormat("dd/MM/yyyy");
     //DateTime dayOfBirthDate = format.parseStrict(value);
-    bool notAllOkay=false;
+    bool notAllOkay = false;
 
     bool isNumeric(String s) {
       if (s == null) {
@@ -113,52 +113,87 @@ class _ListCostFinanceState extends State<ListCostFinance> {
       return double.tryParse(s) != null;
     }
 
-    for(var i = 1; i < _data.length; i++){
-      if(_data[i][0] != null && _data[i][1] != null && _data[i][2] != null && _data[i][3] != null && _data[i][4] != null && _data[i][5] != null && _data[i][6] != null
-          && _data[i][1].toString().length>=1 && _data[i][3].toString().length>=1 && _data[i][2].toString().length>=1 && isNumeric(_data[i][2].toString()) && _data[i][4].toString().length==10
-          && isNumeric(_data[i][4][0]) && isNumeric(_data[i][4][1]) && _data[i][4][2]=='/'
-          && isNumeric(_data[i][4][3]) && isNumeric(_data[i][4][4]) && _data[i][4][5]=='/'
-          && isNumeric(_data[i][4][6]) && isNumeric(_data[i][4][7]) && isNumeric(_data[i][4][8]) && isNumeric(_data[i][4][9]) ){
-        //print('eh jadi');
-        //print(_data[i][4]);
-        //print(DateTime.parse(_data[i][4]));
-      } else{
-        notAllOkay = true;
-        break;
-        print('huhu tak jadi');
-      }
-      //print('(${i}) Name:${_data[i][0]},  Category:${_data[i][1]}, Amount:${_data[i][2]},  Supplier:${_data[i][3]},  Date:${_data[i][4]},  Reference No. (Bank/PO/Invoice/Receipt):${_data[i][5]}, Payment Type:${_data[i][6]}');
+    if (_data[1].length != 7) {
+      showDialog(
+        context: context,
+        builder: (ctx) =>
+            AlertDialog(
+              title: const Text("Import Expenses Failed"),
+              content: const Text('Wrong number of column inside CSV'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text("OK"),
 
-    }
+                ),
+              ],
+            ),
+      );
+
+    } else{
+      for (var i = 1; i < _data.length; i++) {
+        if (_data[i][0] != null && _data[i][1] != null && _data[i][2] != null &&
+            _data[i][3] != null && _data[i][4] != null && _data[i][5] != null &&
+            _data[i][6] != null
+            && _data[i][1]
+                .toString()
+                .length >= 1 && _data[i][3]
+            .toString()
+            .length >= 1 && _data[i][2]
+            .toString()
+            .length >= 1 && isNumeric(_data[i][2].toString()) && _data[i][4]
+            .toString()
+            .length == 10
+            && isNumeric(_data[i][4][0]) && isNumeric(_data[i][4][1]) &&
+            _data[i][4][2] == '/'
+            && isNumeric(_data[i][4][3]) && isNumeric(_data[i][4][4]) &&
+            _data[i][4][5] == '/'
+            && isNumeric(_data[i][4][6]) && isNumeric(_data[i][4][7]) &&
+            isNumeric(_data[i][4][8]) && isNumeric(_data[i][4][9])) {
+          //print('eh jadi');
+          //print(_data[i][4]);
+          //print(DateTime.parse(_data[i][4]));
+        } else {
+          notAllOkay = true;
+          break;
+          print('huhu tak jadi');
+        }
+        //print('(${i}) Name:${_data[i][0]},  Category:${_data[i][1]}, Amount:${_data[i][2]},  Supplier:${_data[i][3]},  Date:${_data[i][4]},  Reference No. (Bank/PO/Invoice/Receipt):${_data[i][5]}, Payment Type:${_data[i][6]}');
+
+      }
 
     if (notAllOkay) {
       print("There is item not okay");
       showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Import Expenses Failed"),
-          content: const Text("Rule:\n1. Date & Category is not empty\n2. Date is in format dd/mm/yyyy\n3. Amount is a number\n4. Use the template given to avoid error"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text("OK"),
+        builder: (ctx) =>
+            AlertDialog(
+              title: const Text("Import Expenses Failed"),
+              content: const Text(
+                  "Rule:\n1. Date & Category is not empty\n2. Date is in format dd/mm/yyyy\n3. Amount is a number\n4. Use the template given to avoid error"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text("OK"),
 
+                ),
+              ],
             ),
-          ],
-        ),
       );
-
     } else {
       print("All item okay");
-      for(var i = 1; i < _data.length; i++){
+      for (var i = 1; i < _data.length; i++) {
         CostModel costModel = CostModel();
         costModel.name = _data[i][0].toString();
         costModel.category = _data[i][1].toString();
         costModel.amount = _data[i][2].toString();
         costModel.supplier = _data[i][3].toString();
-        costModel.date = DateFormat('dd/MM/yyyy').parse(_data[i][4]); //formattedDate;
+        costModel.date =
+            DateFormat('dd/MM/yyyy').parse(_data[i][4]); //formattedDate;
         costModel.referenceno = _data[i][5].toString();
         costModel.paymenttype = _data[i][6].toString();
 
@@ -166,9 +201,9 @@ class _ListCostFinanceState extends State<ListCostFinance> {
             .collection("Cost")
             .doc()
             .set(costModel.toMap());
-
       }
     }
+  }
   }
 
 
