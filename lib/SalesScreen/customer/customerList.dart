@@ -141,7 +141,7 @@ class _CustomerListState extends State<CustomerList> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   EditCustomerDetailsForm(
-                                                    customerKey: doc_id,
+                                                    customerKey: doc_id, channel: widget.channel,
                                                   )));
                                     }));
                               },

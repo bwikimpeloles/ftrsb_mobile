@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
 import 'package:ftrsb_mobile/SalesScreen/sidebar_navigation.dart';
 
 class EditCustomerDetailsForm extends StatefulWidget {
   String customerKey;
-  EditCustomerDetailsForm({required this.customerKey,});
+  String channel;
+  EditCustomerDetailsForm({required this.customerKey, required this.channel});
 
   @override
   State<EditCustomerDetailsForm> createState() => _EditCustomerDetailsFormState();
@@ -29,6 +29,7 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
   @override
   void initState() {
     getCustomerDetail();
+    _channel = widget.channel;
   }
 
   @override
@@ -308,11 +309,11 @@ class _EditCustomerDetailsFormState extends State<EditCustomerDetailsForm> {
     phoneEditingController.text = customerfromfirestore['phone'];
     addressEditingController.text = customerfromfirestore['address'];
     emailEditingController.text = customerfromfirestore['email'];
-    _channel = customerfromfirestore['channel'];
+   // _channel = customerfromfirestore['channel'];
 
-    setState(() {
-      _channel = customerfromfirestore['channel'];
-    });
+   // setState(() {
+   //   _channel = customerfromfirestore['channel'];
+   // });
     
   }
 

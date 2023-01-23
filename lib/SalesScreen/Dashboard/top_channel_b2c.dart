@@ -64,7 +64,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
       rows: catMap2.entries
           .map((e) => DataRow(cells: [
                 DataCell(Text(e.key.toString(),)),
-                DataCell(Text(e.value.toString())),
+                DataCell(Text(e.value.toStringAsFixed(2))),
               ]))
           .toList(),
     );
@@ -149,7 +149,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                   DateTime(DateTime.now().year, DateTime.now().month, 1))
           .where('paymentDate',
               isLessThan:
-                  DateTime(DateTime.now().year, DateTime.now().month, 31))
+                  DateTime(DateTime.now().year, DateTime.now().month, 32))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Week"){

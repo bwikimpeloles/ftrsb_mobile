@@ -158,58 +158,49 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         ));
 
     ///dropdown
-    final channel = Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Colors.grey,
-          )),
-      child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Channel').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return LinearProgressIndicator();
-            } else {
-              return DropdownButtonHideUnderline(
-                child: DropdownButtonFormField(
-                  isExpanded: true,
-                  icon: Icon(Icons.arrow_drop_down_circle_rounded,
-                      color: Colors.green),
-                  dropdownColor: Colors.green.shade50,
-                  decoration: InputDecoration(
-                    labelText: 'Distribution Channel',
-                   // prefixIcon: Icon(
-                   //   Icons.library_add,
-                   // ),
-                  ),
-                  itemHeight: kMinInteractiveDimension,
-                  items: snapshot.data!.docs
-                      .map(
-                        (map) => DropdownMenuItem(  
-                          child: Text(map.id, overflow: TextOverflow.fade,),
-                          value: map.id,
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (String? val) {
-                    for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                      DocumentSnapshot snap = snapshot.data!.docs[i];
-                      setState(() {
-                        _channel = val!;
-                        if (_channel == snap.reference.id) {
-                          _channeltype = snap.get('type');
-                          _verify = snap.get('needVerification');
-                        }
-                      });
-                    }
-                  },
-                ),
-              );
-            }
-          }),
-    );
+    final channel = StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Channel').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return LinearProgressIndicator();
+          } else {
+            return DropdownButtonHideUnderline(
+              child: DropdownButtonFormField(
+                hint: Text("Distribution Channel"),
+                isExpanded: true,
+                icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                    color: Colors.green),
+                dropdownColor: Colors.green.shade50,
+                decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: EdgeInsets.all(15),
+                      ),
+                itemHeight: kMinInteractiveDimension,
+                items: snapshot.data!.docs
+                    .map(
+                      (map) => DropdownMenuItem(  
+                        child: Text(map.id, overflow: TextOverflow.fade,),
+                        value: map.id,
+                      ),
+                    )
+                    .toList(),
+                onChanged: (String? val) {
+                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                    DocumentSnapshot snap = snapshot.data!.docs[i];
+                    setState(() {
+                      _channel = val!;
+                      if (_channel == snap.reference.id) {
+                        _channeltype = snap.get('type');
+                        _verify = snap.get('needVerification');
+                      }
+                    });
+                  }
+                },
+              ),
+            );
+          }
+        });
 
 
   

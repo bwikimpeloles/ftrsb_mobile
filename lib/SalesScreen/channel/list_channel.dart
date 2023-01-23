@@ -124,8 +124,7 @@ class _ListChannelState extends State<ListChannel> {
               TextButton(
                   onPressed: () {
                     FirebaseFirestore.instance.collection('Channel').doc(n).delete().whenComplete(() =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ListChannel())));
+                        Navigator.pop(context));
                   },
                   child: Text('Delete'))
             ],

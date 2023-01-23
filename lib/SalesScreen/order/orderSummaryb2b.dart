@@ -188,6 +188,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'email': cust.email,
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
+                      'dateSubmitted': payb.orderDate
                     };
 
                     if (cust.name != null) {
@@ -313,7 +314,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
               SizedBox(
                 height: 20,
               ),
-              Container(
+             /* Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -327,7 +328,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'Upload Sales Document',
                       style: TextStyle(color: Colors.grey),
                     )),
-                    SizedBox(
+                   SizedBox(
                       height: 15,
                     ),
                     Row(
@@ -343,8 +344,8 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     previewDoc,
                   ],
                 ),
-              ),
-              SizedBox(height: 20),
+              ), */
+             // SizedBox(height: 20),
               submitButton
             ],
           ),

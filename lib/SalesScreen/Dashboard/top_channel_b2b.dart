@@ -69,7 +69,7 @@ class _TopChannelB2BState extends State<TopChannelB2B> {
       rows: catMap2.entries
           .map((e) => DataRow(cells: [
                 DataCell(Text(e.key.toString())),
-                DataCell(Text(e.value.toString())),
+                DataCell(Text(e.value.toStringAsFixed(2))),
               ]))
           .toList(),
     );

@@ -133,7 +133,7 @@ class _TotalSalesState extends State<TotalSales> {
                 }
           
                 return Container(
-                  width: 160,
+                //  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -149,7 +149,7 @@ class _TotalSalesState extends State<TotalSales> {
                           Text('B2C Orders', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),),
                           
                           SizedBox(height: 10,),   
-                          Text('RM' +sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),  
+                          Text('RM' +sum.toStringAsFixed(2),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),  
                           Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
         
                         ],
@@ -172,7 +172,7 @@ class _TotalSalesState extends State<TotalSales> {
                 }
       
                 return Container(
-                  width: 160,
+                 // width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -188,7 +188,7 @@ class _TotalSalesState extends State<TotalSales> {
                           Text('B2B Orders', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),),
                           
                           SizedBox(height: 10,),  
-                          Text('RM' +sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),   
+                          Text('RM' +sum.toStringAsFixed(2),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),   
                           Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
                           
                         ],

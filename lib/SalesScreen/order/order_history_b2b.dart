@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +19,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
   List<int> lists = [];
   late Query _ref;
   TextEditingController _searchController = TextEditingController();
+  List<List<String>> listorder = [];
 
   @override
   void initState() {
@@ -23,21 +28,35 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
         .collection('OrderB2B')
         .orderBy('orderDate', descending: true)
         .limit(100);
-  }
 
-  String getChannel(String c) {
-    if (c == 'b2b_retail') {
-      return 'B2B Retail';
-    } else if (c == 'b2b_hypermarket') {
-      return 'B2B Hypermarket';
-    } else {
-      return '';
-    }
+    listorder = [
+      <String>[
+        'Order ID',
+        'Company Name',
+        'PIC',
+        'Phone Number',
+        'Shipping Address',
+        'Order Date',
+        'Order Collection Date',
+        'Payment Status',
+        'Product',
+        'Total Paid',
+        'Distribution Channel'
+      ]
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        //floatingActionButton: FloatingActionButton.extended(
+          //onPressed: () {
+            //generateCsv();
+            //Fluttertoast.showToast(msg: 'Order list was exported');
+         // },
+        //  label: Text('Export to CSV'),
+        //  icon: Icon(Icons.outbound_rounded),
+       // ),
         bottomNavigationBar: CurvedNavBar(
           indexnum: 1,
         ),
@@ -90,6 +109,22 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                           itemCount: snap.data!.docs.length,
                           itemBuilder: (context, index) {
                             DocumentSnapshot data = snap.data!.docs[index];
+                            listorder.add([
+                              data.get('orderID'),
+                              data.get('custName'),
+                              data.get('pic'),
+                              data.get('custPhone'),
+                              data.get('custAddress'),
+                              data.get('orderDate').toDate().toString(),
+                              data.get('collectionDate').toDate().toString(),
+                              data.get('paymentStatus'),
+                              data
+                                  .get('product')
+                                  .toString()
+                                  .replaceAll(RegExp(r'[\[\]]'), ''),
+                              data.get('amount'),
+                              data.get('channel')
+                            ]);
                             return Column(
                               children: [
                                 Material(
@@ -288,6 +323,29 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                           Row(
                                             children: [
                                               const Text(
+                                                'Total Paid: ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 3),
+                                              Text('RM'+
+                                                  data['amount']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey[600])),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text(
                                                 'Payment Status: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -311,6 +369,29 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                           Row(
                                             children: [
                                               const Text(
+                                                'Purchase Type: ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 3),
+                                              Text(
+                                                  data['purchaseType']
+                                                       ?? ' ',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey[600])),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text(
                                                 'Channel: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -320,7 +401,7 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(width: 3),
-                                              Text(getChannel(data['channel']),
+                                              Text(data['channel'],
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       color: Colors.grey[600])),
@@ -373,9 +454,39 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
                                                     ],
                                                   );
                                                 } else
-                                                  return CircularProgressIndicator();
                                                   return Text('');
                                               }),
+                                          /*SizedBox(
+                                            height: 3,
+                                          ),
+                                          GestureDetector(
+                                            child: Container(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    'View Document',
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Color.fromARGB(
+                                                            255, 36, 117, 59),
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Icon(
+                                                    Icons.picture_as_pdf,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () {},
+                                          ),*/
                                         ],
                                       ),
                                     ),
@@ -399,5 +510,21 @@ class _OrderHistoryB2BState extends State<OrderHistoryB2B> {
             ],
           ),
         ));
+  }
+
+  generateCsv() async {
+    String csvData = ListToCsvConverter().convert(listorder);
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('MM-dd-yyyy-HH-mm-ss').format(now);
+
+    Directory generalDownloadDir = Directory('/storage/emulated/0/Download');
+
+    final File file = await (File(
+            '${generalDownloadDir.path}/orderlistb2b_export_$formattedDate.csv')
+        .create());
+
+    await file.writeAsString(csvData);
+
+    print(listorder.toString());
   }
 }

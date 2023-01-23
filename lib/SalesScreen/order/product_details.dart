@@ -27,6 +27,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   final nameEditingController = TextEditingController();
   final skuEditingController = TextEditingController();
   final barcodeEditingController = TextEditingController();
+  final quantityTextCtrl = TextEditingController();
 
   int _count = 1;
 
@@ -77,58 +78,49 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
 //dropdown product name
-    final productName = Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Colors.grey,
-          )),
-      child: StreamBuilder<QuerySnapshot>(
-          stream: _collectionRef.snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return LinearProgressIndicator();
-            } else {
-              return DropdownButtonHideUnderline(
-                child: DropdownButtonFormField(
-                  isExpanded: true,
-                  icon: Icon(Icons.arrow_drop_down_circle_rounded,
-                      color: Colors.green),
-                  dropdownColor: Colors.green.shade50,
-                  decoration: InputDecoration(
-                    labelText: 'Product Name',
-                   // prefixIcon: Icon(
-                   //   Icons.library_add,
-                   // ),
-                  ),
-                  itemHeight: kMinInteractiveDimension,
-                  items: snapshot.data!.docs
-                      .map(
-                        (map) => DropdownMenuItem(  
-                          child: Text(map.id, overflow: TextOverflow.fade,),
-                          value: map.id,
+    final productName = StreamBuilder<QuerySnapshot>(
+        stream: _collectionRef.snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return LinearProgressIndicator();
+          } else {
+            return DropdownButtonHideUnderline(
+              child: DropdownButtonFormField(
+                isExpanded: true,
+                hint: Text("Product Name"),
+                icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                    color: Colors.green),
+                dropdownColor: Colors.green.shade50,
+                decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: EdgeInsets.all(15),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (String? val) {
-                    for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                      DocumentSnapshot snap = snapshot.data!.docs[i];
-                      setState(() {
-                        _selectedValue = val!;
-                        if (_selectedValue == snap.reference.id) {
-                          skuEditingController.text = snap.get('sku');
-                          barcodeEditingController.text = snap.get('barcode');
-                        }
-                      });
-                    }
-                  },
-                ),
-              );
-            }
-          }),
-    );
+                itemHeight: kMinInteractiveDimension,
+                items: snapshot.data!.docs
+                    .map(
+                      (map) => DropdownMenuItem(  
+                        child: Text(map.id, overflow: TextOverflow.fade,),
+                        value: map.id,
+                      ),
+                    )
+                    .toList(),
+                onChanged: (String? val) {
+                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                    DocumentSnapshot snap = snapshot.data!.docs[i];
+                    setState(() {
+                      _selectedValue = val!;
+                      if (_selectedValue == snap.reference.id) {
+                        skuEditingController.text = snap.get('sku');
+                        barcodeEditingController.text = snap.get('barcode');
+                      }
+                    });
+                  }
+                },
+              ),
+            );
+          }
+        });
 
     //add button
     final addButton = Material(
@@ -143,7 +135,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               'name': _selectedValue,
               'SKU': skuEditingController.text,
               'barcode': barcodeEditingController.text,
-              'quantity': _count,
+              'quantity': int.parse(quantityTextCtrl.text),
             };
             product = ProductModel.fromMap(prodmap);
             setState(() {
@@ -163,6 +155,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 selectedProduct.add(product);
                 skuEditingController.clear();
                 barcodeEditingController.clear();
+                quantityTextCtrl.clear();
                 _count = 1;
                 _selectedValue = '';
               }
@@ -307,10 +300,10 @@ class _ProductDetailsState extends State<ProductDetails> {
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
-            return ("This field cannot be empty!");
+            return ("*required");
           }
           if (!regex.hasMatch(value)) {
-            return ("Invalid Input!");
+            return ("Invalid Input");
           }
           return null;
         },
@@ -329,6 +322,34 @@ class _ProductDetailsState extends State<ProductDetails> {
             borderRadius: BorderRadius.circular(10),
           ),
         ));
+
+//quantity manual input 
+      final quantityinput = TextFormField(
+        autofocus: false,
+        controller: quantityTextCtrl,
+        keyboardType: TextInputType.phone,
+        validator: (value) {
+          RegExp regex = RegExp(r'(\d+)');
+          if (value!.isEmpty) {
+            return ("*required");
+          }
+          if (!regex.hasMatch(value)) {
+            return ("Please enter valid quantity");
+          }
+          return null;
+        },
+        onSaved: (value) {
+          quantityTextCtrl.text = value!;
+        },
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Product Quantity",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ));
+
 
     //input quantity
     final quantityField = Container(
@@ -442,7 +463,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   SizedBox(
                     height: 20,
                   ),
-                  quantityField,
+                  quantityinput, //quantityField,
                   SizedBox(
                     height: 20,
                   ),

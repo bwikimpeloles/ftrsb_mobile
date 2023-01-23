@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +19,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   List<int> lists = [];
   late Query _ref;
   TextEditingController _searchController = TextEditingController();
+  List<List<String>> listorder = []; 
 
   @override
   void initState() {
@@ -23,28 +28,17 @@ class _OrderHistoryState extends State<OrderHistory> {
         .collection('OrderB2C')
         .orderBy('paymentDate', descending: true)
         .limit(100);
-  }
-
-  String getChannel(String c) {
-    if (c == 'shopee') {
-      return 'Shopee';
-    } else if (c == 'tiktok') {
-      return 'TikTok';
-    } else if (c == 'grabmart') {
-      return 'GrabMart';
-    } else if (c == 'whatsapp') {
-      return 'WhatsApp';
-    } else if (c == 'other') {
-      return 'Other';
-    } else if (c == 'website') {
-      return 'Website';
-    } else
-      return '';
+        
+    listorder = [<String>['Order ID','Customer Name', 'Phone Number', 'Shipping Address', 'Payment Date', 'Payment Method', 'Total Paid', 'Product' ,'Distribution Channel']];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       //floatingActionButton: FloatingActionButton.extended(onPressed:() {
+       // generateCsv();
+     //   Fluttertoast.showToast(msg: 'Order list was exported');
+     // }, label: Text('Export to CSV'), icon: Icon(Icons.outbound_rounded),),
         bottomNavigationBar: CurvedNavBar(
           indexnum: 0,
         ),
@@ -97,6 +91,8 @@ class _OrderHistoryState extends State<OrderHistory> {
                           itemCount: snap.data!.docs.length,
                           itemBuilder: (context, index) {
                             DocumentSnapshot data = snap.data!.docs[index];
+
+                            listorder.add([data.get('orderID'), data.get('custName'), data.get('custPhone'),data.get('custAddress'),data.get('paymentDate').toDate().toString(),data.get('paymentMethod'), data.get('amount'), data.get('product').toString().replaceAll(RegExp(r'[\[\]]'), ''), data.get('channel')]);
                             return Column(
                               children: [
                                 Material(
@@ -116,7 +112,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'Order ID: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -139,7 +135,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'Name: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -166,7 +162,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'Phone Number: ',
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -185,10 +181,9 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           SizedBox(
                                             height: 3,
                                           ),
-                                          
                                           Row(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'Address: ',
                                                 style: TextStyle(
                                                   fontSize: 16,
@@ -260,7 +255,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                       color: Colors.grey[600])),
                                             ],
                                           ),
-                                           SizedBox(
+                                          SizedBox(
                                             height: 3,
                                           ),
                                           Row(
@@ -275,9 +270,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(width: 3),
-                                              Text(
-                                                  data['action']
-                                                      .toString(),
+                                              Text(data['action'].toString(),
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       color: Colors.grey[600])),
@@ -286,7 +279,27 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           SizedBox(
                                             height: 3,
                                           ),
-                                          
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Total Paid: ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 36, 117, 59),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 3),
+                                              Text('RM' + data['amount'].toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey[600])),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
                                           Row(
                                             children: [
                                               Text(
@@ -299,7 +312,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(width: 3),
-                                              Text(getChannel(data['channel']),
+                                              Text(data['channel'],
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       color: Colors.grey[600])),
@@ -350,7 +363,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                     ],
                                                   );
                                                 } else
-                                                  return CircularProgressIndicator();
+                                                  return LinearProgressIndicator();
                                               }),
                                         ],
                                       ),
@@ -376,4 +389,19 @@ class _OrderHistoryState extends State<OrderHistory> {
           ),
         ));
   }
+
+  generateCsv() async{
+  String csvData = ListToCsvConverter().convert(listorder);
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy-HH-mm-ss').format(now);
+
+  Directory generalDownloadDir = Directory('/storage/emulated/0/Download');
+
+  final File file = await (File('${generalDownloadDir.path}/orderlistb2c_export_$formattedDate.csv').create());
+
+  await file.writeAsString(csvData);
+
+  print(listorder.toString());
+}
+
 }

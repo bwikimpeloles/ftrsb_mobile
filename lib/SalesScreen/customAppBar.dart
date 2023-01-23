@@ -17,7 +17,6 @@ class CustomAppBar extends StatelessWidget {
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () {
           if (bartitle == 'Add Customer Information' ||
-              bartitle == 'Add Prospect' ||
               bartitle == 'Customer' ||
               bartitle == 'Order History' ||
               bartitle == 'Channel') {

@@ -190,6 +190,7 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
                       'email': cust.email ?? '',
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
+                      'dateSubmitted': payc.paymentDate,
                     };
 
                     Map<String, dynamic> orderb2c = {
@@ -332,7 +333,7 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
               SizedBox(
                 height: 20,
               ),
-              Container(
+           /*   Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -363,7 +364,7 @@ class _OrderSummaryB2CState extends State<OrderSummaryB2C> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20), */
               submitButton
             ],
           ),
