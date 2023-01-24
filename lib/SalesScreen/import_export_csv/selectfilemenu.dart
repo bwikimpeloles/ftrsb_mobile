@@ -466,15 +466,10 @@ class _CSVMenuState extends State<CSVMenu> {
             isNumeric(_data[i][3][7]) &&
             isNumeric(_data[i][3][8]) &&
             isNumeric(_data[i][3][9])) {
-          //print('eh jadi');
-          //print(_data[i][4]);
-          //print(DateTime.parse(_data[i][4]));
         } else {
           notAllOkay = true;
           break;
-          print('huhu tak jadi');
         }
-        //print('(${i}) Name:${_data[i][0]},  Category:${_data[i][1]}, Amount:${_data[i][2]},  Supplier:${_data[i][3]},  Date:${_data[i][4]},  Reference No. (Bank/PO/Invoice/Receipt):${_data[i][5]}, Payment Type:${_data[i][6]}');
 
       }
 
@@ -694,7 +689,6 @@ class _CSVMenuState extends State<CSVMenu> {
 
           String orderid = dateStr + getRandomString(14);
 
-          //print(productlist.toString());
 
           Map<String, dynamic> orderb2b = {
             'custName': customername,
@@ -707,11 +701,11 @@ class _CSVMenuState extends State<CSVMenu> {
             'purchaseType': purchaseType,
             'orderDate': orderdate,
             'collectionDate': collectiondate,
-            'paymentVerify': 'Auto-Verified',
+            'paymentVerify': '-',
             'salesStaff': user?.uid,
             'product': productlist,
             'channel': channel,
-            'action': 'Approved',
+            
           };
 
           FirebaseFirestore.instance

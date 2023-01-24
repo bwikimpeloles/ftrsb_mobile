@@ -112,14 +112,20 @@ Widget buildMenuItems(BuildContext context, UserModel loggedInUser) =>
               ));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.outbox_rounded),
-            title: const Text('Channel'),
-            onTap: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const ListChannel(),
-              ));
-            },
+          Column(
+            children: [
+              if (loggedInUser.role == "Admin") ...[
+                ListTile(
+                  leading: const Icon(Icons.outbox_rounded),
+                  title: const Text('Channel'),
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const ListChannel(),
+                    ));
+                  },
+                )
+              ]
+            ],
           ),
           ListTile(
             leading: const Icon(Icons.history),
