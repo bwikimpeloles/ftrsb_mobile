@@ -36,10 +36,10 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
             final docs = snapshot.data!.docs;
             return Container(
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3),
                 itemCount: docs.length,
-                padding: EdgeInsets.all(1.0),
+                padding: const EdgeInsets.all(1.0),
                 itemBuilder: (context, index) {
                   final data = docs[index].data();
 
@@ -49,35 +49,37 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => InventoryDetailScreen(
-                                    name: data['name'],
-                                    quantity: (data['quantity']).toString(),
-                                  )));
+                                  name: data['name'],
+                                  quantity: (data['quantity']).toString(),
+                                  imageUrl: data['imageUrl'],
+                                  lastUpdate: data['lastUpdate'])));
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(2),
+                      padding: const EdgeInsets.all(2),
                       child: Container(
                         width: 150,
                         height: 150,
                         decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
                           border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15.0)),
                           image: DecorationImage(
                             image: NetworkImage(data['imageUrl']),
                             fit: BoxFit.cover,
                           ),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
+                                  const BorderRadius.all(Radius.circular(10.0)),
                               gradient: new LinearGradient(
                                   colors: [
-                                    Color.fromARGB(255, 80, 80, 80),
-                                    Color.fromARGB(24, 121, 121, 121),
+                                    const Color.fromARGB(255, 80, 80, 80),
+                                    const Color.fromARGB(24, 121, 121, 121),
                                   ],
                                   begin: const FractionalOffset(0.0, 1.0),
                                   end: const FractionalOffset(0.0, 0.0),
@@ -85,21 +87,25 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
                                   tileMode: TileMode.clamp),
                             ),
                             child: Padding(
-                              padding: EdgeInsets.all(3),
+                              padding: const EdgeInsets.all(3),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
                                     data['name'],
-                                    style: TextStyle(
-                                        fontSize: 10,
+                                    style: const TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 160, 202, 159),
+                                        fontSize: 11,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    'Quantity :' + data['quantity'].toString(),
-                                    style: TextStyle(
-                                        fontSize: 10,
+                                    'Quantity ' + data['quantity'].toString(),
+                                    style: const TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 160, 202, 159),
+                                        fontSize: 11,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -115,7 +121,7 @@ class _InventoryScreenWarehouseState extends State<InventoryScreenWarehouse> {
             );
           }
 
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         });
   }
 }

@@ -66,7 +66,11 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 children: <Widget>[
                   ElevatedButton(
                       onPressed: () => scanBarcodeNormal(),
-                      child: Text('Start barcode scan')),
+                      child: Text('Start barcode scan'),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 160, 202, 159)),
+                      )),
                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
                         .collection('Product')
@@ -113,14 +117,14 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       }
                     },
                   ),
-                  ElevatedButton(
+                  /* ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ManualInput()));
                       },
-                      child: Text('Manual Input'))
+                      child: Text('Manual Input'))*/
                 ],
               ),
             );

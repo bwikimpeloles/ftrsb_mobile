@@ -13,6 +13,7 @@ import 'package:ftrsb_mobile/WarehouseScreen/Inspection/inspectionList.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Packaging/b2b.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Packaging/b2c.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../model/product_model.dart';
 
@@ -79,8 +80,25 @@ class _inspectionFormState extends State<inspectionForm> {
           ":" +
           selectedProduct[i].quantity.toString());
     }
-
     return list;
+  }
+
+  deductBasedOnCart() {
+    List<String> list = [];
+    for (int i = 0; i < selectedProduct.length; i++) {
+      final DocumentReference documentReference =
+          FirebaseFirestore.instance.collection('Product').doc();
+      List<Map<String, dynamic>> updates = [
+        {'name': selectedProduct[i].name},
+        {'quantity': selectedProduct[i].quantity},
+      ];
+
+      for (var update in updates) {
+        documentReference.update(update);
+      }
+    }
+
+// Loop through the updates and update the document
   }
 
   @override
@@ -468,7 +486,7 @@ class _inspectionFormState extends State<inspectionForm> {
                               color: Color.fromARGB(255, 160, 202, 159),
                             ),
                           )
-                        : Container(child: Text("Uploaded")),
+                        : Container(),
                     const SizedBox(height: 20),
                     ElevatedButton(
                         onPressed: () async {
@@ -483,7 +501,8 @@ class _inspectionFormState extends State<inspectionForm> {
                             'title': title,
                             'desc': desc,
                             'product': getProductlist(),
-                            'inspectionDate': DateTime.now(),
+                            'inspectionDate':
+                                DateFormat.yMMMMEEEEd().format(DateTime.now()),
                             'imageUrl': imageUrl,
                           };
                           FirebaseFirestore.instance

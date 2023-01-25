@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 
 import 'customer_detail.dart';
 
@@ -11,6 +13,20 @@ class B2C extends StatefulWidget {
 
   @override
   State<B2C> createState() => _B2CState();
+}
+
+String formatTimestamp(Timestamp timestamp) {
+  var format = new DateFormat.yMMMMEEEEd(); // <- use skeleton here
+  return format.format(timestamp.toDate());
+}
+
+Stream<QuerySnapshot<Map<String, dynamic>>> getB2Border() {
+  var data = FirebaseFirestore.instance
+      .collection('OrderB2C')
+      .where('action', isEqualTo: 'Approved')
+      .snapshots();
+
+  return data;
 }
 
 class _B2CState extends State<B2C> {
@@ -25,7 +41,6 @@ class _B2CState extends State<B2C> {
                   stream: FirebaseFirestore.instance
                       .collection('OrderB2C')
                       .where('action', isEqualTo: 'Approved')
-                      .where('paymentVerify', isEqualTo: 'Received')
                       .snapshots(),
                   builder: (_, snapshot) {
                     if (snapshot.hasError)
@@ -44,11 +59,12 @@ class _B2CState extends State<B2C> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(data['custPhone']),
-                                    Text(data['custAddress'])
+                                    Text(formatTimestamp(data['paymentDate']))
                                   ],
                                 ),
                                 leading: Image.asset("assets/Packaging.png"),
-                                trailing: Icon(Icons.arrow_forward_rounded),
+                                trailing: Icon(Ionicons.cube_sharp,
+                                    color: Color.fromARGB(255, 160, 202, 159)),
                                 onTap: () {
                                   Navigator.push(
                                       context,

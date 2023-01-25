@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/model/package.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../../model/product_model.dart';
 
@@ -43,6 +46,7 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
   XFile? image;
   late CollectionReference _collectionRef;
   String imageurl = '';
+  bool loading = false;
   var storage = FirebaseStorage.instance;
   void incrementCount() {
     setState(() {
@@ -99,92 +103,93 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: TextFormField(
                             initialValue: widget.title,
+                            maxLines: null,
                             readOnly: true,
-                            decoration: InputDecoration(labelText: 'Name'),
+                            decoration: InputDecoration(
+                                labelText: 'Name',
+                                prefixIcon:
+                                    Icon(Ionicons.people_circle_outline),
+                                border: InputBorder.none),
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: TextFormField(
                             initialValue: widget.desc,
                             readOnly: true,
-                            decoration: InputDecoration(labelText: 'No Tel'),
+                            maxLines: null,
+                            decoration: InputDecoration(
+                                labelText: 'No Tel',
+                                prefixIcon: Icon(Ionicons.call_outline),
+                                border: InputBorder.none),
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: TextFormField(
+                            maxLines: null,
                             initialValue: widget.adres.toString(),
                             readOnly: true,
-                            decoration: InputDecoration(labelText: 'Address'),
+                            decoration: InputDecoration(
+                                labelText: 'Address',
+                                prefixIcon: Icon(Ionicons.home_outline),
+                                border: InputBorder.none),
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: TextFormField(
+                            maxLines: null,
                             initialValue: widget.alldata.toString(),
                             readOnly: true,
-                            decoration: InputDecoration(labelText: 'Product'),
+                            decoration: InputDecoration(
+                                labelText: 'Product',
+                                prefixIcon: Icon(Ionicons.cube_outline),
+                                border: InputBorder.none),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -192,18 +197,14 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                           width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: StreamBuilder<QuerySnapshot>(
                               stream: _collectionRef.snapshots(),
@@ -215,12 +216,14 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                                     isExpanded: true,
                                     icon: Icon(
                                         Icons.arrow_drop_down_circle_rounded,
-                                        color: Colors.green),
+                                        color:
+                                            Color.fromARGB(255, 160, 202, 159)),
                                     dropdownColor: Colors.green.shade50,
                                     decoration: InputDecoration(
+                                      border: InputBorder.none,
                                       labelText: 'Product Name',
                                       prefixIcon: Icon(
-                                        Icons.library_add,
+                                        Icons.library_add_outlined,
                                       ),
                                     ),
                                     itemHeight: kMinInteractiveDimension,
@@ -261,18 +264,14 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                         Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: Column(
                             children: [
@@ -331,18 +330,14 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                         Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: Column(
                             children: [
@@ -356,6 +351,8 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   FloatingActionButton.small(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 160, 202, 159),
                                     heroTag: Text(
                                       "btn1",
                                     ),
@@ -371,6 +368,8 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   FloatingActionButton.small(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 160, 202, 159),
                                     heroTag: Text("btn2"),
                                     child: Icon(Icons.add),
                                     onPressed: () {
@@ -433,18 +432,14 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                             width: 300,
                             height: 300,
                             decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 0.5,
+                              ),
                               color: Colors.white,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
                             ),
                             child: Center(
                               child: Column(
@@ -471,19 +466,40 @@ class _CustomerDetailsScreen extends State<CustomerDetailsScreen> {
                                           image = file;
                                         });
                                       },
-                                      child: Text("Take Picture")),
+                                      child: Text("Take Picture"),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Color.fromARGB(
+                                                    255, 160, 202, 159)),
+                                      )),
                                 ],
                               ),
                             )),
+                        loading
+                            ? Center(
+                                child: SpinKitPulse(
+                                  color: Color.fromARGB(255, 160, 202, 159),
+                                ),
+                              )
+                            : Container(),
                         ElevatedButton(
                             onPressed: () async {
+                              setState(() {
+                                loading = true;
+                              });
                               await uploadFileToFirebase();
+                              setState(() {
+                                loading = false;
+                              });
                               Map<String, dynamic> package = {
                                 'name': widget.title,
                                 'telNo': widget.desc,
                                 'address': widget.adres,
                                 'product': widget.alldata,
                                 'imageUrl': imageurl,
+                                'packageDate': DateFormat.yMMMMEEEEd()
+                                    .format(DateTime.now())
                               };
 
                               FirebaseFirestore.instance

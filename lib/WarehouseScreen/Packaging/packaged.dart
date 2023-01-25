@@ -4,6 +4,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Packaging/package_detail.dart';
+import 'package:ionicons/ionicons.dart';
 
 import 'customer_detail.dart';
 
@@ -43,23 +44,29 @@ class _packagedState extends State<packaged> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(data['telNo']),
-                                    Text(data['address'])
+                                    Text(data['packageDate'])
                                   ],
                                 ),
-                                leading: Image.asset("assets/Packaging.png"),
-                                trailing: Icon(Icons.arrow_forward_rounded),
+                                leading:
+                                    Image.asset("assets/PackagingDone.png"),
+                                trailing: Icon(
+                                  Ionicons.information_circle_outline,
+                                  color: Color.fromARGB(255, 160, 202, 159),
+                                ),
                                 onTap: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PackageDetail(
-                                                name: data['name'].toString(),
-                                                telNo: data['telno'].toString(),
-                                                address:
-                                                    data['address'].toString(),
-                                                alldata:
-                                                    List.from(data['product']),
-                                              )));
+                                              name: data['name'].toString(),
+                                              telNo: data['telNo'].toString(),
+                                              address:
+                                                  data['address'].toString(),
+                                              alldata:
+                                                  List.from(data['product']),
+                                              imageUrl: data['imageUrl'],
+                                              packageDate:
+                                                  data['packageDate'])));
                                 },
                               ),
                             );

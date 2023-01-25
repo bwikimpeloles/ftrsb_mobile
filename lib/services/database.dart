@@ -27,11 +27,12 @@ class DatabaseService {
     }
   }
 
-  Future<void> update(String name, int quantity) async {
+  Future<void> update(String name, int quantity, String latest) async {
     try {
-      await _db.collection("Product").doc(name).update({
-        "quantity": quantity,
-      });
+      await _db
+          .collection("Product")
+          .doc(name)
+          .update({"quantity": quantity, "lastUpdate": latest});
     } catch (e) {}
   }
 

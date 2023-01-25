@@ -9,7 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../screens/login_screen.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Barcode/barcode_scanner.dart';
-import 'Inspection/delivery.dart';
+
+import 'Inspection/inspectionDetail.dart';
+import 'Inspection/inspectionForm.dart';
 
 class HomeScreenWarehouse extends StatefulWidget {
   const HomeScreenWarehouse({Key? key, required this.changePage})
@@ -37,16 +39,11 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Text('Low Stock',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                child: Text('Item that are currently low in stock',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 202, 108, 108))),
               ),
-              TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'See More',
-                    style: TextStyle(color: Colors.black),
-                  ))
             ],
           ),
           SizedBox(
@@ -64,13 +61,9 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
                   BoxShadow(
                     color: Colors.grey.shade600,
                     spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 5),
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
                   ),
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    offset: const Offset(-5, 0),
-                  )
                 ],
               ),
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -143,7 +136,7 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            'Quantity :' +
+                                            'Quantity ' +
                                                 data['quantity'].toString(),
                                             style: TextStyle(
                                                 color: Colors.white,
@@ -172,8 +165,10 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
             children: [
               Expanded(
                 child: Text('Packaging B2B',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 127, 172, 126))),
               ),
               TextButton(
                   onPressed: () {
@@ -181,7 +176,6 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
                   },
                   child: const Text(
                     'See More',
-                    style: TextStyle(color: Colors.black),
                   ))
             ],
           ),
@@ -200,13 +194,9 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
                 BoxShadow(
                   color: Colors.grey.shade600,
                   spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 5),
+                  blurRadius: 3,
+                  offset: const Offset(0, 1),
                 ),
-                BoxShadow(
-                  color: Colors.grey.shade300,
-                  offset: const Offset(-5, 0),
-                )
               ],
             ),
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -301,8 +291,10 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
             children: [
               Expanded(
                 child: Text('Packaging B2C',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 127, 172, 126))),
               ),
               TextButton(
                   onPressed: () {
@@ -310,7 +302,6 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
                   },
                   child: const Text(
                     'See More',
-                    style: TextStyle(color: Colors.black),
                   ))
             ],
           ),
@@ -329,20 +320,15 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
                 BoxShadow(
                   color: Colors.grey.shade600,
                   spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 5),
+                  blurRadius: 3,
+                  offset: const Offset(0, 1),
                 ),
-                BoxShadow(
-                  color: Colors.grey.shade300,
-                  offset: const Offset(-5, 0),
-                )
               ],
             ),
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('OrderB2C')
                     .where('action', isEqualTo: 'Approved')
-                    .where('paymentVerify', isEqualTo: 'Received')
                     .snapshots(),
                 builder: (_, snapshot) {
                   if (snapshot.hasError)
@@ -420,52 +406,6 @@ class _HomeScreenWarehouseState extends State<HomeScreenWarehouse> {
 
                   return Center(child: CircularProgressIndicator());
                 }),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text('Inspection Report',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              ),
-              TextButton(
-                  onPressed: () {
-                    widget.changePage(4);
-                  },
-                  child: const Text(
-                    'See More',
-                    style: TextStyle(color: Colors.black),
-                  ))
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 3),
-            height: 200,
-            width: 350,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.white, width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade600,
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 5),
-                ),
-                BoxShadow(
-                  color: Colors.grey.shade300,
-                  offset: const Offset(-5, 0),
-                )
-              ],
-            ),
           ),
           SizedBox(
             height: 10,

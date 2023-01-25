@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:ionicons/ionicons.dart';
 
 class PackageDetail extends StatefulWidget {
   final String name;
   final String telNo;
   final String address;
   final List alldata;
-
+  final String imageUrl;
+  final String packageDate;
   const PackageDetail(
       {Key? key,
       required this.name,
       required this.telNo,
       required this.address,
-      required this.alldata})
+      required this.alldata,
+      required this.imageUrl,
+      required this.packageDate})
       : super(key: key);
 
   @override
@@ -42,49 +46,118 @@ class _PackageDetailState extends State<PackageDetail> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 0.5,
+                  ),
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(
                     Radius.circular(10),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
                 ),
                 child: TextFormField(
                   initialValue: widget.name,
+                  maxLines: null,
                   readOnly: true,
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(
+                      labelText: 'Name',
+                      prefixIcon: Icon(Ionicons.people_circle_outline),
+                      border: InputBorder.none),
                 ),
               ),
               SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 0.5,
+                  ),
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(
                     Radius.circular(10),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
                 ),
                 child: TextFormField(
-                  initialValue: widget.name,
-                  decoration: InputDecoration(labelText: 'Quantity'),
+                  initialValue: widget.alldata.toString(),
+                  maxLines: null,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      labelText: 'Product',
+                      prefixIcon: Icon(Ionicons.cube_outline),
+                      border: InputBorder.none),
                 ),
               ),
-              ElevatedButton(
-                  onPressed: () async {}, child: Text("Update Stock"))
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 0.5,
+                  ),
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                child: TextFormField(
+                  initialValue: widget.telNo.toString(),
+                  maxLines: null,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      labelText: 'No Tel',
+                      prefixIcon: Icon(Ionicons.call_outline),
+                      border: InputBorder.none),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 0.5,
+                  ),
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                child: TextFormField(
+                  initialValue: widget.address,
+                  maxLines: null,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      labelText: 'Address',
+                      prefixIcon: Icon(Ionicons.home_outline),
+                      border: InputBorder.none),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 0.5,
+                    ),
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  child: Image.network(
+                    widget.imageUrl,
+                    height: 200,
+                    width: MediaQuery.of(context).size.width,
+                  ))
             ]),
           ],
         ),

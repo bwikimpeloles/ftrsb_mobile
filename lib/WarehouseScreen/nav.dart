@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:ionicons/ionicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'package:ftrsb_mobile/model/package.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'Inventory/inventory.dart';
-import 'package:ftrsb_mobile/WarehouseScreen/Inspection/delivery.dart';
+
 import 'Packaging/customer_package.dart';
 import '../screens/login_screen.dart';
 import 'Barcode/barcode_scanner.dart';
@@ -74,49 +74,43 @@ class _WarehouseNavState extends State<WarehouseNav> {
             inspectionList(),
           ],
         ),
-        bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-            ),
-            child: Material(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
-              child: NavigationBar(
-                height: 60,
-                backgroundColor: Color.fromARGB(255, 160, 202, 159),
-                onDestinationSelected: (int index) {
-                  setState(() {
-                    currentPageIndex = index;
-                    _pageController.jumpToPage(index);
-                  });
-                },
-                selectedIndex: currentPageIndex,
-                destinations: const <Widget>[
-                  NavigationDestination(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.add_box_rounded),
-                    label: 'Inventory',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.camera),
-                    label: 'Scan',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.people),
-                    label: 'Packaging',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.document_scanner_sharp),
-                    label: 'Inspection',
-                  ),
-                ],
+        bottomNavigationBar: Material(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100.0)),
+          child: NavigationBar(
+            height: 60,
+            backgroundColor: Color.fromARGB(255, 160, 202, 159),
+            onDestinationSelected: (int index) {
+              setState(() {
+                currentPageIndex = index;
+                _pageController.jumpToPage(index);
+              });
+            },
+            selectedIndex: currentPageIndex,
+            destinations: const <Widget>[
+              NavigationDestination(
+                icon: Icon(Ionicons.home_outline),
+                label: 'Home',
               ),
-            )));
+              NavigationDestination(
+                icon: Icon(Ionicons.cube_outline),
+                label: 'Inventory',
+              ),
+              NavigationDestination(
+                icon: Icon(Ionicons.camera_outline),
+                label: 'Scan',
+              ),
+              NavigationDestination(
+                icon: Icon(Ionicons.people_outline),
+                label: 'Packaging',
+              ),
+              NavigationDestination(
+                icon: Icon(Ionicons.clipboard_outline),
+                label: 'Inspection',
+              ),
+            ],
+          ),
+        ));
   }
 
   // the logout function

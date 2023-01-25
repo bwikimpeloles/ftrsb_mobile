@@ -9,6 +9,8 @@ import 'package:ftrsb_mobile/WarehouseScreen/Inspection/inspectionDetail.dart';
 import 'package:ftrsb_mobile/WarehouseScreen/Inspection/inspectionForm.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/database.dart';
@@ -78,13 +80,13 @@ class _inspectionListState extends State<inspectionList> {
                             ],
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(10.0),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 5,
                                 offset: const Offset(0, 3),
                               ),
                             ],
@@ -100,17 +102,20 @@ class _inspectionListState extends State<inspectionList> {
                         itemBuilder: (context, index) {
                           final data = docs[index].data();
                           return Card(
-                            color: Color.fromARGB(255, 160, 202, 159),
                             margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
                             child: ListTile(
                               title: Text(
                                 data['desc'],
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16),
                               ),
                               subtitle: Text(
                                 List.from(data['product']).toString(),
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 114, 113, 113)),
                               ),
+                              trailing: Icon(Ionicons.clipboard_outline,
+                                  color: Color.fromARGB(255, 160, 202, 159)),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -118,6 +123,7 @@ class _inspectionListState extends State<inspectionList> {
                                     builder: (context) => inspectionDetail(
                                         title: data['title'],
                                         desc: data['desc'],
+                                        inspectedDate: (data['inspectionDate']),
                                         alldata: List.from(data['product']),
                                         imageUrl: data['imageUrl']),
                                   ),

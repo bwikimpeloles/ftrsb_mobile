@@ -8,6 +8,7 @@ import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ftrsb_mobile/WarehouseScreen/Inventory/inventory_detail.dart';
 import 'package:ftrsb_mobile/model/product_model.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +40,7 @@ class _LowStockState extends State<LowStock> {
         body: (StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
             stream: FirebaseFirestore.instance
                 .collection('Product')
-                .where('quantity', isLessThanOrEqualTo: lowStock)
+                .where('quantity', isLessThanOrEqualTo: 20)
                 .snapshots(),
             builder: (_, snapshot) {
               if (snapshot.hasError) return Text('Error = ${snapshot.error}');
@@ -48,17 +49,18 @@ class _LowStockState extends State<LowStock> {
                 final docs = snapshot.data!.docs;
                 return Container(
                   child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3),
                     itemCount: docs.length,
-                    padding: EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(1.0),
                     itemBuilder: (context, index) {
                       final data = docs[index].data();
 
                       return GestureDetector(
                         onTap: () {},
                         child: Padding(
-                          padding: EdgeInsets.all(2),
+                          padding: const EdgeInsets.all(2),
                           child: Container(
                             width: 150,
                             height: 150,
@@ -66,24 +68,23 @@ class _LowStockState extends State<LowStock> {
                               shape: BoxShape.rectangle,
                               border: Border.all(color: Colors.grey, width: 1),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)),
+                                  const BorderRadius.all(Radius.circular(15.0)),
                               image: DecorationImage(
-                                image: NetworkImage(
-                                    "https://cdn.store-assets.com/s/888158/i/39648906.png?width=480"),
+                                image: NetworkImage(data['imageUrl']),
                                 fit: BoxFit.cover,
                               ),
                             ),
                             child: Padding(
-                              padding: EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.rectangle,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.0)),
                                   gradient: new LinearGradient(
                                       colors: [
-                                        Color.fromARGB(255, 80, 80, 80),
-                                        Color.fromARGB(24, 121, 121, 121),
+                                        const Color.fromARGB(255, 80, 80, 80),
+                                        const Color.fromARGB(24, 121, 121, 121),
                                       ],
                                       begin: const FractionalOffset(0.0, 1.0),
                                       end: const FractionalOffset(0.0, 0.0),
@@ -91,23 +92,27 @@ class _LowStockState extends State<LowStock> {
                                       tileMode: TileMode.clamp),
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.all(3),
+                                  padding: const EdgeInsets.all(3),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
-                                        data['name'].toString(),
-                                        style: TextStyle(
-                                            fontSize: 10,
+                                        data['name'],
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 160, 202, 159),
+                                            fontSize: 11,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        'Quantity :' +
+                                        'Quantity ' +
                                             data['quantity'].toString(),
-                                        style: TextStyle(
-                                            fontSize: 10,
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 160, 202, 159),
+                                            fontSize: 11,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
@@ -123,7 +128,7 @@ class _LowStockState extends State<LowStock> {
                 );
               }
 
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             })));
     /*final user = Provider.of<UserModel?>(context);
     final db = DatabaseService(uid: user!.uid!);
