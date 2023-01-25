@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
@@ -8,7 +7,8 @@ import 'package:ftrsb_mobile/model/paymentB2B_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentDetailsB2B extends StatefulWidget {
-  const PaymentDetailsB2B({Key? key}) : super(key: key);
+  String? channeltype;
+ PaymentDetailsB2B({Key? key, required this.channeltype}) : super(key: key);
 
   @override
   State<PaymentDetailsB2B> createState() => _PaymentDetailsB2BState();
@@ -16,12 +16,13 @@ class PaymentDetailsB2B extends StatefulWidget {
 
 enum PaymentStatus { paid, unpaid }
 
+enum PurchaseType {Consignment, Outright, COD}
+
 PaymentStatus? _paymentStatus;
+PurchaseType? _purchaseType;
 late PaymentB2B payb = PaymentB2B();
 
 class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
-  late DatabaseReference dbRef =
-      FirebaseDatabase.instance.ref().child('PaymentB2B');
 
   final _formKey = GlobalKey<FormState>();
   //text field controller
@@ -42,10 +43,10 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
         validator: (value) {
           RegExp regex = RegExp(r'(\d+)');
           if (value!.isEmpty) {
-            return ("This field cannot be empty!");
+            return ("*required");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter valid amount!");
+            return ("Invalid amount");
           }
           return null;
         },
@@ -74,10 +75,10 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
       validator: (value) {
         RegExp regex = RegExp(r'(\d+)');
         if (value!.isEmpty) {
-          return ("This field cannot be empty!");
+          return ("*required");
         }
         if (!regex.hasMatch(value)) {
-          return ("Enter valid date!");
+          return ("Invalid date");
         }
         return null;
       },
@@ -125,10 +126,10 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
       validator: (value) {
         RegExp regex = RegExp(r'(\d+)');
         if (value!.isEmpty) {
-          return ("This field cannot be empty!");
+          return ("*required");
         }
         if (!regex.hasMatch(value)) {
-          return ("Enter valid amount!");
+          return ("Invalid date");
         }
         return null;
       },
@@ -173,10 +174,10 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
-            return ("This field cannot be empty!");
+            return ("*required");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter valid name!");
+            return ("Invalid name");
           }
           return null;
         },
@@ -240,6 +241,62 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
         )
       ],
     );
+
+    //radio button
+    final purchasetype = Column(
+      children: [
+        SizedBox(height: 15),
+        const SizedBox(
+          height: 20,
+          width: 300,
+          child: Text(
+            'Purchase Type',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black54,
+            ),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Column(
+          children: [
+            RadioListTile<PurchaseType>(
+              activeColor: Colors.green,
+              title: const Text("COD"),
+              value: PurchaseType.COD,
+              groupValue: _purchaseType,
+              onChanged: (PurchaseType? value) {
+                setState(() {
+                  _purchaseType = PurchaseType.COD;
+                });
+              },
+            ),
+            RadioListTile<PurchaseType>(
+              activeColor: Colors.green,
+              title: const Text("Outright"),
+              value: PurchaseType.Outright,
+              groupValue: _purchaseType,
+              onChanged: (PurchaseType? value) {
+                setState(() {
+                  _purchaseType = PurchaseType.Outright;
+                });
+              },
+            ),
+            RadioListTile<PurchaseType>(
+              activeColor: Colors.green,
+              title: const Text("Consignment"),
+              value: PurchaseType.Consignment,
+              groupValue: _purchaseType,
+              onChanged: (PurchaseType? value) {
+                setState(() {
+                  _purchaseType = PurchaseType.Consignment;
+                });
+              },
+            ),
+          ],
+        )
+      ],
+    );
     
     Timestamp _toTimeStamp(DateTime? date) {
       return Timestamp.fromMillisecondsSinceEpoch(date!.millisecondsSinceEpoch);
@@ -256,12 +313,11 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
 
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(height: 20),
                   amountField,
                   SizedBox(height: 20),
                   orderdate,
@@ -279,6 +335,14 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                       child: paystatus),
                   SizedBox(height: 20),
                   Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.grey,
+                          )),
+                      child: purchasetype),
+                      SizedBox(height: 20),
+                  Container(
                     child: SizedBox(
                       child: Material(
                         elevation: 5,
@@ -288,9 +352,9 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                           minWidth: MediaQuery.of(context).size.width,
                           onPressed: () {
-                            if (_paymentStatus == null) {
+                            if (_paymentStatus == null || _purchaseType == null) {
                               Fluttertoast.showToast(
-                                  msg: "Please select a payment status");
+                                  msg: "Incomplete Information");
                             } else if (_formKey.currentState!.validate() &&
                                 _paymentStatus != null) {
 
@@ -301,7 +365,6 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                               setState(() {
                                 payb.amount = amountTextCtrl.text;
                                 payb.orderDateDisplay = orderdateInput.text;
-                                payb.collectionDateDisplay = collectdateInput.text;
                                 payb.collectionDate = _toTimeStamp(pdatec);
                                 payb.orderDate = _toTimeStamp(pdateo);
                                 payb.pic = picCtrl.text;
@@ -310,11 +373,16 @@ class _PaymentDetailsB2BState extends State<PaymentDetailsB2B> {
                                     .substring(
                                         _paymentStatus.toString().indexOf('.') +
                                             1);
+                                payb.purchaseType = _purchaseType
+                                    .toString()
+                                    .substring(
+                                        _purchaseType.toString().indexOf('.') +
+                                            1);
                               });
 
                               
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ProductDetails(),
+                                builder: (context) => ProductDetails(channeltype: widget.channeltype,),
                               ));
 
                             }

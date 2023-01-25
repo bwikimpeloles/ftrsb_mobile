@@ -1,8 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:ftrsb_mobile/SalesScreen/customer/add_prospect.dart';
-import 'package:ftrsb_mobile/SalesScreen/customer/distrChannelList.dart';
-import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/order_history_b2b.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/order_history.dart';
 import 'package:ftrsb_mobile/SalesScreen/sales_home.dart';

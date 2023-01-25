@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:ftrsb_mobile/FinanceScreen/consignment.dart';
-import 'package:ftrsb_mobile/FinanceScreen/cost.dart';
-import 'package:ftrsb_mobile/FinanceScreen/make_payment.dart';
-import 'package:ftrsb_mobile/FinanceScreen/payment_verification.dart';
+import 'package:ftrsb_mobile/FinanceScreen/LowStock/low_stock.dart';
+import 'package:ftrsb_mobile/FinanceScreen/consignment/consignment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/cost/cost.dart';
+import 'package:ftrsb_mobile/FinanceScreen/makepayment/make_payment.dart';
+import 'package:ftrsb_mobile/FinanceScreen/verifypayment/payment_verification.dart';
 import 'package:ftrsb_mobile/FinanceScreen/revenue/revenue.dart';
-import 'package:ftrsb_mobile/FinanceScreen/supplier_information.dart';
+import 'package:ftrsb_mobile/FinanceScreen/supplier/supplier_information.dart';
 import 'package:ftrsb_mobile/screens/verify_email.dart';
 import 'sidebar_navigation.dart';
 import '../model/user_model.dart';
@@ -282,7 +283,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   color: Colors.green.shade400,
                                 ),
                                 Text(
-                                  "Verify Customer Payment",
+                                  "Verify Order",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -319,7 +320,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   color: Colors.green.shade400,
                                 ),
                                 Text(
-                                  "Make Payment",
+                                  "Make Transaction",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -338,6 +339,12 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                       margin: const EdgeInsets.all(8),
                       child: InkWell(
                         onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LowStock(),
+                              ));
                         },
                         splashColor: Colors.green,
                         child: Center(
@@ -350,7 +357,7 @@ class _HomeScreenFinanceState extends State<HomeScreenFinance> {
                                   color: Colors.green.shade400,
                                 ),
                                 Text(
-                                  "Stock Alert",
+                                  "Check Low Stock Alert",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,

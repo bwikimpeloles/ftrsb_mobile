@@ -4,9 +4,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'makepayment/view_payment.dart';
-import 'sidebar_navigation.dart';
-import 'makepayment/add_payment.dart';
+import '../cost/list_category.dart';
+import 'view_payment.dart';
+import '../sidebar_navigation.dart';
+import 'add_payment.dart';
 
 class MakePaymentFinance extends StatefulWidget {
   @override
@@ -386,6 +387,31 @@ class _MakePaymentFinanceState extends State<MakePaymentFinance> {
           Icon(Icons.notifications_active),
           SizedBox(
             width: 10,
+          ),
+          PopupMenuButton(
+            // add icon, by default "3 dot" icon
+            // icon: Icon(Icons.book)
+              itemBuilder: (context){
+                return [
+                  PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("Manage Category"),
+                  ),
+
+                ];
+              },
+              onSelected:(value) async{
+                if(value == 0){
+                  print("Popup menu");
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) {
+                      return ListCategory();
+                    }),
+                  ).then((value) => setState(() {}));
+
+                }
+              }
           ),
         ],
       ),

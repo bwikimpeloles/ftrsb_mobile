@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/model/user_model.dart';
 import 'package:ftrsb_mobile/screens/registration_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserList extends StatefulWidget {
   const UserList({Key? key}) : super(key: key);
@@ -142,18 +143,18 @@ class _UserListState extends State<UserList> {
                                                 fontStyle: FontStyle.italic,
                                                 fontSize: 16,
                                                 color: Colors.grey[600])),
-                                        GestureDetector(
+                                       GestureDetector(
                                           child: Container(
                                             alignment: Alignment.bottomRight,
                                             child: Text(
-                                              'Delete',
+                                              'Change Role',
                                               style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 16),
+                                                  color: Colors.green,
+                                                  fontSize: 14),
                                             ),
                                           ),
                                           onTap: () {
-                                            _showDeleteDialog(data['uid']);
+                                            _showChangeRoleDialog(data['uid']);
                                           },
                                         ),
                                       ],
@@ -180,32 +181,101 @@ class _UserListState extends State<UserList> {
         ));
   }
 
-  _showDeleteDialog(String docid) {
+  _showChangeRoleDialog(String docid) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete User?'),
+            title: Text('Change Role'),
             content: Text(
-                'Are you sure you want to delete this user? \nYou cannot undo this action'),
+                'Choose new role for this account:'),
             actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              TextButton(
-                  onPressed: () {
+              Center(
+                child: TextButton(
+                    onPressed: () {
+                      Map <String, String> access = {
+                        'role': 'Admin',
+                      };
                     FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(docid)
-                        .delete()
-                        .whenComplete(() => Navigator.pop(context));
-                    Fluttertoast.showToast(
-                        msg: 'User successfully deleted',
-                        gravity: ToastGravity.CENTER);
-                  },
-                  child: Text('Delete'))
+                          .collection('users')
+                          .doc(docid)
+                          .update(access)
+                          .whenComplete(() => Navigator.pop(context));
+                      Fluttertoast.showToast(
+                          msg: 'Role successfully updated',
+                          gravity: ToastGravity.CENTER);
+                    },
+                    child: Text('Admin')),
+              ),
+              Center(
+                child: TextButton(
+                    onPressed: () {
+                      Map <String, String> access = {
+                        'role': 'Warehouse',
+                      };
+                    FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(docid)
+                          .update(access)
+                          .whenComplete(() => Navigator.pop(context));
+                      Fluttertoast.showToast(
+                          msg: 'Role successfully updated',
+                          gravity: ToastGravity.CENTER);
+                    },
+                    child: Text('Warehouse')),
+              ),
+              Center(
+                child: TextButton(
+                    onPressed: () {
+                      Map <String, String> access = {
+                        'role': 'Sales & Marketing',
+                      };
+                    FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(docid)
+                          .update(access)
+                          .whenComplete(() => Navigator.pop(context));
+                      Fluttertoast.showToast(
+                          msg: 'Role successfully updated',
+                          gravity: ToastGravity.CENTER);
+                    },
+                    child: Text('Sales & Marketing')),
+              ),
+              Center(
+                child: TextButton(
+                    onPressed: () {
+                      Map <String, String> access = {
+                        'role': 'Finance',
+                      };
+                    FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(docid)
+                          .update(access)
+                          .whenComplete(() => Navigator.pop(context));
+                      Fluttertoast.showToast(
+                          msg: 'Role successfully updated',
+                          gravity: ToastGravity.CENTER);
+                    },
+                    child: Text('Finance')),
+              ),
+              
+              Center(
+                child: TextButton(
+                    onPressed: () {
+                      Map <String, String> access = {
+                        'role': 'Access Removed',
+                      };
+                    FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(docid)
+                          .update(access)
+                          .whenComplete(() => Navigator.pop(context));
+                      Fluttertoast.showToast(
+                          msg: 'Role successfully updated',
+                          gravity: ToastGravity.CENTER);
+                    },
+                    child: Text('Remove access')),
+              )
             ],
           );
         });

@@ -1,7 +1,13 @@
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2b.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/insightmonthb2c.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdown2.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdown3.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdown4.dart';
+import 'package:ftrsb_mobile/SalesScreen/Dashboard/salesbreakdown/salesbreakdownb2c1.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/top_channel_b2c.dart';
 import 'package:ftrsb_mobile/SalesScreen/Dashboard/total_sales.dart';
+import 'package:ftrsb_mobile/SalesScreen/nav_bar_home.dart';
 import 'sidebar_navigation.dart';
 import '../model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,51 +42,53 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
 
   @override
   Widget build(BuildContext context) {
-    final buttons = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                fixedSize: const Size(110, 20),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-            child: Text('Today'),
-            onPressed: () {
+    final tabbar = DefaultTabController(
+        length: 4,
+        child: ButtonsTabBar(
+          onTap: (p0) {
+            if (p0 == 0) {
               setState(() {
                 selectedValue = 'Today';
               });
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                fixedSize: const Size(110, 20),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-            child: Text('Last 7 Days'),
-            onPressed: () {
+            }
+            if (p0 == 1) {
               setState(() {
                 selectedValue = 'This Week';
               });
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                fixedSize: const Size(110, 20),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-            child: Text('This Month'),
-            onPressed: () {
+            }
+            if (p0 == 2) {
               setState(() {
                 selectedValue = 'This Month';
               });
-            }),
-      ],
-    );
+            }
+            if (p0 == 3) {
+              setState(() {
+                selectedValue = 'This Year';
+              });
+            }
+          },
+          backgroundColor: Colors.green,
+          unselectedBackgroundColor: Colors.grey[300],
+          unselectedLabelStyle:
+              TextStyle(color: Color.fromARGB(255, 57, 129, 59)),
+          labelStyle:
+              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          tabs: [
+            Tab(
+              text: "  Today  ",
+            ),
+            Tab(
+              text: "  Last 7 Days  ",
+            ),
+            Tab(text: '  This Month  '),
+            Tab(text: '  This Year  '),
+          ],
+        ));
 
     return Scaffold(
       //backgroundColor: Colors.transparent,
       drawer: NavigationDrawer(),
+      bottomNavigationBar: CurvedNavBar2(indexnum: 0),
       appBar: PreferredSize(
           child: AppBar(
             actions: [
@@ -129,11 +137,21 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
                   ),
                 ],
               ),
-              buttons,
+              tabbar,
               SizedBox(height: 14),
               TotalSales(
-                  selectedValue: selectedValue,
-                ), 
+                selectedValue: selectedValue,
+              ),
+              SizedBox(height: 14),
+              Column(
+                children: [                
+                  if (selectedValue == 'This Year') ...[
+                    InsightMonth(),
+                    SizedBox(height: 20),
+                  ],
+                ],
+              ),
+              
               /*SizedBox(height: 20),
               Column(
                 children: [
@@ -148,14 +166,25 @@ class _HomeScreenSalesState extends State<HomeScreenSales> {
                   ],
                 ],
               ),*/
-              SizedBox(height: 20),
               TopChannelB2C(
                 selectedValue: selectedValue,
               ),
-              SizedBox(height: 20),
-              TopChannelB2B(
-                selectedValue: selectedValue,
-              ),
+              SizedBox(height: 20,),
+               Column(
+                children: [
+                  if (selectedValue == 'Today') ...[
+                    SalesBreakdownB2C1(),
+                  ],
+                  if (selectedValue == 'This Week') ...[
+                    SalesBreakdownB2C2(),
+                  ],
+                  if (selectedValue == 'This Month') ...[
+                    SalesBreakdownB2C3(),
+                  ],
+                  if (selectedValue == 'This Year') ...[
+                    SalesBreakdownB2C4(),
+                  ],
+                ],),
             ],
           ),
         ),

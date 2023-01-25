@@ -10,7 +10,9 @@ import 'package:ftrsb_mobile/model/paymentB2C_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentDetails extends StatefulWidget {
-  const PaymentDetails({Key? key}) : super(key: key);
+  String? verify;
+  String? channeltype;
+  PaymentDetails({Key? key, required this.verify, required this.channeltype}) : super(key: key);
 
   @override
   State<PaymentDetails> createState() => _PaymentDetailsState();
@@ -19,7 +21,7 @@ class PaymentDetails extends StatefulWidget {
 enum PaymentMethod { banktransfer, creditDebit, cash }
 
 PaymentMethod? _paymentMethod;
-  late PaymentB2C payc = PaymentB2C();
+late PaymentB2C payc = PaymentB2C();
 
 class _PaymentDetailsState extends State<PaymentDetails> {
   //late DatabaseReference dbRef =
@@ -31,7 +33,38 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   final banknameCtrl = TextEditingController();
   final dateInput = TextEditingController();
 
+  List<DropdownMenuItem<String>> get dropdownItems3{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Affin Bank"),value: "Affin Bank"),
+      DropdownMenuItem(child: Text("Agrobank"),value: "Agrobank"),
+      DropdownMenuItem(child: Text("Alliance Bank"),value: "Alliance Bank"),
+      DropdownMenuItem(child: Text("Ambank"),value: "Ambank"),
+      DropdownMenuItem(child: Text("Bank Islam"),value: "Bank Islam"),
+      DropdownMenuItem(child: Text("Bank Muamalat"),value: "Bank Muamalat"),
+      DropdownMenuItem(child: Text("Bank Rakyat"),value: "Bank Rakyat"),
+      DropdownMenuItem(child: Text("BSN"),value: "BSN"),
+      DropdownMenuItem(child: Text("CIMB"),value: "CIMB"),
+      DropdownMenuItem(child: Text("Hong Leong"),value: "Hong Leong"),
+      DropdownMenuItem(child: Text("HSBC"),value: "HSBC"),
+      DropdownMenuItem(child: Text("Kuwait Finance House"),value: "Kuwait Finance House"),
+      DropdownMenuItem(child: Text("Maybank2u"),value: "Maybank2u"),
+      DropdownMenuItem(child: Text("OCBC"),value: "OCBC"),
+      DropdownMenuItem(child: Text("Public Bank"),value: "Public Bank"),
+      DropdownMenuItem(child: Text("RHB"),value: "RHB"),
+      DropdownMenuItem(child: Text("Standard Chartered Bank"),value: "Standard Chartered Bank"),
+      DropdownMenuItem(child: Text("UOB"),value: "UOB"),
+    ];
+    return menuItems;
+  }
+
   late DateTime? pdate;
+  String? selectedbankname = null;
+
+  @override
+  initState() {
+    super.initState();
+    _paymentMethod = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,15 +140,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
         if (pickedDate != null) {
           String? formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate!);
           setState(() {
-            dateInput.text =
-                formattedDate;
-             pdate = pickedDate;    //set output date to TextField value.
+            dateInput.text = formattedDate;
+            pdate = pickedDate; //set output date to TextField value.
           });
-        } 
+        }
         print(pickedDate);
       },
     );
-
+    
     ///bank name field
     final banknameField = TextFormField(
         autofocus: false,
@@ -208,7 +240,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       return Timestamp.fromMillisecondsSinceEpoch(date!.millisecondsSinceEpoch);
     }
 
-
     return Scaffold(
       //bottomNavigationBar: CurvedNavBar(indexnum: 1,),
       backgroundColor: Colors.white,
@@ -235,9 +266,34 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                   amountField,
                   SizedBox(height: 20),
                   date,
+                  //SizedBox(height: 20),
+                  //banknameField,
                   SizedBox(height: 20),
-                  banknameField,
-                  SizedBox(height: 20),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButtonFormField<String>(
+                        hint: Text("Bank Name"),
+                    icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                    color: Colors.green),
+                        dropdownColor: Colors.green.shade50,
+                        decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: EdgeInsets.all(15),
+                          prefixIcon: const Icon(
+                            Icons.account_balance,
+                            color: Colors.green,
+                          ),
+                        ),
+                        validator: (value) => value == null ? "Select Bank Name" : null,
+                        value: selectedbankname,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedbankname = newValue!;
+                          });
+                        },
+                        items: dropdownItems3),
+                  ),
+                      SizedBox(height: 20),
                   Container(
                     child: SizedBox(
                       child: Material(
@@ -259,24 +315,28 @@ class _PaymentDetailsState extends State<PaymentDetails> {
 
                               print(_toTimeStamp(pdate));
 
-                              
                               setState(() {
                                 payc.amount = amountTextCtrl.text;
-                                payc.paymentMethod = _paymentMethod.toString().substring(payc.paymentMethod.toString().indexOf('.') + 1);
+                                payc.paymentMethod = _paymentMethod
+                                    .toString()
+                                    .substring(payc.paymentMethod
+                                            .toString()
+                                            .indexOf('.') +
+                                        1);
                                 payc.paymentDate = _toTimeStamp(pdate);
-                                payc.bankName = banknameCtrl.text;
-                                payc.tempDate = dateInput.text;
+                                payc.bankName = selectedbankname;
 
-                                if (cust.channel == 'whatsapp') {
-                                  payc.paymentVerify = 'No';
+                                if (widget.verify == 'yes') {
+                                  payc.paymentVerify = '-';
+                                  payc.action = 'Processing';
                                 } else {
-                                  payc.paymentVerify = 'Yes';
+                                  payc.paymentVerify = 'Auto-verified';
+                                  payc.action = 'Approved';
                                 }
                               });
 
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                builder: (context) => const ProductDetails(),
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ProductDetails(channeltype: widget.channeltype,),
                               ));
                             }
                           },

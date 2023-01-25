@@ -11,7 +11,7 @@ class EditSupplier extends StatefulWidget {
 }
 
 class _EditSupplierState extends State<EditSupplier> {
-  late TextEditingController _companynameController, _phonenumberController, _shippingaddressController, _emailController, _picController;
+  late TextEditingController _companynameController, _shippingaddressController, _phonenumberController, _emailController, _picController;
   final _formKey = GlobalKey<FormState>();
   late CollectionReference _ref;
 
@@ -20,8 +20,8 @@ class _EditSupplierState extends State<EditSupplier> {
     // TODO: implement initState
     super.initState();
     _companynameController = TextEditingController();
-    _phonenumberController = TextEditingController();
     _shippingaddressController = TextEditingController();
+    _phonenumberController = TextEditingController();
     _emailController = TextEditingController();
     _picController = TextEditingController();
     _ref = FirebaseFirestore.instance.collection('Suppliers');
@@ -35,9 +35,9 @@ class _EditSupplierState extends State<EditSupplier> {
 
     _companynameController.text = supplier['companyname'];
 
-    _phonenumberController.text = supplier['phonenumber'];
-
     _shippingaddressController.text = supplier['shippingaddress'];
+
+    _phonenumberController.text = supplier['phonenumber'];
 
     _emailController.text = supplier['email'];
 
@@ -47,15 +47,15 @@ class _EditSupplierState extends State<EditSupplier> {
 
   void saveSupplier() {
     String companyname = _companynameController.text;
-    String phonenumber = _phonenumberController.text;
     String shippingaddress = _shippingaddressController.text;
+    String phonenumber = _phonenumberController.text;
     String email = _emailController.text;
     String pic = _picController.text;
 
     Map<String,String> supplier = {
       'companyname':companyname,
-      'phonenumber': phonenumber,
       'shippingaddress':shippingaddress,
+      'phonenumber': phonenumber,
       'email': email,
       'pic':pic,
     };
@@ -106,6 +106,33 @@ class _EditSupplierState extends State<EditSupplier> {
                 ),
                 SizedBox(height: 15),
                 TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  validator: (value) {
+                    RegExp regex = RegExp(r'[^].{3,}$');
+                    if (value!.isEmpty) {
+                      return ("Shipping address cannot be empty!");
+                    }
+                    if (!regex.hasMatch(value)) {
+                      return ("Enter valid shipping address!");
+                    }
+                    return null;
+                  },
+                  controller: _shippingaddressController,
+                  decoration: InputDecoration(
+                    label: Text('Shipping Address'),
+                    hintText: 'Enter Shipping Address',
+                    prefixIcon: Icon(
+                      Icons.map,
+                      size: 30,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(15),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
                   controller: _phonenumberController,
                   keyboardType: TextInputType.phone,
                   validator: (value) {
@@ -123,32 +150,6 @@ class _EditSupplierState extends State<EditSupplier> {
                     hintText: 'Enter Phone Number',
                     prefixIcon: Icon(
                       Icons.phone_iphone,
-                      size: 30,
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
-                    contentPadding: EdgeInsets.all(15),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  keyboardType: TextInputType.streetAddress,
-                  validator: (value) {
-                    RegExp regex = RegExp(r'^.{3,}$');
-                    if (value!.isEmpty) {
-                      return ("Shipping address cannot be empty!");
-                    }
-                    if (!regex.hasMatch(value)) {
-                      return ("Enter valid shipping address!");
-                    }
-                    return null;
-                  },
-                  controller: _shippingaddressController,
-                  decoration: InputDecoration(
-                    label: Text('Shipping Address'),
-                    hintText: 'Enter Shipping Address',
-                    prefixIcon: Icon(
-                      Icons.map,
                       size: 30,
                     ),
                     fillColor: Colors.white,

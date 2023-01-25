@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'sidebar_navigation.dart';
+import '../../model/user_model.dart';
+import '../sidebar_navigation.dart';
 
 class PaymentVerificationFinance extends StatefulWidget {
   @override
@@ -16,12 +18,23 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
   List<String> filter = ["Unverified","Approved","Rejected"];
   String? selectedValue="Unverified";
   String search='';
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "No");
+    _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "-");
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
 
   }
 
@@ -43,7 +56,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     await reference
                         .doc(verify['key']).update({
                       'action' : 'Rejected',
-                      'paymentVerify' : 'Yes',
+                      'paymentVerify' :  loggedInUser.name.toString(),
                     }).whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Reject', style: TextStyle(color: Colors.red),)),
@@ -52,7 +65,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     await reference
                         .doc(verify['key']).update({
                       'action' : 'Approved',
-                      'paymentVerify' : 'Yes',
+                      'paymentVerify' : loggedInUser.name.toString(),
                     }).whenComplete(() => Navigator.pop(context));
                   },
                   child: Text('Approve', style: TextStyle(color: Colors.green),)),
@@ -201,9 +214,10 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Verified: ',
+                    Text('Verified by: ',
                       style: TextStyle(
                           fontSize: 16,
+                          color: Colors.blue,
                           fontWeight: FontWeight.w800),),
                     SizedBox(
                       width: 6,
@@ -211,6 +225,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     Text(
                       verify['paymentVerify'],
                       style: TextStyle(
+                        color: Colors.blue,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
@@ -223,8 +238,9 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                 ),
                 Row(
                   children: [
-                    Text('Action: ',
+                    Text('Order Status: ',
                       style: TextStyle(
+                        color: Colors.red,
                           fontSize: 16,
                           fontWeight: FontWeight.w800),),
                     SizedBox(
@@ -233,6 +249,7 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                     Text(
                       verify['action'] ?? "-",
                       style: TextStyle(
+                          color: Colors.red,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
@@ -293,14 +310,14 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
       print(selectedValue);
     }
     else{
-      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "No").orderBy("custName").startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2C').where('paymentVerify', isEqualTo: "-").orderBy("custName").startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
     return Scaffold(
       drawer: NavigationDrawer(),
       appBar: AppBar(
-        title: Text('B2C Payment Verification'),
+        title: Text('B2C Order Verification'),
       ),
       body: Column(
         children: <Widget>[
@@ -327,10 +344,10 @@ class _PaymentVerificationFinanceState extends State<PaymentVerificationFinance>
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: Colors.teal)
                     ),
-                    hintText: 'Search',
+                    hintText: 'Customer Name',
                     hintStyle: TextStyle(
                         color: Colors.grey,
-                        fontSize: 18
+                        fontSize: 16
                     ),
                     prefixIcon: Icon(Icons.search)
                 ),

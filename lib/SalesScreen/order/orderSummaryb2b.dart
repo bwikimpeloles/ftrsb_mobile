@@ -4,11 +4,9 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ftrsb_mobile/SalesScreen/bottom_nav_bar.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/customer_details.dart';
 import 'package:ftrsb_mobile/SalesScreen/order/payment_details_b2b.dart';
@@ -183,17 +181,6 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       orderid = getRandomString(14);
                     });
 
-                    Future<int> getOrderCount(String? phone) async {
-                      var docs = await FirebaseFirestore.instance
-                          .collection('OrderB2C')
-                          .where('custPhone', isEqualTo: phone)
-                          .get();
-                      int count = docs.size;
-                      return count;
-                    }
-
-                    int _count = await getOrderCount(cust.phone) + 1;
-
                     Map<String, dynamic> customer = {
                       'name': cust.name,
                       'phone': cust.phone,
@@ -201,7 +188,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'email': cust.email,
                       'channel': cust.channel,
                       'salesStaff': user?.uid,
-                      'count': _count
+                      'dateSubmitted': payb.orderDate
                     };
 
                     if (cust.name != null) {
@@ -225,6 +212,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'salesStaff': user?.uid,
                       'product': getProductlist(),
                       'channel': cust.channel,
+                      'purchaseType': payb.purchaseType
                     };
 
                     Future uploadFile() async {
@@ -258,7 +246,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                           (Route<dynamic> route) => false);
                     } else {
                       Fluttertoast.showToast(
-                        msg: 'Order submission failed!',
+                        msg: 'Order submission failed',
                         gravity: ToastGravity.CENTER,
                         fontSize: 16.0,
                       );
@@ -301,13 +289,17 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
               Text(cust.phone.toString(), style: TextStyle(fontSize: 16)),
               Text(cust.address.toString(), style: TextStyle(fontSize: 16)),
               SizedBox(height: 20),
-              Text('Order Date : ' + payb.orderDate.toString(),
+              Text('Order Date : ' + DateFormat.yMMMd().format(payb.orderDate!.toDate()).toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              Text('Collection Date : ' + payb.collectionDate.toString(),
+              Text('Collection Date : ' + DateFormat.yMMMd().format(payb.collectionDate!.toDate()).toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               Text('Payment Status : ' + payb.status.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              SizedBox(height: 20),
+              Text('Purchase Type : ' + payb.purchaseType.toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               SizedBox(height: 20),
@@ -322,7 +314,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
               SizedBox(
                 height: 20,
               ),
-              Container(
+             /* Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -336,7 +328,7 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                       'Upload Sales Document',
                       style: TextStyle(color: Colors.grey),
                     )),
-                    SizedBox(
+                   SizedBox(
                       height: 15,
                     ),
                     Row(
@@ -352,8 +344,8 @@ class _OrderSummaryB2BState extends State<OrderSummaryB2B> {
                     previewDoc,
                   ],
                 ),
-              ),
-              SizedBox(height: 20),
+              ), */
+             // SizedBox(height: 20),
               submitButton
             ],
           ),

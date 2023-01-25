@@ -17,9 +17,10 @@ class CustomAppBar extends StatelessWidget {
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () {
           if (bartitle == 'Add Customer Information' ||
-              bartitle == 'Add Prospect' ||
               bartitle == 'Customer' ||
-              bartitle == 'Order History') {
+              bartitle == 'Order History' ||
+              bartitle == 'Channel' ||
+              bartitle == 'Import/Export CSV') {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const HomeScreenSales()));
           } else {

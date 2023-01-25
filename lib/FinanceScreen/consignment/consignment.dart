@@ -8,7 +8,7 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'sidebar_navigation.dart';
+import '../sidebar_navigation.dart';
 
 class ConsignmentFinance extends StatefulWidget {
   @override
@@ -22,7 +22,9 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
   CollectionReference reference =
   FirebaseFirestore.instance.collection('OrderB2B');
   List<String> filter = ["unpaid","paid"];
+  List<String> filter2 = ["Consignment","Outright","COD"];
   String? selectedValue="unpaid";
+  String? selectedValue2="Consignment";
   String search='';
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
@@ -274,7 +276,12 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
       String bodyText = "Collect from ${verify['custName']} RM ${verify['amount']} \n(Collection Date: ${DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString()})";
       if(userid!=""){
         print(token1);
-        showNotification(int.parse(verify['custPhone']),titleText,bodyText);
+        //print(verify['custPhone'].toString().substring(0,8));
+        if (int.parse(verify['custPhone']) > 2147483647){
+          showNotification(int.parse(verify['custPhone'].toString().substring(0,8)), titleText, bodyText);
+        } else {
+          showNotification(int.parse(verify['custPhone']), titleText, bodyText);
+        }
       }
     }
 
@@ -345,11 +352,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['amount'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['amount'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -391,11 +400,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['custAddress'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['custAddress'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -413,11 +424,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['custPhone'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['custPhone'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -435,11 +448,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['pic'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['pic'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -457,11 +472,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString(),
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        DateFormat('dd/MM/yyyy').format((verify['orderDate']as Timestamp).toDate()).toString(),
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -479,11 +496,37 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['orderID'],
+                    Flexible(
+                      child: Text(
+                        verify['orderID'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text('Purchase Type: ',
                       style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w800),),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Flexible(
+                      child: Text(
+                        verify['purchaseType'],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -501,11 +544,13 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                     SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      verify['paymentStatus'] ,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        verify['paymentStatus'] ,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(width: 15),
 
@@ -582,13 +627,31 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
 
   @override
   Widget build(BuildContext context) {
-  if (selectedValue == "paid") {
-      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").orderBy('orderID').startAt([search])
+  if (selectedValue == "paid" && selectedValue2 == "Outright") {
+      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").where('purchaseType', isEqualTo: "Outright").orderBy('orderID').startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
+    } else if (selectedValue == "paid" && selectedValue2 == "COD") {
+    _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").where('purchaseType', isEqualTo: "COD").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
+  } else if (selectedValue == "paid" && selectedValue2 == "Consignment") {
+    _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "paid").where('purchaseType', isEqualTo: "Consignment").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
+  }
+  else if(selectedValue == "unpaid" && selectedValue2 == "Outright"){
+  _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").where('purchaseType', isEqualTo: "Outright").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
+    }
+  else if (selectedValue == "unpaid" && selectedValue2 == "COD"){
+  _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").where('purchaseType', isEqualTo: "COD").orderBy('orderID').startAt([search])
+        .endAt([search + '\uf8ff']);
+    print(selectedValue);
     }
     else{
-      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").orderBy('orderID').startAt([search])
+      _ref = FirebaseFirestore.instance.collection('OrderB2B').where('paymentStatus', isEqualTo: "unpaid").where('purchaseType', isEqualTo: "Consignment").orderBy('orderID').startAt([search])
           .endAt([search + '\uf8ff']);
       print(selectedValue);
     }
@@ -629,7 +692,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
               Flexible(
                 child: SizedBox(
                   height: 50,
-                  width: 200,
+                  width: 150,
                   child: TextField(
                     onChanged: (text){
                       setState(() {
@@ -644,7 +707,7 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.teal)
                         ),
-                        hintText: 'Search Order ID',
+                        hintText: 'Order ID',
                         hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 18
@@ -656,13 +719,28 @@ class _ConsignmentFinanceState extends State<ConsignmentFinance> {
               ),
               Stack(
                 children: [
-                  Text("Filter: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
+                  Text("Status: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
                   DropdownButton(
                     value: selectedValue,
                     items: filter.map((item) => DropdownMenuItem<String>(value: item,child: Text(item))).toList(),
                     onChanged: (String? newValue){
                       setState(() {
                         selectedValue = newValue!;
+                      });
+                    },
+
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  Text("Type: ", style: TextStyle(fontWeight: FontWeight.bold, height: 0, fontSize: 16),),
+                  DropdownButton(
+                    value: selectedValue2,
+                    items: filter2.map((item) => DropdownMenuItem<String>(value: item,child: Text(item))).toList(),
+                    onChanged: (String? newValue){
+                      setState(() {
+                        selectedValue2 = newValue!;
                       });
                     },
 

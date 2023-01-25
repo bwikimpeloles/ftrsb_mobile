@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ftrsb_mobile/SalesScreen/customAppBar.dart';
@@ -13,20 +14,10 @@ class CustomerDetailsForm extends StatefulWidget {
   State<CustomerDetailsForm> createState() => _CustomerDetailsFormState();
 }
 
-enum DistrChannel {
-  shopee,
-  whatsapp,
-  website,
-  b2b_retail,
-  b2b_hypermarket,
-  grabmart,
-  tiktok,
-  other
-}
-
-DistrChannel? _channel;
-
 late CustomerModel cust = CustomerModel();
+late String? _channel;
+late String? _channeltype;
+late String? _verify;
 
 class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
 // form key
@@ -38,6 +29,11 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
   final emailEditingController = TextEditingController();
 
   @override
+  initState(){
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //name field
     final nameField = TextFormField(
@@ -47,7 +43,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
-            return ("Name cannot be empty");
+            return ("*required");
           }
           if (!regex.hasMatch(value)) {
             return ("Please enter valid name (Min. 3 Character)");
@@ -78,10 +74,10 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         validator: (value) {
           RegExp regex = RegExp(r'(\d+)');
           if (value!.isEmpty) {
-            return ("Phone number cannot be empty!");
+            return ("*required");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter valid phone number!");
+            return ("Invalid phone number");
           }
           return null;
         },
@@ -109,10 +105,10 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
-            return ("Shipping address cannot be empty!");
+            return ("*required");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter valid shipping address!");
+            return ("Invalid shipping address");
           }
           return null;
         },
@@ -140,7 +136,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         validator: (value) {
           // reg expression for email validation
           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value!)) {
+              .hasMatch(value!) && value.isNotEmpty) {
             return ("Please Enter a valid email");
           }
           return null;
@@ -155,106 +151,57 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
             color: Colors.green,
           ),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email Address",
+          hintText: "Email Address   (optional)",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ));
 
-    ///radio button
-    //String? distrChannel;
-    final channel = Column(
-      children: <Widget>[
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("Shopee"),
-          value: DistrChannel.shopee,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("WhatsApp"),
-          value: DistrChannel.whatsapp,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("Website"),
-          value: DistrChannel.website,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("GrabMart"),
-          value: DistrChannel.grabmart,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("TikTok"),
-          value: DistrChannel.tiktok,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("B2B Retail"),
-          value: DistrChannel.b2b_retail,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("B2B Hypermarket"),
-          value: DistrChannel.b2b_hypermarket,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-        RadioListTile<DistrChannel>(
-          activeColor: Colors.green,
-          title: const Text("Other"),
-          value: DistrChannel.other,
-          groupValue: _channel,
-          onChanged: (DistrChannel? value) {
-            setState(() {
-              _channel = value;
-            });
-          },
-        ),
-      ],
-    );
+    ///dropdown
+    final channel = StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Channel').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return LinearProgressIndicator();
+          } else {
+            return DropdownButtonHideUnderline(
+              child: DropdownButtonFormField(
+                hint: Text("Distribution Channel"),
+                isExpanded: true,
+                icon: Icon(Icons.arrow_drop_down_circle_rounded,
+                    color: Colors.green),
+                dropdownColor: Colors.green.shade50,
+                decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: EdgeInsets.all(15),
+                      ),
+                itemHeight: kMinInteractiveDimension,
+                items: snapshot.data!.docs
+                    .map(
+                      (map) => DropdownMenuItem(  
+                        child: Text(map.id, overflow: TextOverflow.fade,),
+                        value: map.id,
+                      ),
+                    )
+                    .toList(),
+                onChanged: (String? val) {
+                  for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                    DocumentSnapshot snap = snapshot.data!.docs[i];
+                    setState(() {
+                      _channel = val!;
+                      if (_channel == snap.reference.id) {
+                        _channeltype = snap.get('type');
+                        _verify = snap.get('needVerification');
+                      }
+                    });
+                  }
+                },
+              ),
+            );
+          }
+        });
+
 
   
     //submit button
@@ -267,7 +214,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
             if (_channel == null){
-              Fluttertoast.showToast(msg: 'Choose a distribution channel!', gravity: ToastGravity.CENTER, fontSize: 16);
+              Fluttertoast.showToast(msg: 'Please choose a distribution channel', gravity: ToastGravity.CENTER, fontSize: 16);
             }
 
             else if (_formKey.currentState!.validate() && _channel != null ) {
@@ -276,27 +223,17 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
                 cust.phone = phoneEditingController.text;
                 cust.address = addressEditingController.text;
                 cust.email = emailEditingController.text;
-                cust.channel = _channel
-                    .toString()
-                    .substring(_channel.toString().indexOf('.') + 1);
+                cust.channel = _channel;
 
               });
 
-              if (_channel
-                          .toString()
-                          .substring(_channel.toString().indexOf('.') + 1) ==
-                      'b2b_retail' ||
-                  _channel
-                          .toString()
-                          .substring(_channel.toString().indexOf('.') + 1) ==
-                      'b2b_hypermarket') {
+              if (_channeltype == 'B2B') {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PaymentDetailsB2B(),
+                  builder: (context) => PaymentDetailsB2B(channeltype: _channeltype,),
                 ));
-              } 
-              else {
+              } else {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PaymentDetails(),
+                  builder: (context) => PaymentDetails(verify: _verify, channeltype: _channeltype,),
                 ));
               }
             }
@@ -317,56 +254,30 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
         child: CustomAppBar(bartitle: 'Add Customer Information'),
         preferredSize: Size.fromHeight(65),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    nameField,
-                    SizedBox(height: 20),
-                    phoneField,
-                    SizedBox(height: 20),
-                    emailField,
-                    SizedBox(height: 20),
-                    addressField,
-                    SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.grey,
-                          )),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 15),
-                          SizedBox(
-                            height: 20,
-                            width: 300,
-                            child: Text(
-                              'Distribution Channel',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black54,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          channel,
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    submitButton,
-                    SizedBox(height: 15),
-                  ],
-                ),
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  nameField,
+                  SizedBox(height: 20),
+                  phoneField,
+                  SizedBox(height: 20),
+                  emailField,
+                  SizedBox(height: 20),
+                  addressField,
+                  SizedBox(height: 20),
+                  channel,
+                  SizedBox(height: 20),
+                  submitButton,
+                  SizedBox(height: 15),
+                ],
               ),
             ),
           ),

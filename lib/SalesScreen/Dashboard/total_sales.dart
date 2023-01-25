@@ -13,13 +13,31 @@ class _TotalSalesState extends State<TotalSales> {
 
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> expStream;
-    if (widget.selectedValue == "Today") {
+    Stream<QuerySnapshot> expStream;
+
+    getStream(int i){
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
-          .where('orderDate',
-              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+          .where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,i,
+                  1))
+          .where('paymentDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year, i,
+                  31))
+          .snapshots();
+
+      return expStream;
+    }
+
+    if (widget.selectedValue == "Today") {
+       expStream = FirebaseFirestore.instance
+          .collection('OrderB2C')
+          .where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
+          .where('paymentDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
@@ -30,29 +48,40 @@ class _TotalSalesState extends State<TotalSales> {
                   DateTime(DateTime.now().year, DateTime.now().month, 1))
           .where('paymentDate',
               isLessThan:
-                  DateTime(DateTime.now().year, DateTime.now().month, 31))
+                  DateTime(DateTime.now().year, DateTime.now().month, 32))
           .snapshots();
       print(widget.selectedValue);
-    } else {
+    } else if (widget.selectedValue == "This Week"){
       //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
           .where('paymentDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+                  DateTime.now().month, DateTime.now().day - 6))
           .where('paymentDate',
-              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 6))
+              isLessThan: DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day + 1))
           .snapshots();
+    } else {
+      expStream = FirebaseFirestore.instance
+          .collection('OrderB2C').where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('paymentDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year,
+                  12, 31)).snapshots();
     }
 
     final Stream<QuerySnapshot> expStream1;
     if (widget.selectedValue == "Today") {
       expStream1 = FirebaseFirestore.instance
           .collection('OrderB2B')
-          .where('paymentDate',
-              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+         .where('orderDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
+          .where('orderDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
@@ -63,24 +92,32 @@ class _TotalSalesState extends State<TotalSales> {
                   DateTime(DateTime.now().year, DateTime.now().month, 1))
           .where('orderDate',
               isLessThan:
-                  DateTime(DateTime.now().year, DateTime.now().month, 31))
+                  DateTime(DateTime.now().year, DateTime.now().month, 32))
           .snapshots();
       print(widget.selectedValue);
-    } else {
+    } else if (widget.selectedValue == "This Week") {
       //Last 7 days
       expStream1 = FirebaseFirestore.instance
           .collection('OrderB2B')
           .where('orderDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+                  DateTime.now().month, DateTime.now().day - 6))
           .where('orderDate',
               isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 6))
+                  DateTime.now().day + 1))
           .snapshots();
+    } else {
+      expStream1 = FirebaseFirestore.instance
+          .collection('OrderB2B').where('orderDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('orderDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year, 12,
+                  31)).snapshots();
     }
 
-    return Container(
-      width: MediaQuery.of(context).size.width,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -89,13 +126,14 @@ class _TotalSalesState extends State<TotalSales> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 int count = snapshot.data!.docs.length;
-                int sum = 0;
+                double sum = 0;
                 for (int i = 0; i < count; i++) {
                   final data = snapshot.data!.docs[i];
-                  sum = sum + int.parse(data['amount']);
+                  sum = sum + double.parse(data['amount']);
                 }
           
                 return Container(
+                //  width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -104,14 +142,16 @@ class _TotalSalesState extends State<TotalSales> {
                         color: Colors.white
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.fromLTRB(30,20,30,20),
                       child: Column(
                         children: [
-                          Text('B2C Order Count:', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),),
                           Text(count.toString(), style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
-                          SizedBox(height: 10,),     
-                          Text('Total Sales (RM): ', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),) ,
-                          Text(sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
+                          Text('B2C Orders', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),),
+                          
+                          SizedBox(height: 10,),   
+                          Text('RM' +sum.toStringAsFixed(2),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),  
+                          Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
+        
                         ],
                       ),
                     ));
@@ -119,19 +159,20 @@ class _TotalSalesState extends State<TotalSales> {
               return CircularProgressIndicator();
             },
           ),
-          SizedBox(width: 5,),
+          SizedBox(width: 15,),
           StreamBuilder<QuerySnapshot>(
             stream: expStream1,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 int count = snapshot.data!.docs.length;
-                int sum = 0;
+                double sum = 0;
                 for (int i = 0; i < count; i++) {
                   final data = snapshot.data!.docs[i];
-                  sum = sum + int.parse(data['amount']);
+                  sum = sum + double.parse(data['amount']);
                 }
       
                 return Container(
+                 // width: 160,
                     decoration: BoxDecoration(
                         boxShadow: kElevationToShadow[2],
                         borderRadius: const BorderRadius.all(
@@ -140,14 +181,16 @@ class _TotalSalesState extends State<TotalSales> {
                         color: Colors.white
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.fromLTRB(30,20,30,20),
                       child: Column(
                         children: [
-                          Text('B2B Order Count:', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),),
                           Text(count.toString(), style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
-                          SizedBox(height: 10,),     
-                          Text('Total Sales (RM): ', style: TextStyle(color: Color(0xff0f4a3c), fontSize: 16,fontWeight: FontWeight.bold),) ,
-                          Text(sum.toString(),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),
+                          Text('B2B Orders', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),),
+                          
+                          SizedBox(height: 10,),  
+                          Text('RM' +sum.toStringAsFixed(2),style: TextStyle(color: Colors.green, fontSize: 20,fontWeight: FontWeight.bold),),   
+                          Text('Total Sales', style: TextStyle(color: Color(0xff0f4a3c).withOpacity(0.7), fontSize: 15,fontWeight: FontWeight.bold),) ,
+                          
                         ],
                       ),
                     ));

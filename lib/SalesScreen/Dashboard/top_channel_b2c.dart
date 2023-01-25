@@ -37,22 +37,6 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
     return catMap;
   }
 
-  String getChannel(String c) {
-    if (c == 'shopee') {
-      return 'Shopee';
-    } else if (c == 'tiktok') {
-      return 'TikTok';
-    } else if (c == 'grabmart') {
-      return 'GrabMart';
-    } else if (c == 'whatsapp') {
-      return 'WhatsApp';
-    } else if (c == 'other') {
-      return 'Other';
-    } else if (c == 'website') {
-      return 'Website';
-    } else
-      return '';
-  }
 
   DataTable printChannelData() {
     DataTable? a;
@@ -79,8 +63,8 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
       ],
       rows: catMap2.entries
           .map((e) => DataRow(cells: [
-                DataCell(Text(getChannel(e.key.toString()))),
-                DataCell(Text(e.value.toString())),
+                DataCell(Text(e.key.toString(),)),
+                DataCell(Text(e.value.toStringAsFixed(2))),
               ]))
           .toList(),
     );
@@ -96,6 +80,11 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
     Color.fromARGB(255, 105, 67, 255),
     Color.fromARGB(255, 57, 177, 252),
     Color.fromARGB(255, 241, 77, 197),
+    Color.fromARGB(255, 126, 35, 102),
+    Color.fromARGB(255, 78, 44, 138),
+    Color.fromARGB(255, 33, 200, 247),
+    Color.fromARGB(255, 200, 77, 241),
+    Color.fromARGB(255, 241, 77, 77),
   ];
 
   Widget pieChartExampleOne() {
@@ -145,8 +134,11 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
           .where('paymentDate',
-              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
                   DateTime.now().day))
+          .where('paymentDate',
+              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1))
           .snapshots();
       print(widget.selectedValue);
     } else if (widget.selectedValue == "This Month") {
@@ -157,20 +149,28 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                   DateTime(DateTime.now().year, DateTime.now().month, 1))
           .where('paymentDate',
               isLessThan:
-                  DateTime(DateTime.now().year, DateTime.now().month, 31))
+                  DateTime(DateTime.now().year, DateTime.now().month, 32))
           .snapshots();
       print(widget.selectedValue);
-    } else {
+    } else if (widget.selectedValue == "This Week"){
       //Last 7 days
       expStream = FirebaseFirestore.instance
           .collection('OrderB2C')
           .where('paymentDate',
               isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+                  DateTime.now().month, DateTime.now().day - 6))
           .where('paymentDate',
-              isLessThan: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 6))
+              isLessThan: DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day + 1))
           .snapshots();
+    } else { //This Year
+      expStream = FirebaseFirestore.instance
+          .collection('OrderB2C').where('paymentDate',
+              isGreaterThanOrEqualTo: DateTime(DateTime.now().year,
+                  1, 1))
+          .where('paymentDate',
+              isLessThanOrEqualTo: DateTime(DateTime.now().year,
+                  12, 31)).snapshots();
     }
 
     void getExpfromSnapshot(snapshot) {
@@ -181,6 +181,8 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
           OrderB2CModel exp = OrderB2CModel().fromJson(a.data());
           _order.add(exp);
         }
+      } else {
+        _order = [];
       }
     }
 
@@ -194,7 +196,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
               .white //const Color(0xff72d8bf),//Color.fromARGB(255, 234, 255, 226),
           ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(30.0,16,30,16),
         child: Column(
           children: [
             Column(
@@ -204,7 +206,7 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                     'Top Selling Channel',
                     style: TextStyle(
                       color: Color(0xff0f4a3c),
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -260,8 +262,8 @@ class _TopChannelB2CState extends State<TopChannelB2C> {
                 print("Data: $data");
                 getExpfromSnapshot(data);
                 return Container(
+                  width: double.infinity,
                   child: printChannelData(),
-                  width: 300,
                 );
               },
             ),

@@ -12,7 +12,7 @@ class EditCost extends StatefulWidget {
 }
 
 class _EditCostState extends State<EditCost> {
-  late TextEditingController _nameController, _categoryController, _amountController, _supplierController, _dateController, _referencenoController;
+  late TextEditingController _nameController, _amountController, _supplierController, _referencenoController;
   late CollectionReference _ref;
   final _formKey = GlobalKey<FormState>();
   late String sentence;
@@ -20,57 +20,90 @@ class _EditCostState extends State<EditCost> {
   int month1=1;
   int day1=1;
   DateTime? dateselect = new DateTime.now();
-  String? selectedValue;
-
+  var selectedCategory;
+  var selectedSupplier;
+  String? selectedValue = null;
   List<DropdownMenuItem<String>> get dropdownItems{
     List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("Frozen Food"),value: "Frozen Food"),
-      DropdownMenuItem(child: Text("Raw Material"),value: "Raw Material"),
-      DropdownMenuItem(child: Text("Cookies"),value: "Cookies"),
-      DropdownMenuItem(child: Text("Others"),value: "Others"),
+      DropdownMenuItem(child: Text("Online Banking"),value: "Online Banking"),
+      DropdownMenuItem(child: Text("Credit/Debit"),value: "Credit/Debit"),
+      DropdownMenuItem(child: Text("Cash"),value: "Cash"),
     ];
     return menuItems;
   }
 
-  Future<DateTime> getDate() async {
-    DocumentSnapshot snapshot = (await _ref.doc(widget.costKey).get());
-    Map cost = snapshot.data() as Map;
-    dateselect=DateTime.parse(cost['date'].toString());
-    return dateselect!;
 
-  }
+  // Future<DateTime> getDate() async {
+  //   DocumentSnapshot snapshot = (await _ref.doc(widget.costKey).get());
+  //   Map cost = snapshot.data() as Map;
+  //   dateselect = (cost['date'] as Timestamp).toDate();
+  //   return dateselect!;
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _nameController = TextEditingController();
-    _categoryController = TextEditingController();
     _amountController = TextEditingController();
     _supplierController = TextEditingController();
-    _dateController = TextEditingController();
+
     _referencenoController = TextEditingController();
-    getDate();
+    // getDate();
     _ref = FirebaseFirestore.instance.collection('Cost');
     getCostDetail();
     initialize();
+    initialize2();
     setState(() {});
   }
 
   void initialize() async{
     var document = await FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).get();
-    selectedValue = document['category'];
+    // if the category inside the category collection exists
+    CollectionReference checkexist = FirebaseFirestore.instance.collection('Category');
+    QuerySnapshot _query = await checkexist
+        .where('category', isEqualTo: document['category']).get();
+    if (_query.docs.length > 0) {
+      selectedCategory = document['category'];
+    } else{
+      selectedCategory = null;
+    }
+
+    // if the supplier inside the Suppliers collection exists
+    CollectionReference checkexistsupplier = FirebaseFirestore.instance.collection('Suppliers');
+    QuerySnapshot _query2 = await checkexistsupplier
+        .where('companyname', isEqualTo: document['supplier']).get();
+    if (_query2.docs.length > 0) {
+      selectedSupplier = document['supplier'];
+    } else{
+      selectedSupplier = null;
+    }
+
     dateselect = (document['date'] as Timestamp).toDate();
+
     setState(() {});
+  }
+
+  void initialize2() async{
+    var document = await FirebaseFirestore.instance.collection('Cost').doc(widget.costKey).get();
+    var myList = ["Online Banking", "Credit/Debit", "Cash"];
+
+    if(myList.contains(document['paymenttype'].toString())){
+      selectedValue= document['paymenttype'];
+    } else{
+      selectedValue= null;
+    }
+
   }
 
   void saveCost() {
     String name = _nameController.text;
-    String? category = selectedValue;
+    String? category = selectedCategory;
     String amount = _amountController.text;
-    String supplier = _supplierController.text;
+    String supplier = selectedSupplier?? '-';
     DateTime? date2 = dateselect;
     String referenceno = _referencenoController.text;
+    String paymenttype = selectedValue?? '-';
 
     Map<String,Object?> cost2 = {
       'name':name,
@@ -79,6 +112,7 @@ class _EditCostState extends State<EditCost> {
       'supplier': supplier,
       'date':date2,
       'referenceno': referenceno,
+      'paymenttype': paymenttype,
     };
 
     if(double.tryParse(_amountController.text) != null){
@@ -110,7 +144,7 @@ class _EditCostState extends State<EditCost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Cost'),
+        title: Text('Update Expenses'),
       ),
       body: Container(
         margin: EdgeInsets.all(15),
@@ -135,29 +169,60 @@ class _EditCostState extends State<EditCost> {
                   },
                   controller: _nameController,
                   decoration: InputDecoration(
-                    label: Text('Cost Name'),
-                    hintText: 'Enter Cost Name',
+                    label: Text('Expenses Name'),
+                    hintText: 'Enter Expenses Name',
                     fillColor: Colors.white,
                     filled: true,
                     contentPadding: EdgeInsets.all(15),
                   ),
                 ),
                 SizedBox(height: 15),
-                DropdownButtonFormField(
-                    hint: Text("Choose an category"),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: EdgeInsets.all(15),
-                    ),
-                    validator: (value) => value == null ? "Select a category" : null,
-                    value: selectedValue,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedValue = newValue!;
-                      });
-                    },
-                    items: dropdownItems),
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection("Category").snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return const Text("Loading.....");
+                      else {
+                        List<DropdownMenuItem> categoryItems = [];
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          DocumentSnapshot snap = snapshot.data!.docs[i];
+                          categoryItems.add(
+                            DropdownMenuItem(
+                              child: Text(
+                                snap['category'],
+                              ),
+                              value: "${snap['category']}",
+                            ),
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: DropdownButtonFormField<dynamic>(
+                                validator: (value) => value == null ? "Select a category" : null,
+                                items: categoryItems,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(15),
+                                ),
+                                onChanged: (categoryValue) {
+                                  setState(() {
+                                    selectedCategory = categoryValue;
+                                  });
+                                },
+                                value: selectedCategory,
+                                isExpanded: false,
+                                hint: new Text(
+                                  "Choose Category",
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
                 SizedBox(height: 15),
                 TextFormField(
                   keyboardType: TextInputType.number,
@@ -181,16 +246,67 @@ class _EditCostState extends State<EditCost> {
                   ),
                 ),
                 SizedBox(height: 15),
-                TextFormField(
-                  controller: _supplierController,
-                  decoration: InputDecoration(
-                    label: Text('Supplier'),
-                    hintText: 'Enter Supplier',
-                    fillColor: Colors.white,
-                    filled: true,
-                    contentPadding: EdgeInsets.all(15),
-                  ),
-                ),
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection("Suppliers").snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return const Text("Loading.....");
+                      else {
+                        List<DropdownMenuItem> supplierItems = [];
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          DocumentSnapshot snap = snapshot.data!.docs[i];
+                          supplierItems.add(
+                            DropdownMenuItem(
+                              child: Text(
+                                snap['companyname'],
+                              ),
+                              value: "${snap['companyname']}",
+                            ),
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: DropdownButtonFormField<dynamic>(
+                                items: supplierItems,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(15),
+                                ),
+                                onChanged: (supplierValue) {
+                                  setState(() {
+                                    selectedSupplier = supplierValue;
+                                  });
+                                },
+                                value: selectedSupplier,
+                                isExpanded: false,
+                                hint: new Text(
+                                  "Choose Supplier",
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
+                SizedBox(height: 15),
+                DropdownButtonFormField(
+                    hint: Text("Payment Type"),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: EdgeInsets.all(15),
+                    ),
+                    validator: (value) => value == null ? "Select payment type" : null,
+                    value: selectedValue,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedValue = newValue!;
+                      });
+                    },
+                    items: dropdownItems),
                 SizedBox(height: 15),
                 TextFormField(
                   controller: _referencenoController,
@@ -236,7 +352,7 @@ class _EditCostState extends State<EditCost> {
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: TextButton(style: TextButton.styleFrom(backgroundColor: Theme.of(context).accentColor,),
-                    child: Text('Update Cost',style: TextStyle(
+                    child: Text('Update Expenses',style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -265,13 +381,13 @@ class _EditCostState extends State<EditCost> {
 
     _nameController.text = cost['name'];
 
-    _categoryController.text = cost['category'];
+    selectedCategory = cost['category'];
 
     _amountController.text = cost['amount'];
 
     _supplierController.text = cost['supplier'];
 
-    _dateController.text = cost['date'];
+
 
     _referencenoController.text = cost['referenceno'];
 

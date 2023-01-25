@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PaymentB2B {
   String? amount;
   String? orderDateDisplay;
-  String? collectionDateDisplay;
   Timestamp? orderDate;
   Timestamp? collectionDate;
   String? pic;
   String? status;
+  String? purchaseType;
 
   //constructor
   PaymentB2B(
@@ -15,7 +15,8 @@ class PaymentB2B {
       this.amount,
       this.collectionDate,
       this.pic,
-      this.status});
+      this.status,
+      this.purchaseType});
 
   // receive data from server
   factory PaymentB2B.fromMap(map) {
@@ -25,6 +26,7 @@ class PaymentB2B {
       collectionDate: map["collectionDate"],
       pic: map["pic"],
       status: map["status"],
+      purchaseType: map["purchaseType"],
     );
   }
 
@@ -36,6 +38,7 @@ class PaymentB2B {
       'collectionDate': collectionDate,
       'pic': pic,
       'status': status,
+      'purchaseType': purchaseType,
     };
   }
 }
