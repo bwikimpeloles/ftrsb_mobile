@@ -59,7 +59,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                    style: customtextstyle,textAlign: TextAlign.center,
                   )),
             ],
@@ -97,7 +97,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,textAlign: TextAlign.center
                   )),
             ],
@@ -132,7 +132,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,textAlign: TextAlign.center,
                   )),
             ],
@@ -167,7 +167,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -203,7 +203,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -239,7 +239,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -275,7 +275,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -311,7 +311,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -347,7 +347,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -383,7 +383,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -419,7 +419,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),
@@ -455,7 +455,7 @@ class _InsightMonthState extends State<InsightMonth> {
               SizedBox(
                   width: 100,
                   child: Text(
-                    sum.toString(),
+                    sum.toStringAsFixed(2),
                     style: customtextstyle,
                     textAlign: TextAlign.center,
                   )),

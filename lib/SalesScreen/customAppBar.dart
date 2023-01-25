@@ -18,6 +18,7 @@ class CustomAppBar extends StatelessWidget {
         onPressed: () {
           if (bartitle == 'Add Customer Information' ||
               bartitle == 'Customer' ||
+              bartitle == 'Prospect' ||
               bartitle == 'Order History' ||
               bartitle == 'Channel' ||
               bartitle == 'Import/Export CSV') {
